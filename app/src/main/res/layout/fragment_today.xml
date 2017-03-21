@@ -1,0 +1,10 @@
+<FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    tools:context="com.note8.sanxing.fragments.TodayFragment">
+
+    <include layout="@layout/recycler_view_today_questions" />
+    <include layout="@layout/recycler_view_timeline" />
+
+</FrameLayout>

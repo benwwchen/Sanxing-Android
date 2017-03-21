@@ -1,0 +1,16 @@
+<resources>
+    <string name="app_name">三醒</string>
+
+    <string name="hello_blank_fragment">Hello blank fragment</string>
+    <string name="title_activity_main">MainActivity</string>
+    <string name="action_weekly">周报</string>
+    <string name="action_calender">日历</string>
+    <string name="action_me">我</string>
+    <string name="section_format">Hello World from section: %1$d</string>
+    <string name="title_today">今日问题</string>
+    <string name="title_broadcast">广播问题</string>
+
+    <string name="title_activity_calender">CalenderActivity</string>
+    <string name="dummy_button">Dummy Button</string>
+    <string name="dummy_content">DUMMY\nCONTENT</string>
+</resources>
