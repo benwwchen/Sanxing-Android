@@ -6,7 +6,7 @@
     <dimen name="appbar_padding_top">8dp</dimen>
 
     <!--calendar-->
-    <dimen name="cal_red_background_height">180dp</dimen>
+    <dimen name="cal_red_background_height">220dp</dimen>
     <dimen name="cal_top_bar_font_size">24sp</dimen>
     <dimen name="cal_width">332dp</dimen>
     <dimen name="cal_tile_width">48dp</dimen>

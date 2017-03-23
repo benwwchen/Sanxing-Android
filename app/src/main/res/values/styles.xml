@@ -29,4 +29,10 @@
         <item name="android:background">@color/black_overlay</item>
     </style>
 
+    <!--customize the calendar style-->
+    <style name="CustomTextAppearance" parent="TextAppearance.MaterialCalendarWidget.Date">
+        <item name="android:textColor">#C7C2C2</item>
+        <item name="android:textSize">20sp</item>
+    </style>
+
 </resources>
