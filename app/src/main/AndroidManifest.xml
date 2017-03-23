@@ -26,8 +26,8 @@
             android:name=".CalenderActivity"
             android:configChanges="orientation|keyboardHidden|screenSize"
             android:label="@string/title_activity_calender"
-            android:theme="@style/FullscreenTheme" />
-        <activity android:name=".WeeklyActivity"></activity>
+            android:theme="@style/AppTheme.NoActionBar" />
+        <activity android:name=".WeeklyActivity"/>
     </application>
 
 </manifest>
