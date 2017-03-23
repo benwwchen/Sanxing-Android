@@ -2,6 +2,7 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
     android:background="#F4F5F9"
     android:orientation="vertical"
     tools:context="com.note8.sanxing.CalenderActivity">
@@ -51,7 +52,7 @@
 
             <com.prolificinteractive.materialcalendarview.MaterialCalendarView
                 xmlns:app="http://schemas.android.com/apk/res-auto"
-                android:id="@+id/calendarView"
+                android:id="@+id/cal_calendar_view"
                 android:background="@drawable/cal_calendar_background"
                 android:layout_gravity="center"
                 android:layout_width="wrap_content"
@@ -61,12 +62,16 @@
                 android:paddingLeft="15dp"
                 android:paddingEnd="15dp"
                 android:paddingRight="15dp"
+                android:elevation="5dp"
                 app:mcv_selectionColor="@color/cal_highlight_date"
                 app:mcv_calendarMode="month"
                 app:mcv_tileWidth="@dimen/cal_tile_width"
                 app:mcv_tileHeight="@dimen/cal_tile_height"
                 app:mcv_weekDayTextAppearance="@style/CustomTextAppearance"
                 />
+
+            <include layout="@layout/recycler_view_timeline" />
+
         </LinearLayout>
     </FrameLayout>
 </LinearLayout>
