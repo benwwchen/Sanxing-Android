@@ -8,12 +8,12 @@ import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.util.Log;
 import android.view.View;
-import android.view.Window;
 import android.view.WindowManager;
 
 import com.note8.sanxing.timeLineModel.TimeLineAdapter;
 import com.note8.sanxing.timeLineModel.TimeLineModel;
-import com.note8.sanxing.utils.CustomGradientDrawable;
+import com.note8.sanxing.utils.ui.CustomGradientDrawable;
+import com.note8.sanxing.utils.ui.StatusBarUtils;
 import com.prolificinteractive.materialcalendarview.MaterialCalendarView;
 
 import java.util.ArrayList;
@@ -37,16 +37,7 @@ public class CalenderActivity extends AppCompatActivity {
 
     private void initBackgroundGradient() {
         // hide status bar color
-        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
-            // 5.0及以上，不设置透明状态栏，设置会有半透明阴影
-            getWindow().clearFlags(WindowManager.LayoutParams.FLAG_TRANSLUCENT_STATUS);
-            // 使内容可以沉浸到状态栏上
-            getWindow().addFlags(WindowManager.LayoutParams.FLAG_TRANSLUCENT_NAVIGATION);
-            // 设置状态栏颜色透明
-            getWindow().setStatusBarColor(Color.TRANSPARENT);
-        } else {
-            getWindow().addFlags(WindowManager.LayoutParams.FLAG_TRANSLUCENT_STATUS);
-        }
+        StatusBarUtils.setContentToTop(this);
 
         // set background gradient color
         CustomGradientDrawable gradientDrawable = new CustomGradientDrawable(

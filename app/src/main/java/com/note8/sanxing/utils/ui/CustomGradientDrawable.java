@@ -1,4 +1,4 @@
-package com.note8.sanxing.utils;
+package com.note8.sanxing.utils.ui;
 
 
 import android.graphics.LinearGradient;

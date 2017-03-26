@@ -4,6 +4,7 @@
     <color name="colorPrimaryDark">#FA6783</color>
     <color name="colorAccent">#FA6783</color>
     <color name="colorTitle">#505050</color>
+    <color name="colorBrilliant">#f45b6a</color>
 
     <color name="tabSelectedText">#363535</color>
     <color name="tabText">#C6C6C6</color>
