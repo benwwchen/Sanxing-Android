@@ -5,6 +5,7 @@
     xmlns:app="http://schemas.android.com/apk/res-auto"
     android:background="#F4F5F9"
     android:orientation="vertical"
+    android:id="@+id/activity_calendar"
     tools:context="com.note8.sanxing.CalenderActivity">
 
     <FrameLayout
@@ -12,15 +13,16 @@
         android:layout_height="wrap_content">
 
         <View
+            android:id="@+id/view_background"
             android:layout_width="match_parent"
             android:layout_height="@dimen/cal_red_background_height"
-            android:background="@color/colorPrimary"
-            />
+            android:background="@color/colorPrimary" />
 
         <LinearLayout
             android:layout_width="@dimen/cal_width"
             android:layout_height="wrap_content"
             android:layout_gravity="center"
+            android:layout_marginTop="16dp"
             android:orientation="vertical">
 
             <LinearLayout

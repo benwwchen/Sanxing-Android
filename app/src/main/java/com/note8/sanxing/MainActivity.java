@@ -2,6 +2,8 @@ package com.note8.sanxing;
 
 import android.content.Intent;
 import android.net.Uri;
+import android.os.Build;
+import android.support.design.widget.AppBarLayout;
 import android.support.design.widget.TabLayout;
 import android.support.design.widget.FloatingActionButton;
 import android.support.design.widget.Snackbar;
@@ -13,16 +15,21 @@ import android.support.v4.app.FragmentManager;
 import android.support.v4.app.FragmentPagerAdapter;
 import android.support.v4.view.ViewPager;
 import android.os.Bundle;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
 
+import android.view.Window;
+import android.view.WindowManager;
+import android.widget.ImageButton;
 import android.widget.TextView;
 
 import com.note8.sanxing.fragments.BroadcastFragment;
 import com.note8.sanxing.fragments.TodayFragment;
+import com.note8.sanxing.utils.CustomGradientDrawable;
 
 public class MainActivity extends AppCompatActivity
         implements BroadcastFragment.OnFragmentInteractionListener, TodayFragment.OnFragmentInteractionListener {
@@ -53,8 +60,28 @@ public class MainActivity extends AppCompatActivity
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
 
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
+            Window window = this.getWindow();
+            window.addFlags(WindowManager.LayoutParams.FLAG_DRAWS_SYSTEM_BAR_BACKGROUNDS);
+            window.setStatusBarColor(getResources().getColor(android.R.color.transparent));
+        }
+
         Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
+
+        // set status bar and toolbar color
+        CustomGradientDrawable gradientDrawable = new CustomGradientDrawable(
+                new int[] {0xfff78ca0, 0xfff9748f, 0xfffd868c, 0xfffe9a8b},
+                new float[] {0, 0.19f, 0.60f, 1});
+
+        getSupportActionBar().setBackgroundDrawable(gradientDrawable);
+
+        AppBarLayout appBarLayout = (AppBarLayout) findViewById(R.id.appbar);
+        appBarLayout.setBackground(gradientDrawable);
+
+
+        initToolbar();
+
         // Create the adapter that will return a fragment for each of the three
         // primary sections of the activity.
         mSectionsPagerAdapter = new SectionsPagerAdapter(getSupportFragmentManager());
@@ -68,39 +95,30 @@ public class MainActivity extends AppCompatActivity
 
     }
 
+    private void initToolbar() {
+        ImageButton weeklyImageButton = (ImageButton) findViewById(R.id.image_button_weekly);
+        ImageButton personalImageButton = (ImageButton) findViewById(R.id.image_button_personal);
+        ImageButton calendarImageButton = (ImageButton) findViewById(R.id.image_button_calender);
 
-    @Override
-    public boolean onCreateOptionsMenu(Menu menu) {
-        // Inflate the menu; this adds items to the action bar if it is present.
-        getMenuInflater().inflate(R.menu.menu_main, menu);
-        return true;
+        ImageButton[] buttons = new ImageButton[]
+                {weeklyImageButton, personalImageButton, calendarImageButton};
+
+        Class[] activities = new Class[]
+                {WeeklyActivity.class, MeActivity.class, CalenderActivity.class};
+
+        for (int i = 0; i < buttons.length; ++i) {
+            setListener(buttons[i], activities[i]);
+        }
     }
 
-    @Override
-    public boolean onOptionsItemSelected(MenuItem item) {
-        // Handle action bar item clicks here. The action bar will
-        // automatically handle clicks on the Home/Up button, so long
-        // as you specify a parent activity in AndroidManifest.xml.
-        int id = item.getItemId();
-
-        Intent intent;
-
-        switch (id) {
-            case R.id.action_weekly:
-                intent = new Intent(MainActivity.this, WeeklyActivity.class);
+    private void setListener(ImageButton button, final Class activity) {
+        button.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                Intent intent = new Intent(MainActivity.this, activity);
                 startActivity(intent);
-                break;
-            case R.id.action_me:
-                intent = new Intent(MainActivity.this, MeActivity.class);
-                startActivity(intent);
-                break;
-            case R.id.action_calender:
-                intent = new Intent(MainActivity.this, CalenderActivity.class);
-                startActivity(intent);
-                break;
-        }
-
-        return super.onOptionsItemSelected(item);
+            }
+        });
     }
 
     /**
@@ -117,10 +135,10 @@ public class MainActivity extends AppCompatActivity
         public Fragment getItem(int position) {
             switch (position) {
                 case 0:
-                    todayFragment = new TodayFragment();
+                    todayFragment = TodayFragment.newInstance();
                     return todayFragment;
                 case 1:
-                    broadcastFragment = new BroadcastFragment();
+                    broadcastFragment = BroadcastFragment.newInstance();
                     return broadcastFragment;
             }
             return null;

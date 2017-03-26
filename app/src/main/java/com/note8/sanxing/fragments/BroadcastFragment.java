@@ -4,11 +4,19 @@ import android.content.Context;
 import android.net.Uri;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
+import android.support.v7.widget.LinearLayoutManager;
+import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 
 import com.note8.sanxing.R;
+import com.note8.sanxing.adapters.BroadcastQuestionsAdapter;
+import com.note8.sanxing.adapters.TodayQuestionsAdapter;
+import com.note8.sanxing.models.BroadcastQuestion;
+import com.note8.sanxing.timeLineModel.TimeLineAdapter;
+
+import java.util.ArrayList;
 
 /**
  * A simple {@link Fragment} subclass.
@@ -22,6 +30,18 @@ public class BroadcastFragment extends Fragment {
 
     private OnFragmentInteractionListener mListener;
 
+    private Context mContext;
+
+    // views
+    private View broadcastView;
+    private RecyclerView broadcastRecyclerView;
+
+    // adapter
+    private BroadcastQuestionsAdapter broadcastQuestionsAdapter;
+
+    // data
+    private ArrayList<BroadcastQuestion> broadcastQuestions = BroadcastQuestion.sampleQuestions;
+
     public BroadcastFragment() {
         // Required empty public constructor
     }
@@ -30,32 +50,45 @@ public class BroadcastFragment extends Fragment {
      * Use this factory method to create a new instance of
      * this fragment using the provided parameters.
      *
-     * @param param1 Parameter 1.
-     * @param param2 Parameter 2.
      * @return A new instance of fragment BroadcastFragment.
      */
     // TODO: Rename and change types and number of parameters
-    public static BroadcastFragment newInstance(String param1, String param2) {
+    public static BroadcastFragment newInstance() {
         BroadcastFragment fragment = new BroadcastFragment();
-        Bundle args = new Bundle();
-        fragment.setArguments(args);
         return fragment;
     }
 
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        if (getArguments() != null) {
-            //mParam1 = getArguments().getString(ARG_PARAM1);
-            //mParam2 = getArguments().getString(ARG_PARAM2);
-        }
     }
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
+        mContext = getContext();
+
         // Inflate the layout for this fragment
-        return inflater.inflate(R.layout.fragment_broadcast, container, false);
+        broadcastView = inflater.inflate(R.layout.fragment_broadcast, container, false);
+
+        initView();
+
+        loadData();
+
+        return broadcastView;
+    }
+
+    private void initView() {
+        // setup views
+        broadcastRecyclerView = (RecyclerView) broadcastView.findViewById(R.id.recycler_view_broadcast_questions);
+
+        // set layout manager
+        broadcastRecyclerView.setLayoutManager(new LinearLayoutManager(mContext));
+    }
+
+    private void loadData() {
+        broadcastQuestionsAdapter = new BroadcastQuestionsAdapter(broadcastQuestions, mContext);
+        broadcastRecyclerView.setAdapter(broadcastQuestionsAdapter);
     }
 
     // TODO: Rename method, update argument and hook method into UI event

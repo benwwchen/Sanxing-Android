@@ -4,11 +4,21 @@ import android.content.Context;
 import android.net.Uri;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
+import android.support.v7.widget.LinearLayoutManager;
+import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 
 import com.note8.sanxing.R;
+import com.note8.sanxing.adapters.TodayQuestionsAdapter;
+import com.note8.sanxing.models.TodayQuestion;
+import com.note8.sanxing.timeLineModel.TimeLineAdapter;
+import com.note8.sanxing.timeLineModel.TimeLineModel;
+
+import java.sql.Time;
+import java.util.ArrayList;
+import java.util.List;
 
 /**
  * A simple {@link Fragment} subclass.
@@ -19,16 +29,21 @@ import com.note8.sanxing.R;
  * create an instance of this fragment.
  */
 public class TodayFragment extends Fragment {
-    // TODO: Rename parameter arguments, choose names that match
-    // the fragment initialization parameters, e.g. ARG_ITEM_NUMBER
-    private static final String ARG_PARAM1 = "param1";
-    private static final String ARG_PARAM2 = "param2";
-
-    // TODO: Rename and change types of parameters
-    private String mParam1;
-    private String mParam2;
 
     private OnFragmentInteractionListener mListener;
+
+    private Context mContext;
+
+    // views
+    View todayView; // rootView
+    private RecyclerView todayQuestionsRecyclerView;
+
+    // adapters
+    private TodayQuestionsAdapter todayQuestionsAdapter;
+
+    // data
+    ArrayList<TodayQuestion> todayQuestions = TodayQuestion.sampleQuestions;
+    List<TimeLineModel> timelineData = TimeLineModel.sampleTimelineData;
 
     public TodayFragment() {
         // Required empty public constructor
@@ -38,17 +53,10 @@ public class TodayFragment extends Fragment {
      * Use this factory method to create a new instance of
      * this fragment using the provided parameters.
      *
-     * @param param1 Parameter 1.
-     * @param param2 Parameter 2.
      * @return A new instance of fragment TodayFragment.
      */
-    // TODO: Rename and change types and number of parameters
-    public static TodayFragment newInstance(String param1, String param2) {
+    public static TodayFragment newInstance() {
         TodayFragment fragment = new TodayFragment();
-        Bundle args = new Bundle();
-        args.putString(ARG_PARAM1, param1);
-        args.putString(ARG_PARAM2, param2);
-        fragment.setArguments(args);
         return fragment;
     }
 
@@ -56,16 +64,35 @@ public class TodayFragment extends Fragment {
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         if (getArguments() != null) {
-            mParam1 = getArguments().getString(ARG_PARAM1);
-            mParam2 = getArguments().getString(ARG_PARAM2);
         }
     }
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
+        mContext = getContext();
+
         // Inflate the layout for this fragment
-        return inflater.inflate(R.layout.fragment_today, container, false);
+        todayView = inflater.inflate(R.layout.fragment_today, container, false);
+
+        initView();
+
+        loadData();
+
+        return todayView;
+    }
+
+    private void initView() {
+        // setup views
+        todayQuestionsRecyclerView = (RecyclerView) todayView.findViewById(R.id.recycler_view_today_questions);
+
+        // set layout managers
+        todayQuestionsRecyclerView.setLayoutManager(new LinearLayoutManager(mContext));
+    }
+
+    private void loadData() {
+        todayQuestionsAdapter = new TodayQuestionsAdapter(todayQuestions, timelineData, mContext);
+        todayQuestionsRecyclerView.setAdapter(todayQuestionsAdapter);
     }
 
     // TODO: Rename method, update argument and hook method into UI event

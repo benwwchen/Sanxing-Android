@@ -8,9 +8,9 @@ import com.github.vipulasri.timelineview.TimelineView;
 import com.note8.sanxing.R;
 
 public class TimeLineViewHolder extends RecyclerView.ViewHolder {
-    TextView mDate;
-    TextView mMessage;
-    TimelineView mTimelineView;
+    public TextView mDate;
+    public TextView mMessage;
+    public TimelineView mTimelineView;
 
     public TimeLineViewHolder(View itemView, int viewType) {
         super(itemView);

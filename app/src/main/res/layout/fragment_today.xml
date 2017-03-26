@@ -4,7 +4,12 @@
     android:layout_height="match_parent"
     tools:context="com.note8.sanxing.fragments.TodayFragment">
 
+    <View
+        android:layout_width="4dp"
+        android:layout_height="wrap_content"
+        android:layout_marginLeft="34dp"
+        android:background="@color/colorTimelineLine" />
+
     <include layout="@layout/recycler_view_today_questions" />
-    <include layout="@layout/recycler_view_timeline" />
 
 </FrameLayout>
