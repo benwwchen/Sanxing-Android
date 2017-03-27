@@ -19,7 +19,6 @@ import android.widget.TextView;
 import com.github.vipulasri.timelineview.TimelineView;
 
 import com.note8.sanxing.R;
-import com.note8.sanxing.listeners.OnChildAddListener;
 import com.note8.sanxing.listeners.OnItemClickListener;
 import com.note8.sanxing.models.TodayQuestion;
 import com.note8.sanxing.timeLineModel.TimeLineModel;

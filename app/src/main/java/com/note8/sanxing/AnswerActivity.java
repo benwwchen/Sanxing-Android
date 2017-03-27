@@ -59,6 +59,7 @@ public class AnswerActivity extends AppCompatActivity {
     private static final int REQUEST_CODE_CREATE_POST = 4; // 发布图片
     private static final int RESULT_CODE_SUCCESS = 1;
     private static final int RESULT_CODE_FAILED = -1;
+    private static final String CONTENT_PROVIDER = "com.note8.sanxing.takePhoto.provider";
 
     private File mOutputFile;
 
@@ -224,7 +225,7 @@ public class AnswerActivity extends AppCompatActivity {
                 e.printStackTrace();
             }
             Uri uri= FileProvider.getUriForFile(this,
-                    "com.bencww.learning.takePhoto.provider", mOutputFile);
+                    CONTENT_PROVIDER, mOutputFile);
             Log.i("take", "takePhoto: uri:===" + uri);
             Intent newIntent = new Intent(MediaStore.ACTION_IMAGE_CAPTURE);//设置Action为拍照
             newIntent.putExtra(MediaStore.EXTRA_OUTPUT, uri);//将拍取的照片保存到指定Uri
@@ -281,7 +282,7 @@ public class AnswerActivity extends AppCompatActivity {
         } else {
             /*调用裁剪图片的方法进行裁剪图片*/
             Uri uri = FileProvider.getUriForFile(this,
-                    "com.bencww.learning.takePhoto.provider", mOutputFile);
+                    CONTENT_PROVIDER, mOutputFile);
             clipPhoto(uri);
         }
     }
@@ -344,7 +345,7 @@ public class AnswerActivity extends AppCompatActivity {
                 }
                 /*调用裁剪图片的方法进行裁剪图片*/
                 clipPhoto(FileProvider.getUriForFile(this,
-                        "com.bencww.learning.takePhoto.provider", mOutputFile));
+                        CONTENT_PROVIDER, mOutputFile));
             }
         }
     }
@@ -392,7 +393,7 @@ public class AnswerActivity extends AppCompatActivity {
                     .show();
         }
         Uri uri= FileProvider.getUriForFile(this,
-                "com.bencww.learning.takePhoto.provider", mOutputFile);
+                CONTENT_PROVIDER, mOutputFile);
         //.setData(uri);
         //startActivityForResult(intent, REQUEST_CODE_CREATE_POST);
     }

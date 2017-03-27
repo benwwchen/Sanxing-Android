@@ -40,7 +40,6 @@ public class CustomViewPager extends ViewPager {
         if (child != null && getCurrentItem() == pageIndex) {
             Rect rect = new Rect();
             child.getHitRect(rect);
-            Log.d("rectX", String.valueOf(rect.centerX()));
             if (rect.contains((int) event.getX(), (int) event.getY())) {
                 if (isSwipeToRight(event)) {
                     return false;
