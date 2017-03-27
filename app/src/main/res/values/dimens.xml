@@ -12,4 +12,50 @@
     <dimen name="cal_tile_width">48dp</dimen>
     <dimen name="cal_tile_height">38dp</dimen>
     <dimen name="cal_focus_size">25dp</dimen>
+
+    <!--me-->
+    <dimen name="me_bar_height">152px</dimen>
+    <dimen name="me_bar_icon_dis">28dp</dimen>
+    <dimen name="me_return_width">10dp</dimen>
+    <dimen name="me_set_width">20dp</dimen>
+    <dimen name="me_info_layout_height">320px</dimen>
+    <dimen name="me_portrait_length">86dp</dimen>
+    <dimen name="me_nickname_margin">5dp</dimen>
+    <dimen name="me_nickname_size">28px</dimen>
+    <dimen name="me_base_margin">2dp</dimen>
+    <dimen name="me_base_size">24px</dimen>
+    <dimen name="me_base_icon_width">18px</dimen>
+
+    <!--answer question & question detail-->
+    <dimen name="answer_bar_height">100px</dimen>
+    <dimen name="answer_return_width">12dp</dimen>
+    <dimen name="answer_horizontal_margin">50px</dimen>
+    <dimen name="answer_share_width">22dp</dimen>
+    <dimen name="answer_publicStatus_margin">4dp</dimen>
+    <dimen name="answer_question_margin">10dp</dimen>
+    <dimen name="answer_questionTxt_size">24dp</dimen>
+    <dimen name="answer_answerTxt_size">14dp</dimen>
+    <dimen name="answer_answerImg_height">200dp</dimen>
+    <dimen name="answer_moodTxt_size">16dp</dimen>
+    <dimen name="answer_seekBar_height">30dp</dimen>
+
+    <!--liked questions item & liked answer item -->
+    <dimen name="liked_answer_height">80dp</dimen>
+    <dimen name="liked_answer_margin">1dp</dimen>
+    <dimen name="liked_answer_portrait_length">40dp</dimen>
+    <dimen name="liked_answer_margin_left">20dp</dimen>
+    <dimen name="liked_answer_Txt_width">200dp</dimen>
+    <dimen name="liked_answer_Txt_margin_left">10dp</dimen>
+    <dimen name="liked_answer_queTxt_size">30px</dimen>
+    <dimen name="liked_answer_margin_top">5dp</dimen>
+    <dimen name="liked_answer_ansTxt_size">25px</dimen>
+    <dimen name="liked_answer_detail_btn_width">70dp</dimen>
+    <dimen name="liked_answer_detail_btn_height">30dp</dimen>
+    <dimen name="liked_answer_detail_btn_margin">36px</dimen>
+    <dimen name="liked_answer_detail_btnTxt_size">10sp</dimen>
+    <dimen name="liked_question_card_padding">6dp</dimen>
+    <dimen name="liked_question_img_height">130dp</dimen>
+    <dimen name="liked_question_txt_height">155px</dimen>
+    <dimen name="liked_question_txt_margin">20dp</dimen>
+    <dimen name="liked_question_txt_dis">10px</dimen>
 </resources>

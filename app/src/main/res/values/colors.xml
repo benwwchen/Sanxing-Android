@@ -21,4 +21,12 @@
 
     <!--calendar layout-->
     <color name="cal_highlight_date">#F15A69</color>
+
+    <!--me-->
+    <color name="me_background">#f7f7f7</color>
+    <color name="me_goDetail_btn">#ff9900</color>
+
+    <!--answer question & question detail-->
+    <color name="answer_question">#8C8787</color>
+    <color name="answer_line">#CCCCCC</color>
 </resources>
