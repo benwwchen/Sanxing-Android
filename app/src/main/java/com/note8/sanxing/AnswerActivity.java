@@ -52,11 +52,11 @@ public class AnswerActivity extends AppCompatActivity {
     private int[] publicStatue = {0};
     private double intervalOfProgress = 20;
 
-    private static final int REQUEST_CODE_TAKE_PHOTO = 0;// ÅÄÕÕÇëÇóÂë
-    private static final int REQUEST_CODE_CHOOSE_FROM_ALBUM = 1;// Ïà²áÑ¡ÔñÇëÇóÂë
-    private static final int REQUEST_CODE_CLIP_PHOTO = 2;// ²Ã¼ôÇëÇóÂë
-    private static final int REQUEST_CODE_STORAGE_PERMISSION = 3; // ´æ´¢È¨ÏŞ
-    private static final int REQUEST_CODE_CREATE_POST = 4; // ·¢²¼Í¼Æ¬
+    private static final int REQUEST_CODE_TAKE_PHOTO = 0;// æ‹ç…§è¯·æ±‚ç 
+    private static final int REQUEST_CODE_CHOOSE_FROM_ALBUM = 1;// ç›¸å†Œé€‰æ‹©è¯·æ±‚ç 
+    private static final int REQUEST_CODE_CLIP_PHOTO = 2;// è£å‰ªè¯·æ±‚ç 
+    private static final int REQUEST_CODE_STORAGE_PERMISSION = 3; // å­˜å‚¨æƒé™
+    private static final int REQUEST_CODE_CREATE_POST = 4; // å‘å¸ƒå›¾ç‰‡
     private static final int RESULT_CODE_SUCCESS = 1;
     private static final int RESULT_CODE_FAILED = -1;
 
@@ -65,7 +65,7 @@ public class AnswerActivity extends AppCompatActivity {
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        //Òş²Ø±êÌâÀ¸²¢Ê¹×´Ì¬À¸Í¸Ã÷
+        //éšè—æ ‡é¢˜æ å¹¶ä½¿çŠ¶æ€æ é€æ˜
         this.requestWindowFeature(Window.FEATURE_NO_TITLE);
         getWindow().addFlags(WindowManager.LayoutParams.FLAG_TRANSLUCENT_STATUS);
         setContentView(R.layout.activity_answer);
@@ -73,14 +73,14 @@ public class AnswerActivity extends AppCompatActivity {
         findViewById();
         answerImg.setVisibility(View.GONE);
 
-        //µã»÷·µ»Ø°´Å¥£¬½áÊøµ±Ç°Ò³Ãæ
+        //ç‚¹å‡»è¿”å›æŒ‰é’®ï¼Œç»“æŸå½“å‰é¡µé¢
         returnBtn.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
                 finish();
             }
         });
-        //µã»÷·µ»Ø°´Å¥Ê±´æÔÚ¶¯Ğ§
+        //ç‚¹å‡»è¿”å›æŒ‰é’®æ—¶å­˜åœ¨åŠ¨æ•ˆ
         returnBtn.setOnTouchListener(new View.OnTouchListener(){
             @Override
             public boolean onTouch(View v, MotionEvent event){
@@ -94,7 +94,7 @@ public class AnswerActivity extends AppCompatActivity {
             }
         });
 
-        //»Ø´ğÎÊÌâÍêºó£¬µã»÷±£´æ°´Å¥Ê±´æÔÚ¶¯Ğ§
+        //å›ç­”é—®é¢˜å®Œåï¼Œç‚¹å‡»ä¿å­˜æŒ‰é’®æ—¶å­˜åœ¨åŠ¨æ•ˆ
         saveBtn.setOnTouchListener(new View.OnTouchListener(){
             @Override
             public boolean onTouch(View v, MotionEvent event){
@@ -108,7 +108,7 @@ public class AnswerActivity extends AppCompatActivity {
             }
         });
 
-        //ÇĞ»»½ñÈÕÎÊÌâ»Ø´ğµÄ¹«¿ª×´Ì¬
+        //åˆ‡æ¢ä»Šæ—¥é—®é¢˜å›ç­”çš„å…¬å¼€çŠ¶æ€
         publicStatueBtn.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
@@ -120,19 +120,19 @@ public class AnswerActivity extends AppCompatActivity {
             }
         });
 
-        //»¬¶¯¸ËÒ»¶¨Çø¼äµÄÊıÖµ¶ÔÓ¦Ä³ÖÖĞÄÇéÃèÊö
+        //æ»‘åŠ¨æ†ä¸€å®šåŒºé—´çš„æ•°å€¼å¯¹åº”æŸç§å¿ƒæƒ…æè¿°
         answerSeekBar.setOnSeekBarChangeListener(new SeekBar.OnSeekBarChangeListener() {
             @Override
             public void onProgressChanged(SeekBar seekBar, int progress, boolean fromUser) {
                 switch(seekBar.getId()) {
                     case R.id.answerSeekBar:{
-                        if(seekBar.getProgress() == 0) moodDescribe.setText("#ÎÒ¸Ğ¾õÕû¸öÈË¶¼²»ºÃÁË#");
-                        else if(seekBar.getProgress() == 100) moodDescribe.setText("#ÎÒÏÖÔÚĞË·Üµ½ÁË¼«µã#");
-                        else if(seekBar.getProgress() < intervalOfProgress) moodDescribe.setText("#ÎÒÏÖÔÚÓĞµã·³Ôê#");
-                        else if(seekBar.getProgress() < 2*intervalOfProgress) moodDescribe.setText("#ÎÒ¸Ğ¾õµ½ÁËÒ»¹Éµ­µ­µÄÓÇÉË#");
-                        else if(seekBar.getProgress() < 3*intervalOfProgress) moodDescribe.setText("#ÎÒÏÖÔÚÄÚĞÄºÁÎŞ²¨À½#");
-                        else if(seekBar.getProgress() < 4*intervalOfProgress) moodDescribe.setText("#ÎÒÏÖÔÚĞÄÇé»¹ËãÓäÔÃ#");
-                        else moodDescribe.setText("#ÎÒÏÖÔÚÓĞµãÏëĞ¦#");
+                        if(seekBar.getProgress() == 0) moodDescribe.setText("#æˆ‘æ„Ÿè§‰æ•´ä¸ªäººéƒ½ä¸å¥½äº†#");
+                        else if(seekBar.getProgress() == 100) moodDescribe.setText("#æˆ‘ç°åœ¨å…´å¥‹åˆ°äº†æç‚¹#");
+                        else if(seekBar.getProgress() < intervalOfProgress) moodDescribe.setText("#æˆ‘ç°åœ¨æœ‰ç‚¹çƒ¦èº#");
+                        else if(seekBar.getProgress() < 2*intervalOfProgress) moodDescribe.setText("#æˆ‘æ„Ÿè§‰åˆ°äº†ä¸€è‚¡æ·¡æ·¡çš„å¿§ä¼¤#");
+                        else if(seekBar.getProgress() < 3*intervalOfProgress) moodDescribe.setText("#æˆ‘ç°åœ¨å†…å¿ƒæ¯«æ— æ³¢æ¾œ#");
+                        else if(seekBar.getProgress() < 4*intervalOfProgress) moodDescribe.setText("#æˆ‘ç°åœ¨å¿ƒæƒ…è¿˜ç®—æ„‰æ‚¦#");
+                        else moodDescribe.setText("#æˆ‘ç°åœ¨æœ‰ç‚¹æƒ³ç¬‘#");
                         break;
                     }
 
@@ -151,7 +151,7 @@ public class AnswerActivity extends AppCompatActivity {
 
             }
         });
-        //µã»÷Í¼Æ¬°´Å¥£¬²åÈëÍ¼Æ¬
+        //ç‚¹å‡»å›¾ç‰‡æŒ‰é’®ï¼Œæ’å…¥å›¾ç‰‡
         insertImg.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
@@ -174,15 +174,15 @@ public class AnswerActivity extends AppCompatActivity {
 
     private void handleFAB() {
         AlertDialog.Builder builder = new AlertDialog.Builder(this);
-        builder.setTitle("·¢²¼Í¼Æ¬");
-        builder.setMessage("Ñ¡ÔñÕÕÆ¬À´Ô´");
-        builder.setNegativeButton("´ÓÏà²áÖĞÑ¡Ôñ", new DialogInterface.OnClickListener() {
+        builder.setTitle("å‘å¸ƒå›¾ç‰‡");
+        builder.setMessage("é€‰æ‹©ç…§ç‰‡æ¥æº");
+        builder.setNegativeButton("ä»ç›¸å†Œä¸­é€‰æ‹©", new DialogInterface.OnClickListener() {
             @Override
             public void onClick(DialogInterface dialogInterface, int i) {
                 chooseFromAlbum();
             }
         });
-        builder.setPositiveButton("ÅÄÕÕ", new DialogInterface.OnClickListener() {
+        builder.setPositiveButton("æ‹ç…§", new DialogInterface.OnClickListener() {
 
             @Override
             public void onClick(DialogInterface dialogInterface, int i) {
@@ -200,7 +200,7 @@ public class AnswerActivity extends AppCompatActivity {
 
 
     private void takePhoto() {
-            /*+++++++Õë¶Ô6.0¼°ÆäÒÔÉÏÏµÍ³£¬¶ÁĞ´ÍâÖÃ´æ´¢È¨ÏŞµÄ¼ì²â+++++++++*/
+            /*+++++++é’ˆå¯¹6.0åŠå…¶ä»¥ä¸Šç³»ç»Ÿï¼Œè¯»å†™å¤–ç½®å­˜å‚¨æƒé™çš„æ£€æµ‹+++++++++*/
         if (ActivityCompat.checkSelfPermission(this,
                 Manifest.permission.WRITE_EXTERNAL_STORAGE) != PackageManager.PERMISSION_GRANTED &&
                 ActivityCompat.checkSelfPermission(this,
@@ -215,7 +215,7 @@ public class AnswerActivity extends AppCompatActivity {
         if (Environment.getExternalStorageState().equals(Environment.MEDIA_MOUNTED)) {
             String sdPath = Environment.getExternalStorageDirectory()
                     .getAbsolutePath();
-            mOutputFile = new File(sdPath, System.currentTimeMillis() + ".jpg");//ÅÄÕÕÖ®ºóÕÕÆ¬µÄÂ·¾¶
+            mOutputFile = new File(sdPath, System.currentTimeMillis() + ".jpg");//æ‹ç…§ä¹‹åç…§ç‰‡çš„è·¯å¾„
             try {
                 if (!mOutputFile.exists()) {
                     mOutputFile.createNewFile();
@@ -226,8 +226,8 @@ public class AnswerActivity extends AppCompatActivity {
             Uri uri= FileProvider.getUriForFile(this,
                     "com.bencww.learning.takePhoto.provider", mOutputFile);
             Log.i("take", "takePhoto: uri:===" + uri);
-            Intent newIntent = new Intent(MediaStore.ACTION_IMAGE_CAPTURE);//ÉèÖÃActionÎªÅÄÕÕ
-            newIntent.putExtra(MediaStore.EXTRA_OUTPUT, uri);//½«ÅÄÈ¡µÄÕÕÆ¬±£´æµ½Ö¸¶¨Uri
+            Intent newIntent = new Intent(MediaStore.ACTION_IMAGE_CAPTURE);//è®¾ç½®Actionä¸ºæ‹ç…§
+            newIntent.putExtra(MediaStore.EXTRA_OUTPUT, uri);//å°†æ‹å–çš„ç…§ç‰‡ä¿å­˜åˆ°æŒ‡å®šUri
             startActivityForResult(newIntent, REQUEST_CODE_TAKE_PHOTO);
         }
     }
@@ -237,7 +237,7 @@ public class AnswerActivity extends AppCompatActivity {
         super.onRequestPermissionsResult(requestCode, permissions, grantResults);
         for (int result : grantResults) {
             if (result != PackageManager.PERMISSION_GRANTED) {
-                Toast.makeText(this, "²¢Î´»ñÈ¡µ½´æ´¢È¨ÏŞ", Toast.LENGTH_SHORT).show();
+                Toast.makeText(this, "å¹¶æœªè·å–åˆ°å­˜å‚¨æƒé™", Toast.LENGTH_SHORT).show();
                 return;
             }
         }
@@ -256,7 +256,7 @@ public class AnswerActivity extends AppCompatActivity {
             onPhotoCliped(resultCode, data);
         } else if (requestCode == REQUEST_CODE_CREATE_POST) {
             if (resultCode == RESULT_CODE_SUCCESS) {
-                //Snackbar.make(mFab, "·¢²¼³É¹¦", Snackbar.LENGTH_LONG).show();
+                //Snackbar.make(mFab, "å‘å¸ƒæˆåŠŸ", Snackbar.LENGTH_LONG).show();
                 //if (timelineFragment != null) {
                 //    timelineFragment.refreshData();
                 //}
@@ -265,21 +265,21 @@ public class AnswerActivity extends AppCompatActivity {
     }
 
     /**
-     * ÅÄÕÕÍê³É
+     * æ‹ç…§å®Œæˆ
      *
      * @param resultCode
      * @param data
      */
     private void onPhotoTaken(int resultCode, Intent data) {
         if (resultCode == RESULT_CANCELED) {
-            Toast.makeText(this, "ÒÑÈ¡Ïû", Toast.LENGTH_SHORT)
+            Toast.makeText(this, "å·²å–æ¶ˆ", Toast.LENGTH_SHORT)
                     .show();
             return;
         } else if (resultCode != RESULT_OK) {
-            Toast.makeText(this, "ÅÄÕÕÊ§°Ü", Toast.LENGTH_SHORT)
+            Toast.makeText(this, "æ‹ç…§å¤±è´¥", Toast.LENGTH_SHORT)
                     .show();
         } else {
-            /*µ÷ÓÃ²Ã¼ôÍ¼Æ¬µÄ·½·¨½øĞĞ²Ã¼ôÍ¼Æ¬*/
+            /*è°ƒç”¨è£å‰ªå›¾ç‰‡çš„æ–¹æ³•è¿›è¡Œè£å‰ªå›¾ç‰‡*/
             Uri uri = FileProvider.getUriForFile(this,
                     "com.bencww.learning.takePhoto.provider", mOutputFile);
             clipPhoto(uri);
@@ -287,21 +287,21 @@ public class AnswerActivity extends AppCompatActivity {
     }
 
     /**
-     * Ñ¡ÔñÕÕÆ¬Íê³É
+     * é€‰æ‹©ç…§ç‰‡å®Œæˆ
      *
      * @param resultCode
      * @param data
      */
     private void onPhotoChosen(int resultCode, Intent data) {
         if (resultCode == RESULT_CANCELED) {
-            Toast.makeText(this, "ÒÑÈ¡Ïû", Toast.LENGTH_SHORT)
+            Toast.makeText(this, "å·²å–æ¶ˆ", Toast.LENGTH_SHORT)
                     .show();
             return;
         } else if (resultCode != RESULT_OK) {
-            Toast.makeText(this, "ÅÄÕÕÊ§°Ü", Toast.LENGTH_SHORT)
+            Toast.makeText(this, "æ‹ç…§å¤±è´¥", Toast.LENGTH_SHORT)
                     .show();
         } else {
-            // Ğ´ÈëĞÂÎÄ¼ş
+            // å†™å…¥æ–°æ–‡ä»¶
             if (ActivityCompat.checkSelfPermission(this,
                     Manifest.permission.WRITE_EXTERNAL_STORAGE) != PackageManager.PERMISSION_GRANTED &&
                     ActivityCompat.checkSelfPermission(this,
@@ -316,7 +316,7 @@ public class AnswerActivity extends AppCompatActivity {
             if (Environment.getExternalStorageState().equals(Environment.MEDIA_MOUNTED)) {
                 String sdPath = Environment.getExternalStorageDirectory()
                         .getAbsolutePath();
-                mOutputFile = new File(sdPath, System.currentTimeMillis() + ".jpg");//ÅÄÕÕÖ®ºóÕÕÆ¬µÄÂ·¾¶
+                mOutputFile = new File(sdPath, System.currentTimeMillis() + ".jpg");//æ‹ç…§ä¹‹åç…§ç‰‡çš„è·¯å¾„
                 try {
                     if (!mOutputFile.exists()) {
                         mOutputFile.createNewFile();
@@ -342,14 +342,14 @@ public class AnswerActivity extends AppCompatActivity {
                 } catch (Exception ex) {
                     Log.e("Something went wrong.", ex.getMessage());
                 }
-                /*µ÷ÓÃ²Ã¼ôÍ¼Æ¬µÄ·½·¨½øĞĞ²Ã¼ôÍ¼Æ¬*/
+                /*è°ƒç”¨è£å‰ªå›¾ç‰‡çš„æ–¹æ³•è¿›è¡Œè£å‰ªå›¾ç‰‡*/
                 clipPhoto(FileProvider.getUriForFile(this,
                         "com.bencww.learning.takePhoto.provider", mOutputFile));
             }
         }
     }
     /**
-     * ²Ã¼ôÕÕÆ¬
+     * è£å‰ªç…§ç‰‡
      *
      * @param uri
      *
@@ -365,30 +365,30 @@ public class AnswerActivity extends AppCompatActivity {
         }
 
         Intent intent = new Intent("com.android.camera.action.CROP");
-        intent.addFlags(Intent.FLAG_GRANT_READ_URI_PERMISSION);//ÇëÇóURIÊÚÈ¨¶ÁÈ¡
-        intent.addFlags(Intent.FLAG_GRANT_WRITE_URI_PERMISSION);//ÇëÇóURIÊÚÈ¨Ğ´Èë
+        intent.addFlags(Intent.FLAG_GRANT_READ_URI_PERMISSION);//è¯·æ±‚URIæˆæƒè¯»å–
+        intent.addFlags(Intent.FLAG_GRANT_WRITE_URI_PERMISSION);//è¯·æ±‚URIæˆæƒå†™å…¥
         intent.setDataAndType(uri, "image/*");
-        // ÏÂÃæÕâ¸öcrop=trueÊÇÉèÖÃÔÚ¿ªÆôµÄIntentÖĞÉèÖÃÏÔÊ¾µÄVIEW¿É²Ã¼ô
+        // ä¸‹é¢è¿™ä¸ªcrop=trueæ˜¯è®¾ç½®åœ¨å¼€å¯çš„Intentä¸­è®¾ç½®æ˜¾ç¤ºçš„VIEWå¯è£å‰ª
         intent.putExtra("crop", "true");
-        // aspectX aspectY ÊÇ¿í¸ßµÄ±ÈÀı
+        // aspectX aspectY æ˜¯å®½é«˜çš„æ¯”ä¾‹
         intent.putExtra("aspectX", 1);
         intent.putExtra("aspectY", 1);
         intent.putExtra(MediaStore.EXTRA_OUTPUT, uri);
         startActivityForResult(intent, REQUEST_CODE_CLIP_PHOTO);
     }
     /**
-     * ²Ã¼ôÕÕÆ¬Íê³É
+     * è£å‰ªç…§ç‰‡å®Œæˆ
      *
      * @param resultCode
      * @param data
      */
     private void onPhotoCliped(int resultCode, Intent data) {
         if (resultCode == RESULT_CANCELED) {
-            Toast.makeText(this, "ÒÑÈ¡Ïû", Toast.LENGTH_SHORT)
+            Toast.makeText(this, "å·²å–æ¶ˆ", Toast.LENGTH_SHORT)
                     .show();
             return;
         } else if (resultCode != RESULT_OK) {
-            Toast.makeText(this, "²Ã¼ôÊ§°Ü", Toast.LENGTH_SHORT)
+            Toast.makeText(this, "è£å‰ªå¤±è´¥", Toast.LENGTH_SHORT)
                     .show();
         }
         Uri uri= FileProvider.getUriForFile(this,

@@ -29,20 +29,20 @@ public class QuestionDetailActivity extends AppCompatActivity {
         getWindow().addFlags(WindowManager.LayoutParams.FLAG_TRANSLUCENT_STATUS);
         findViewById();
 
-        //ÉèÖÃ¹«¿ª×´Ì¬
+        //è®¾ç½®å…¬å¼€çŠ¶æ€
         if(publicStatue[0] == 0)
             publicStatueBtn.setImageDrawable(getResources().getDrawable(R.drawable.scroll_invisible));
         else
             publicStatueBtn.setImageDrawable(getResources().getDrawable(R.drawable.scroll_visible));
 
-        //µã»÷·µ»Ø°´Å¥£¬½áÊøµ±Ç°Ò³Ãæ
+        //ç‚¹å‡»è¿”å›æŒ‰é’®ï¼Œç»“æŸå½“å‰é¡µé¢
         returnBtn.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
                 finish();
             }
         });
-        //µã»÷·µ»Ø°´Å¥Ê±´æÔÚ¶¯Ğ§
+        //ç‚¹å‡»è¿”å›æŒ‰é’®æ—¶å­˜åœ¨åŠ¨æ•ˆ
         returnBtn.setOnTouchListener(new View.OnTouchListener(){
             @Override
             public boolean onTouch(View v, MotionEvent event){
@@ -55,7 +55,7 @@ public class QuestionDetailActivity extends AppCompatActivity {
                 return false;
             }
         });
-        //²é¿´ÎÊÌâÏêÇéÊ±£¬µã»÷ÆÀÂÛ°´Å¥´æÔÚ¶¯Ğ§
+        //æŸ¥çœ‹é—®é¢˜è¯¦æƒ…æ—¶ï¼Œç‚¹å‡»è¯„è®ºæŒ‰é’®å­˜åœ¨åŠ¨æ•ˆ
         commentBtn.setOnTouchListener(new View.OnTouchListener(){
             @Override
             public boolean onTouch(View v, MotionEvent event){
@@ -69,7 +69,7 @@ public class QuestionDetailActivity extends AppCompatActivity {
             }
         });
 
-        //¼ÙÉè²é¿´ÒÑ»Ø´ğµÄÎÊÌâÏêÇéÊ±²»ÄÜ¸ü¸Ä¹«¿ª×´Ì¬
+        //å‡è®¾æŸ¥çœ‹å·²å›ç­”çš„é—®é¢˜è¯¦æƒ…æ—¶ä¸èƒ½æ›´æ”¹å…¬å¼€çŠ¶æ€
         /*publicStatueBtn.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
