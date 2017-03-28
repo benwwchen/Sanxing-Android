@@ -80,9 +80,11 @@ public class MainActivity extends AppCompatActivity
         ImageButton[] buttons = new ImageButton[]
                 {weeklyImageButton, personalImageButton, calendarImageButton};
 
-        //Modify "WeeklyActivity.class" to "AnswerActivity.class" for testing.
+        // Modify "WeeklyActivity.class" to "AnswerActivity.class" for testing.
+        // Modify "AnswerActivity.class" back to "WeeklyActivity.class" for Bogo's testing.
+        // hahahahaha
         Class[] activities = new Class[]
-                {AnswerActivity.class, MeActivity.class, CalenderActivity.class};
+                {WeeklyActivity.class, MeActivity.class, CalenderActivity.class};
 
         for (int i = 0; i < buttons.length; ++i) {
             setListener(buttons[i], activities[i]);

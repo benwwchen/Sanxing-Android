@@ -58,4 +58,9 @@
     <dimen name="liked_question_txt_height">155px</dimen>
     <dimen name="liked_question_txt_margin">20dp</dimen>
     <dimen name="liked_question_txt_dis">10px</dimen>
+
+    <!--weekly-->
+    <dimen name="weekly_top_bar_font_size">20sp</dimen>
+    <dimen name="weekly_top_bar_text_margin_bottom">16dp</dimen>
+    <dimen name="weekly_bar_height">216px</dimen>
 </resources>

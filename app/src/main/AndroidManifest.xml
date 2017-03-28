@@ -36,7 +36,8 @@
             android:configChanges="orientation|keyboardHidden|screenSize"
             android:label="@string/title_activity_calender"
             android:theme="@style/AppTheme.NoActionBar" />
-        <activity android:name=".WeeklyActivity"/>
+        <activity android:name=".WeeklyActivity"
+            android:theme="@style/AppTheme.NoActionBar"/>
 
         <provider
             android:name="android.support.v4.content.FileProvider"
