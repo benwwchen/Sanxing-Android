@@ -1,4 +1,4 @@
-package com.note8.sanxing.timeLineUtil;
+package com.note8.sanxing.utils.ui;
 
 import android.content.Context;
 import android.graphics.Bitmap;

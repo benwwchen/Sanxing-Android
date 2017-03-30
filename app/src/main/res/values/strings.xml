@@ -13,4 +13,22 @@
     <string name="title_activity_calender">CalenderActivity</string>
     <string name="dummy_button">Dummy Button</string>
     <string name="dummy_content">DUMMY\nCONTENT</string>
+
+    <!--account related-->
+    <!-- Strings related to login -->
+    <string name="prompt_username">用户名</string>
+    <string name="prompt_email">电子邮件</string>
+    <string name="prompt_password">密码</string>
+    <string name="repeat_password">重复密码</string>
+    <string name="prompt_bio">个人简介</string>
+    <string name="action_sign_in">登录</string>
+    <string name="action_sign_up">注册</string>
+    <string name="title_activity_register">注册</string>
+
+    <string name="error_invalid_email">电子邮箱格式不对</string>
+    <string name="error_invalid_username">电子邮箱格式不对</string>
+    <string name="error_invalid_password">密码长度太短了</string>
+    <string name="error_different_passwords">两次输入密码不一样</string>
+    <string name="error_incorrect_password">密码错误</string>
+    <string name="error_field_required">这是必填项目</string>
 </resources>

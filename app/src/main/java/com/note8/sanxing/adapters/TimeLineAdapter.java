@@ -1,4 +1,4 @@
-package com.note8.sanxing.timeLineModel;
+package com.note8.sanxing.adapters;
 
 import android.content.Context;
 import android.support.v7.widget.RecyclerView;
@@ -8,8 +8,9 @@ import android.view.ViewGroup;
 
 import com.github.vipulasri.timelineview.TimelineView;
 import com.note8.sanxing.R;
-import com.note8.sanxing.timeLineUtil.DateTimeUtils;
-import com.note8.sanxing.timeLineUtil.VectorDrawableUtils;
+import com.note8.sanxing.models.TimeLineModel;
+import com.note8.sanxing.utils.ui.DateTimeUtils;
+import com.note8.sanxing.utils.ui.VectorDrawableUtils;
 
 import java.util.List;
 

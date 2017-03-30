@@ -1,4 +1,4 @@
-package com.note8.sanxing.timeLineModel;
+package com.note8.sanxing.adapters;
 
 import android.support.v7.widget.RecyclerView;
 import android.view.View;

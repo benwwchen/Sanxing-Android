@@ -1,17 +1,14 @@
 package com.note8.sanxing;
 
-import android.graphics.Color;
-import android.os.Build;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.util.Log;
 import android.view.View;
-import android.view.WindowManager;
 
-import com.note8.sanxing.timeLineModel.TimeLineAdapter;
-import com.note8.sanxing.timeLineModel.TimeLineModel;
+import com.note8.sanxing.adapters.TimeLineAdapter;
+import com.note8.sanxing.models.TimeLineModel;
 import com.note8.sanxing.utils.ui.CustomGradientDrawable;
 import com.note8.sanxing.utils.ui.StatusBarUtils;
 import com.prolificinteractive.materialcalendarview.MaterialCalendarView;

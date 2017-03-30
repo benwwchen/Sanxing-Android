@@ -1,19 +1,15 @@
 package com.note8.sanxing.adapters;
 
 import android.content.Context;
-import android.content.Intent;
 import android.graphics.drawable.Drawable;
 import android.support.v4.content.ContextCompat;
 import android.support.v7.widget.CardView;
 import android.support.v7.widget.RecyclerView;
-import android.util.DisplayMetrics;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.AdapterView;
 import android.widget.Button;
 import android.widget.ImageView;
-import android.widget.LinearLayout;
 import android.widget.TextView;
 
 import com.github.vipulasri.timelineview.TimelineView;
@@ -21,12 +17,9 @@ import com.github.vipulasri.timelineview.TimelineView;
 import com.note8.sanxing.R;
 import com.note8.sanxing.listeners.OnItemClickListener;
 import com.note8.sanxing.models.TodayQuestion;
-import com.note8.sanxing.timeLineModel.TimeLineModel;
-import com.note8.sanxing.timeLineModel.TimeLineViewHolder;
-import com.note8.sanxing.timeLineUtil.DateTimeUtils;
-import com.note8.sanxing.timeLineUtil.VectorDrawableUtils;
-
-import org.w3c.dom.Text;
+import com.note8.sanxing.models.TimeLineModel;
+import com.note8.sanxing.utils.ui.DateTimeUtils;
+import com.note8.sanxing.utils.ui.VectorDrawableUtils;
 
 import java.util.ArrayList;
 import java.util.List;

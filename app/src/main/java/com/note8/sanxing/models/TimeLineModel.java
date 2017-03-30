@@ -1,6 +1,5 @@
-package com.note8.sanxing.timeLineModel;
+package com.note8.sanxing.models;
 
-import java.sql.Time;
 import java.util.ArrayList;
 
 public class TimeLineModel {

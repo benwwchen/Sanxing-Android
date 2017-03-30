@@ -1,27 +1,21 @@
 package com.note8.sanxing.fragments;
 
 import android.content.Context;
-import android.graphics.Rect;
 import android.net.Uri;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
 import android.support.v7.widget.LinearLayoutManager;
-import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.Toast;
 
 import com.note8.sanxing.R;
 import com.note8.sanxing.adapters.TodayQuestionsAdapter;
 import com.note8.sanxing.listeners.OnItemClickListener;
 import com.note8.sanxing.models.TodayQuestion;
-import com.note8.sanxing.timeLineModel.TimeLineAdapter;
-import com.note8.sanxing.timeLineModel.TimeLineModel;
-import com.note8.sanxing.viewpager.CustomViewPager;
+import com.note8.sanxing.models.TimeLineModel;
 import com.yanzhenjie.recyclerview.swipe.SwipeMenuRecyclerView;
 
-import java.sql.Time;
 import java.util.ArrayList;
 import java.util.List;
 
