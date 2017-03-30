@@ -1,12 +1,20 @@
 package com.note8.sanxing;
 
 import android.Manifest;
+import android.animation.Animator;
+import android.animation.AnimatorListenerAdapter;
+import android.annotation.TargetApi;
+import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.pm.PackageManager;
+import android.content.res.Resources;
+import android.graphics.Bitmap;
 import android.graphics.Color;
 import android.media.Image;
+import android.media.ThumbnailUtils;
 import android.net.Uri;
+import android.os.AsyncTask;
 import android.os.Build;
 import android.os.Environment;
 import android.provider.MediaStore;
@@ -19,20 +27,29 @@ import android.support.v7.app.AlertDialog;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.support.v7.widget.Toolbar;
+import android.text.Layout;
+import android.util.Base64;
 import android.util.Log;
+import android.view.Gravity;
+import android.view.MenuItem;
 import android.view.MotionEvent;
 import android.view.View;
+import android.view.ViewGroup;
 import android.view.Window;
 import android.view.WindowManager;
+import android.widget.FrameLayout;
 import android.widget.ImageButton;
 import android.widget.ImageView;
 import android.widget.RelativeLayout;
+import android.widget.ScrollView;
 import android.widget.SeekBar;
 import android.widget.TextView;
 import android.widget.Toast;
 
 import com.note8.sanxing.utils.ui.CustomGradientDrawable;
+import com.note8.sanxing.utils.ui.StatusBarUtils;
 
+import java.io.ByteArrayOutputStream;
 import java.io.File;
 import java.io.FileOutputStream;
 import java.io.InputStream;
@@ -41,6 +58,7 @@ import java.util.Arrays;
 
 public class AnswerActivity extends AppCompatActivity {
 
+    private RelativeLayout topPanel;
     private ImageButton returnBtn;
     private ImageButton saveBtn;
     private ImageButton publicStatueBtn;
@@ -49,6 +67,15 @@ public class AnswerActivity extends AppCompatActivity {
     private SeekBar answerSeekBar;
     private TextView answerTxt;
     private ImageView answerImg;
+    private ScrollView answerLayout;
+    private View progressView;
+    private UploadTask mUploadTask;
+    private String answerTxtString;
+
+    private static final int RESULT_CODE_SUCCESS_RECIEVED = 1;
+    private static final int RESULT_CODE_FAILED_RECIEVED = -1;
+
+    private Bitmap mBitmap;
     private int[] publicStatue = {0};
     private double intervalOfProgress = 20;
 
@@ -57,7 +84,7 @@ public class AnswerActivity extends AppCompatActivity {
     private static final int REQUEST_CODE_CLIP_PHOTO = 2;// 裁剪请求码
     private static final int REQUEST_CODE_STORAGE_PERMISSION = 3; // 存储权限
     private static final int REQUEST_CODE_CREATE_POST = 4; // 发布图片
-    private static final int RESULT_CODE_SUCCESS = 1;
+    private static final int RESULT_CODE_SUCCESS_SEND = 1;
     private static final int RESULT_CODE_FAILED = -1;
     private static final String CONTENT_PROVIDER = "com.note8.sanxing.takePhoto.provider";
 
@@ -67,12 +94,14 @@ public class AnswerActivity extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         //隐藏标题栏并使状态栏透明
-        this.requestWindowFeature(Window.FEATURE_NO_TITLE);
         getWindow().addFlags(WindowManager.LayoutParams.FLAG_TRANSLUCENT_STATUS);
         setContentView(R.layout.activity_answer);
-
+        //设置状态栏颜色为白色且图标为对比色
+        setStatusBar();
+        //获取页面控件
         findViewById();
         answerImg.setVisibility(View.GONE);
+        mBitmap = null;
 
         //点击返回按钮，结束当前页面
         returnBtn.setOnClickListener(new View.OnClickListener() {
@@ -160,18 +189,52 @@ public class AnswerActivity extends AppCompatActivity {
             }
         });
 
+        try {
+            mBitmap = MediaStore.Images.Media.getBitmap(this.getContentResolver(),
+                    this.getIntent().getData());
+        } catch (Exception e) {
+            Log.d("fail", "fail to create bitmap");
+        }
+        answerImg.setImageBitmap(ThumbnailUtils.extractThumbnail(mBitmap, 1000, 1000));
     }
 
+    //获取控件
     private void findViewById(){
         returnBtn = (ImageButton)findViewById(R.id.answerPageReturn);
-        saveBtn = (ImageButton)findViewById(R.id.answerPageSave);
+        saveBtn = (ImageButton)findViewById(R.id.answerPageShare);
         publicStatueBtn = (ImageButton)findViewById(R.id.publicStatue);
         insertImg = (ImageButton)findViewById(R.id.insert_img);
         moodDescribe = (TextView)findViewById(R.id.moodDescribe);
         answerSeekBar = (SeekBar)findViewById(R.id.answerSeekBar);
         answerTxt = (TextView)findViewById(R.id.answer_txt);
         answerImg = (ImageView)findViewById(R.id.answer_img);
+        answerLayout = (ScrollView)findViewById(R.id.answer_txt_img_layout);
+        progressView = findViewById(R.id.answer_upload_progress);
     }
+
+    //设置手机状态栏颜色为白色且通知图标为对比色
+    private void setStatusBar(){
+        ViewGroup decorViewGroup = (ViewGroup) getWindow().getDecorView();
+        View statusBarView = new View(getWindow().getContext());
+        int statusBarHeight = getStatusBarHeight(getWindow().getContext());
+        FrameLayout.LayoutParams params = new FrameLayout.LayoutParams(FrameLayout.LayoutParams.MATCH_PARENT, statusBarHeight);
+        params.gravity = Gravity.TOP;
+        statusBarView.setLayoutParams(params);
+        statusBarView.setBackgroundColor(getResources().getColor(R.color.colorWhite));
+        decorViewGroup.addView(statusBarView);
+    }
+
+    //获取手机状态栏高度
+    private static int getStatusBarHeight(Context context) {
+        int statusBarHeight = 0;
+        Resources res = context.getResources();
+        int resourceId = res.getIdentifier("status_bar_height", "dimen", "android");
+        if (resourceId > 0) {
+            statusBarHeight = res.getDimensionPixelSize(resourceId);
+        }
+        return statusBarHeight;
+    }
+    /*************************************************设置状态栏颜色**************************************************/
 
     private void handleFAB() {
         AlertDialog.Builder builder = new AlertDialog.Builder(this);
@@ -256,7 +319,7 @@ public class AnswerActivity extends AppCompatActivity {
         } else if (requestCode == REQUEST_CODE_CLIP_PHOTO) {
             onPhotoCliped(resultCode, data);
         } else if (requestCode == REQUEST_CODE_CREATE_POST) {
-            if (resultCode == RESULT_CODE_SUCCESS) {
+            if (resultCode == RESULT_CODE_SUCCESS_SEND) {
                 //Snackbar.make(mFab, "发布成功", Snackbar.LENGTH_LONG).show();
                 //if (timelineFragment != null) {
                 //    timelineFragment.refreshData();
@@ -392,10 +455,130 @@ public class AnswerActivity extends AppCompatActivity {
             Toast.makeText(this, "裁剪失败", Toast.LENGTH_SHORT)
                     .show();
         }
+
         Uri uri= FileProvider.getUriForFile(this,
                 CONTENT_PROVIDER, mOutputFile);
-        //.setData(uri);
-        //startActivityForResult(intent, REQUEST_CODE_CREATE_POST);
+        this.getIntent().setData(uri);
+        startActivityForResult(this.getIntent(), REQUEST_CODE_CREATE_POST);
+        /*
+        Intent intent = new Intent(AnswerActivity.this, AnswerActivity.class);
+        Uri uri= FileProvider.getUriForFile(this, CONTENT_PROVIDER, mOutputFile);
+        intent.setData(uri);
+        startActivityForResult(intent, REQUEST_CODE_CREATE_POST);
+        */
+    }
+
+    @Override
+    public boolean onOptionsItemSelected(MenuItem item) {
+        int id = item.getItemId();
+
+        if (id == R.id.answerPageShare) {
+            Toast.makeText(this, "发布中", Toast.LENGTH_SHORT).show();
+            attemptUpload();
+            return true;
+        } else if (id == android.R.id.home) {
+            finish();
+        }
+        return super.onOptionsItemSelected(item);
+    }
+
+    /**
+     * 将Bitmap转换成Base64字符串
+     * @param bit
+     * @return
+     */
+    public String Bitmap2StrByBase64(Bitmap bit){
+        ByteArrayOutputStream bos = new ByteArrayOutputStream();
+        bit.compress(Bitmap.CompressFormat.JPEG, 100, bos);//参数100表示不压缩
+        byte[] bytes=bos.toByteArray();
+        return Base64.encodeToString(bytes, Base64.DEFAULT);
+    }
+
+
+    private void attemptUpload() {
+        answerTxtString = answerTxt.getText().toString();
+        showProgress(true);
+        mUploadTask = new UploadTask(AnswerActivity.this);
+        mUploadTask.execute((Void) null);
+    }
+
+    public class UploadTask extends AsyncTask<Void, Void, Boolean> {
+
+        Context context;
+
+        UploadTask(Context context) {
+            this.context = context.getApplicationContext();
+        }
+
+        @Override
+        protected Boolean doInBackground(Void... params) {
+            boolean isSuccess;
+
+
+        /*    try {
+                // check if cookie still valid
+                //isSuccess = SanxingAPIClient.getInstance(getApplicationContext()).createPost(Bitmap2StrByBase64(mBitmap), answerTxtString);
+            } catch (Exception e) {
+                return false;
+            }
+*/
+            //return isSuccess;
+            return false;
+        }
+
+        @Override
+        protected void onPostExecute(final Boolean success) {
+            mUploadTask = null;
+
+            if (success) {
+                setResult(RESULT_CODE_SUCCESS_RECIEVED);
+                finish();
+            } else {
+                showProgress(false);
+            }
+        }
+
+        @Override
+        protected void onCancelled() {
+            mUploadTask = null;
+            showProgress(false);
+        }
+    }
+
+    /**
+     * Shows the progress UI and hides the create post form.
+     */
+    @TargetApi(Build.VERSION_CODES.HONEYCOMB_MR2)
+    private void showProgress(final boolean show) {
+        // On Honeycomb MR2 we have the ViewPropertyAnimator APIs, which allow
+        // for very easy animations. If available, use these APIs to fade-in
+        // the progress spinner.
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.HONEYCOMB_MR2) {
+            int shortAnimTime = getResources().getInteger(android.R.integer.config_shortAnimTime);
+
+            answerLayout.setVisibility(show ? View.GONE : View.VISIBLE);
+            answerLayout.animate().setDuration(shortAnimTime).alpha(
+                    show ? 0 : 1).setListener(new AnimatorListenerAdapter() {
+                @Override
+                public void onAnimationEnd(Animator animation) {
+                    answerLayout.setVisibility(show ? View.GONE : View.VISIBLE);
+                }
+            });
+
+            progressView.setVisibility(show ? View.VISIBLE : View.GONE);
+            progressView.animate().setDuration(shortAnimTime).alpha(
+                    show ? 1 : 0).setListener(new AnimatorListenerAdapter() {
+                @Override
+                public void onAnimationEnd(Animator animation) {
+                    progressView.setVisibility(show ? View.VISIBLE : View.GONE);
+                }
+            });
+        } else {
+            // The ViewPropertyAnimator APIs are not available, so simply show
+            // and hide the relevant UI components.
+            progressView.setVisibility(show ? View.VISIBLE : View.GONE);
+            answerLayout.setVisibility(show ? View.GONE : View.VISIBLE);
+        }
     }
 
 }

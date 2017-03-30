@@ -1,14 +1,19 @@
 package com.note8.sanxing;
 
+import android.content.Context;
+import android.content.res.Resources;
 import android.graphics.Color;
 import android.os.Build;
 import android.support.v7.app.ActionBar;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
+import android.view.Gravity;
 import android.view.MotionEvent;
 import android.view.View;
+import android.view.ViewGroup;
 import android.view.Window;
 import android.view.WindowManager;
+import android.widget.FrameLayout;
 import android.widget.ImageButton;
 
 import com.note8.sanxing.utils.ui.StatusBarUtils;
@@ -23,10 +28,12 @@ public class QuestionDetailActivity extends AppCompatActivity {
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_question_detail);
-
-        StatusBarUtils.setContentToTop(this);
+        //隐藏标题栏并使状态栏透明
         getWindow().addFlags(WindowManager.LayoutParams.FLAG_TRANSLUCENT_STATUS);
+        setContentView(R.layout.activity_question_detail);
+        //设置状态栏颜色为白色且图标为对比色
+        setStatusBar();
+        //获取页面控件
         findViewById();
 
         //设置公开状态
@@ -82,6 +89,30 @@ public class QuestionDetailActivity extends AppCompatActivity {
         });*/
     }
 
+    //设置手机状态栏颜色为白色且通知图标为对比色
+    private void setStatusBar(){
+        ViewGroup decorViewGroup = (ViewGroup) getWindow().getDecorView();
+        View statusBarView = new View(getWindow().getContext());
+        int statusBarHeight = getStatusBarHeight(getWindow().getContext());
+        FrameLayout.LayoutParams params = new FrameLayout.LayoutParams(FrameLayout.LayoutParams.MATCH_PARENT, statusBarHeight);
+        params.gravity = Gravity.TOP;
+        statusBarView.setLayoutParams(params);
+        statusBarView.setBackgroundColor(getResources().getColor(R.color.colorWhite));
+        decorViewGroup.addView(statusBarView);
+    }
+
+    //获取手机状态栏高度
+    private static int getStatusBarHeight(Context context) {
+        int statusBarHeight = 0;
+        Resources res = context.getResources();
+        int resourceId = res.getIdentifier("status_bar_height", "dimen", "android");
+        if (resourceId > 0) {
+            statusBarHeight = res.getDimensionPixelSize(resourceId);
+        }
+        return statusBarHeight;
+    }
+
+    //获取控件
     private void findViewById(){
         returnBtn = (ImageButton)findViewById(R.id.answerPageReturn_detail);
         commentBtn = (ImageButton)findViewById(R.id.answerPageComment);

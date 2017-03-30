@@ -1,8 +1,10 @@
 package com.note8.sanxing;
 
 import android.media.Image;
+import android.support.design.widget.AppBarLayout;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
+import android.support.v7.widget.Toolbar;
 import android.view.View;
 import android.webkit.WebSettings;
 import android.webkit.WebView;
@@ -23,13 +25,14 @@ public class WeeklyActivity extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_weekly);
+
+        StatusBarUtils.setContentToTop(this);
+        initToolbar();
+
         // init
         returnBtn = (ImageButton)findViewById(R.id.weekly_return);
         calendarBtn = (ImageButton)findViewById(R.id.weekly_calendar);
         webView = (WebView)findViewById(R.id.weekly_web_view);
-        topPanel = (RelativeLayout)findViewById(R.id.weekly_top_panel);
-
-        initBackgroundGradient();
 
         String url = "http://bogobogo.cn/SanXing/weekly.html";
         initWeb(url);
@@ -40,6 +43,21 @@ public class WeeklyActivity extends AppCompatActivity {
                 finish();
             }
         });
+    }
+
+    // set status bar and toolbar color
+    private void initToolbar() {
+        Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar_weekly);
+        setSupportActionBar(toolbar);
+
+        CustomGradientDrawable gradientDrawable = new CustomGradientDrawable(
+                new int[] {0xfff78ca0, 0xfff9748f, 0xfffd868c, 0xfffe9a8b},
+                new float[] {0, 0.19f, 0.60f, 1});
+
+        getSupportActionBar().setBackgroundDrawable(gradientDrawable);
+
+        AppBarLayout appBarLayout = (AppBarLayout) findViewById(R.id.weekly_appbar);
+        appBarLayout.setBackground(gradientDrawable);
     }
 
     // show web page
@@ -55,12 +73,5 @@ public class WeeklyActivity extends AppCompatActivity {
     }
 
     // change the bg of top panel
-    private void initBackgroundGradient() {
-        StatusBarUtils.setContentToTop(this);
-        // set background gradient color
-        CustomGradientDrawable gradientDrawable = new CustomGradientDrawable(
-                new int[] {0xfff78ca0, 0xfff9748f, 0xfffd868c, 0xfffe9a8b},
-                new float[] {0, 0.19f, 0.60f, 1});
-        topPanel.setBackground(gradientDrawable);
-    }
+
 }

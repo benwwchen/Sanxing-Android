@@ -14,11 +14,7 @@
     <dimen name="cal_focus_size">25dp</dimen>
 
     <!--me-->
-    <dimen name="me_bar_height">152px</dimen>
     <dimen name="me_bar_icon_dis">28dp</dimen>
-    <dimen name="me_return_width">10dp</dimen>
-    <dimen name="me_set_width">20dp</dimen>
-    <dimen name="me_info_layout_height">320px</dimen>
     <dimen name="me_portrait_length">86dp</dimen>
     <dimen name="me_nickname_margin">5dp</dimen>
     <dimen name="me_nickname_size">28px</dimen>
@@ -61,6 +57,4 @@
 
     <!--weekly-->
     <dimen name="weekly_top_bar_font_size">20sp</dimen>
-    <dimen name="weekly_top_bar_text_margin_bottom">16dp</dimen>
-    <dimen name="weekly_bar_height">216px</dimen>
 </resources>

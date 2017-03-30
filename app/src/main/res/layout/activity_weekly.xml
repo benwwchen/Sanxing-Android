@@ -13,47 +13,9 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:theme="@style/AppTheme.AppBarOverlay">
-        <RelativeLayout
-            android:id="@+id/weekly_top_panel"
-            android:orientation="horizontal"
-            android:layout_width="match_parent"
-            android:layout_height="@dimen/weekly_bar_height"
-            android:minHeight="?attr/actionBarSize"
-            app:popupTheme="@style/AppTheme.PopupOverlay">
-            <ImageButton
-                android:id="@+id/weekly_return"
-                android:layout_width="@dimen/me_return_width"
-                android:layout_height="wrap_content"
-                android:background="@null"
-                android:scaleType="fitCenter"
-                android:src="@drawable/return1"
-                android:layout_alignParentBottom="true"
-                android:layout_alignParentStart="true"
-                android:layout_marginStart="@dimen/me_bar_icon_dis"
-                android:layout_marginBottom="@dimen/me_return_width"/>
-            <TextView
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:textSize="@dimen/weekly_top_bar_font_size"
-                android:textColor="@color/colorWhite"
-                android:text="周报"
-                android:layout_alignParentBottom="true"
-                android:layout_centerHorizontal="true"
-                android:layout_marginBottom="@dimen/weekly_top_bar_text_margin_bottom"
-                />
-            <ImageButton
-                android:visibility="gone"
-                android:id="@+id/weekly_calendar"
-                android:layout_width="@dimen/me_set_width"
-                android:layout_height="wrap_content"
-                android:background="@null"
-                android:scaleType="fitCenter"
-                android:src="@drawable/calendar_icon"
-                android:layout_marginEnd="@dimen/me_bar_icon_dis"
-                android:layout_alignTop="@+id/weekly_return"
-                android:layout_alignParentEnd="true" />
-        </RelativeLayout>
+        <include layout="@layout/toolbar_weekly" />
     </android.support.design.widget.AppBarLayout>
+
     <WebView
         android:id="@+id/weekly_web_view"
         android:layout_width="match_parent"
