@@ -1,20 +1,47 @@
 package com.note8.sanxing;
 
+import android.content.Context;
+import android.content.Intent;
 import android.media.Image;
 import android.support.design.widget.AppBarLayout;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.support.v7.widget.Toolbar;
 import android.view.View;
+import android.webkit.JavascriptInterface;
 import android.webkit.WebSettings;
 import android.webkit.WebView;
 import android.widget.ImageButton;
 import android.widget.RelativeLayout;
+import android.widget.Toast;
 
 import com.note8.sanxing.utils.ui.CustomGradientDrawable;
 import com.note8.sanxing.utils.ui.StatusBarUtils;
 
 public class WeeklyActivity extends AppCompatActivity {
+
+    private class MyObject {
+        Context mContext;
+        MyObject(Context c) {
+            mContext = c;
+        }
+        @JavascriptInterface
+        public void showPage(String name) {
+            Toast.makeText(mContext, name, Toast.LENGTH_SHORT).show();
+            Intent intent;
+            Bundle bundle = new Bundle();
+            bundle.putString("title", name);
+//              bundle.putString("date", today.date);
+//                if (position == 0) {  //  第一个item进入问题回答界面
+//                    bundle.putBoolean("newAns", true);
+//                } else {              //  其他进入当天问题及回答浏览界面
+//                    bundle.putBoolean("newAns", false);
+//                }
+            intent = new Intent(mContext, QuestionDetailActivity.class);
+            intent.putExtras(bundle);
+            mContext.startActivity(intent);
+        }
+    }
 
     private ImageButton returnBtn;
     private ImageButton calendarBtn;
@@ -45,6 +72,14 @@ public class WeeklyActivity extends AppCompatActivity {
         });
     }
 
+    @Override
+    protected void onResume() {
+        super.onResume();
+        // reset fullscreen mode
+        webView.setSystemUiVisibility( View.SYSTEM_UI_FLAG_HIDE_NAVIGATION
+                | View.SYSTEM_UI_FLAG_IMMERSIVE_STICKY);
+    }
+
     // set status bar and toolbar color
     private void initToolbar() {
         Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar_weekly);
@@ -70,6 +105,8 @@ public class WeeklyActivity extends AppCompatActivity {
                 | View.SYSTEM_UI_FLAG_IMMERSIVE_STICKY);
 //                | View.SYSTEM_UI_FLAG_FULLSCREEN);
         webView.loadUrl(url);
+        // bind the onclick events on js
+        webView.addJavascriptInterface(new MyObject(this), "androidObj");
     }
 
     // change the bg of top panel
