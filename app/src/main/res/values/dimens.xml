@@ -30,7 +30,7 @@
     <dimen name="answer_publicStatus_margin">4dp</dimen>
     <dimen name="answer_question_margin">10dp</dimen>
     <dimen name="answer_questionTxt_size">24dp</dimen>
-    <dimen name="answer_answerTxt_size">14dp</dimen>
+    <dimen name="answer_answerTxt_size">16dp</dimen>
     <dimen name="answer_answerImg_height">200dp</dimen>
     <dimen name="answer_moodTxt_size">16dp</dimen>
     <dimen name="answer_seekBar_height">30dp</dimen>

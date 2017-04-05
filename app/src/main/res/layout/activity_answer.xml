@@ -81,7 +81,7 @@
         android:id="@+id/answer_txt_img_layout"
         android:layout_width="match_parent"
         android:layout_height="0dp"
-        android:layout_weight="9.6"
+        android:layout_weight="9.7"
         android:scrollbarStyle="outsideOverlay"
         android:scrollbars="none"
         android:overScrollMode="never">
@@ -90,7 +90,6 @@
             android:layout_height="wrap_content"
             android:layout_marginLeft="@dimen/answer_horizontal_margin"
             android:layout_marginRight="@dimen/answer_horizontal_margin"
-            android:layout_marginBottom="@dimen/answer_horizontal_margin"
             android:orientation="vertical">
 
             <EditText
@@ -104,9 +103,10 @@
                 android:gravity="top"
                 android:background="@null"/>
             <ImageView
+                android:visibility="gone"
                 android:id="@+id/answer_img"
                 android:layout_width="match_parent"
-                android:layout_height="@dimen/answer_answerImg_height"
+                android:layout_height="300dp"
                 android:scaleType="centerCrop"/>
         </LinearLayout>
     </ScrollView>
@@ -116,6 +116,7 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_marginStart="@dimen/answer_horizontal_margin"
+        android:layout_marginTop="6dp"
         android:textSize="@dimen/answer_moodTxt_size"
         android:text="#我现在内心毫无波澜#"
         android:textColor="@color/colorPrimary"/>

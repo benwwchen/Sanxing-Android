@@ -40,8 +40,8 @@ public class LikeQuestionsAdapter extends ArrayAdapter<LikedQuestionsClass>{
 
         titleTxt.setText(likedQuestions.title);
         timeTxt.setText(likedQuestions.time);
-        if (likedQuestions.hasBackground) {
-            backgroundImg.setImageResource(likedQuestions.backgroundImg);
+        if (likedQuestions.isBroadcastQuestion) {
+            backgroundImg.setImageResource(likedQuestions.broadcastImg);
         }else {
             backgroundImg.setVisibility(View.GONE);
         }
@@ -51,6 +51,10 @@ public class LikeQuestionsAdapter extends ArrayAdapter<LikedQuestionsClass>{
                 Intent intent;
                 Bundle bundle = new Bundle();
                 bundle.putString("title", likedQuestions.title);
+                if(!likedQuestions.isBroadcastQuestion)
+                    bundle.putString("answerTxt", likedQuestions.answerTxt);
+                if(likedQuestions.answerImg!=0)
+                    bundle.putInt("answerImg",likedQuestions.answerImg);
                 bundle.putString("time", likedQuestions.time);
                 intent = new Intent(view.getContext(), QuestionDetailActivity.class);
                 intent.putExtras(bundle);
