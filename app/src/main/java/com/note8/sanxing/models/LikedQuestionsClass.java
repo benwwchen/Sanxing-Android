@@ -33,7 +33,7 @@ public class LikedQuestionsClass{
         list.add(temp);
         temp = new LikedQuestionsClass(1, "2017年3月20日7:00", "生命剩下最后一个小时里你最想要吃什么","",0, R.drawable.broadcast_question_background2, true);
         list.add(temp);
-        temp = new LikedQuestionsClass(2, "2017年3月19日16:40","你看腻了哪些打着极简旗号的东西？","没有图案的东西都叫性冷淡",R.drawable.answer_img1_dalao , 0, false);
+        temp = new LikedQuestionsClass(2, "2017年3月19日16:40","你看腻了哪些打着极简旗号的东西？","没有图案的东西都叫性冷淡",R.drawable.broadcast_question_background2 , 0, false);
         list.add(temp);
         temp = new LikedQuestionsClass(3, "2017年3月18日16:40", "用一首歌形容今天下午","",0, R.drawable.broadcast_question_background3, true);
         list.add(temp);
