@@ -68,7 +68,7 @@ public class AnswerActivity extends AppCompatActivity {
     private ImageButton returnBtn;
     private ImageButton saveBtn;
     private ImageButton publicStatueBtn;
-    private ImageButton insertImg;
+    private ImageButton insertImgBtn;
     private TextView moodDescribe;
     private SeekBar answerSeekBar;
     private TextView questionTxt;
@@ -152,7 +152,6 @@ public class AnswerActivity extends AppCompatActivity {
                     ((ImageButton)v).setImageDrawable(getResources().getDrawable(R.drawable.save_press));
                 }
                 else if(event.getAction() == MotionEvent.ACTION_UP){
-                    sendAnswer();
                     ((ImageButton)v).setImageDrawable(getResources().getDrawable(R.drawable.save_release));
                 }
                 return false;
@@ -161,8 +160,14 @@ public class AnswerActivity extends AppCompatActivity {
         saveBtn.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                Toast.makeText(view.getContext(), "保存中", Toast.LENGTH_SHORT).show();
-                attemptUpload();
+                if(answerTxt.getText().toString().equals(""))
+                    Toast.makeText(view.getContext(),"写点什么吧",Toast.LENGTH_SHORT).show();
+                else{
+                    sendAnswer();
+                    Toast.makeText(view.getContext(), "保存中", Toast.LENGTH_SHORT).show();
+                    //attemptUpload();
+                    Toast.makeText(view.getContext(), "保存成功", Toast.LENGTH_SHORT).show();
+                }
             }
         });
 
@@ -210,7 +215,7 @@ public class AnswerActivity extends AppCompatActivity {
             }
         });
         //点击图片按钮，插入图片
-        insertImg.setOnClickListener(new View.OnClickListener() {
+        insertImgBtn.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
                 handleFAB();
@@ -249,7 +254,7 @@ public class AnswerActivity extends AppCompatActivity {
         returnBtn = (ImageButton)findViewById(R.id.answerPageReturn);
         saveBtn = (ImageButton)findViewById(R.id.answerPageShare);
         publicStatueBtn = (ImageButton)findViewById(R.id.publicStatue);
-        insertImg = (ImageButton)findViewById(R.id.insert_img);
+        insertImgBtn = (ImageButton)findViewById(R.id.insert_img);
         moodDescribe = (TextView)findViewById(R.id.moodDescribe);
         answerSeekBar = (SeekBar)findViewById(R.id.answerSeekBar);
         questionTxt = (TextView) findViewById(R.id.question);

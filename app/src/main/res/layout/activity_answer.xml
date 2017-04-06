@@ -75,6 +75,7 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_marginBottom="8dp"
+        android:layout_gravity="center"
         android:visibility="gone" />
 
     <ScrollView
@@ -121,6 +122,7 @@
         android:text="#我现在内心毫无波澜#"
         android:textColor="@color/colorPrimary"/>
     <LinearLayout
+        android:id="@+id/select_layout"
         android:layout_width="match_parent"
         android:layout_height="@dimen/answer_seekBar_height"
         android:orientation="horizontal"
