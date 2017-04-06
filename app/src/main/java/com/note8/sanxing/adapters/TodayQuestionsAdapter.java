@@ -5,19 +5,21 @@ import android.graphics.drawable.Drawable;
 import android.support.v4.content.ContextCompat;
 import android.support.v7.widget.CardView;
 import android.support.v7.widget.RecyclerView;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
 import android.widget.ImageView;
+import android.widget.LinearLayout;
 import android.widget.TextView;
 
 import com.github.vipulasri.timelineview.TimelineView;
 
 import com.note8.sanxing.R;
 import com.note8.sanxing.listeners.OnItemClickListener;
+import com.note8.sanxing.models.Answer;
 import com.note8.sanxing.models.TodayQuestion;
-import com.note8.sanxing.models.TimeLineModel;
 import com.note8.sanxing.utils.ui.DateTimeUtils;
 import com.note8.sanxing.utils.ui.VectorDrawableUtils;
 
@@ -31,11 +33,11 @@ import java.util.List;
 public class TodayQuestionsAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder> {
 
     private ArrayList<TodayQuestion> mTodayQuestions;
-    private List<TimeLineModel> mTimelineList;
+    private List<Answer> mAnswerList;
     Context mContext;
 
     public static enum ITEM_TYPE {
-        ITEM_TYPE_TODAY_QUESTION(4);
+        ITEM_TYPE_TODAY_QUESTION(8);
 
         private int code;
         private ITEM_TYPE(int code) {
@@ -59,14 +61,14 @@ public class TodayQuestionsAdapter extends RecyclerView.Adapter<RecyclerView.Vie
         public TextView questionTextView;
         public Button answerButton;
         public Button favoriteButton;
-        public CardView cardView;
+        public LinearLayout contentView;
 
         OnItemClickListener mOnItemClickListener;
 
         public TodayQuestionsViewHolder(View itemView) {
             super(itemView);
-            cardView = (CardView) itemView.findViewById(R.id.card_view_today_questions);
-            cardView.setOnClickListener(this);
+            contentView = (LinearLayout) itemView.findViewById(R.id.content_view);
+            contentView.setOnClickListener(this);
             clockImageView = (ImageView) itemView.findViewById(R.id.image_view_clock);
             questionTextView = (TextView) itemView.findViewById(R.id.text_view_today_question);
             answerButton = (Button) itemView.findViewById(R.id.button_answer);
@@ -82,10 +84,10 @@ public class TodayQuestionsAdapter extends RecyclerView.Adapter<RecyclerView.Vie
     }
 
     // Provide a suitable constructor (depends on the kind of dataset)
-    public TodayQuestionsAdapter(ArrayList<TodayQuestion> todayQuestions, List<TimeLineModel> timeLineModelList, Context context) {
+    public TodayQuestionsAdapter(ArrayList<TodayQuestion> todayQuestions, List<Answer> answerList, Context context) {
         this.mContext = context;
         this.mTodayQuestions = todayQuestions;
-        this.mTimelineList = timeLineModelList;
+        this.mAnswerList = answerList;
     }
 
     // Create new views (invoked by the layout manager)
@@ -131,9 +133,9 @@ public class TodayQuestionsAdapter extends RecyclerView.Adapter<RecyclerView.Vie
         final TodayQuestion curQuestion = mTodayQuestions.get(position);
 
         // quetion, answer count, favorite count
-        holder.questionTextView.setText(curQuestion.getQuestionContent());
+        holder.questionTextView.setText(curQuestion.getContent());
         holder.answerButton.setText(curQuestion.getAnswerCount().toString());
-        holder.favoriteButton.setText(curQuestion.getFavoriteCount().toString());
+        holder.favoriteButton.setText(curQuestion.getLikeCount().toString());
 
         // adjust button image sizes
         Button[] buttons = {holder.answerButton, holder.favoriteButton};
@@ -147,18 +149,18 @@ public class TodayQuestionsAdapter extends RecyclerView.Adapter<RecyclerView.Vie
 
     private void bindTimeLineView(TimeLineViewHolder holder, int position) {
         position -= mTodayQuestions.size();
-        TimeLineModel timeLineModel = mTimelineList.get(position);
+        Answer answer = mAnswerList.get(position);
         holder.mTimelineView.setMarker(VectorDrawableUtils.getDrawable(mContext,
                 R.drawable.ic_marker_active, R.color.colorPrimary));
         holder.mDate.setVisibility(View.VISIBLE);
-        holder.mDate.setText(DateTimeUtils.parseDateTime(timeLineModel.getDate(),
+        holder.mDate.setText(DateTimeUtils.parseDateTime(answer.getDate(),
                 "yyyy-MM-dd HH:mm", "hh:mm a, dd-MMM-yyyy"));
-        holder.mMessage.setText(timeLineModel.getMessage());
+        holder.mMessage.setText(answer.getQuestionContent());
     }
 
     // Return the size of your dataset (invoked by the layout manager)
     @Override
     public int getItemCount() {
-        return mTodayQuestions.size() + mTimelineList.size();
+        return mTodayQuestions.size() + mAnswerList.size();
     }
 }

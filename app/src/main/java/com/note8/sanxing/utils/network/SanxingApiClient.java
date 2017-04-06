@@ -10,6 +10,7 @@ import com.android.volley.AuthFailureError;
 import com.android.volley.DefaultRetryPolicy;
 import com.android.volley.Request;
 import com.android.volley.Response;
+import com.android.volley.RetryPolicy;
 import com.android.volley.VolleyError;
 import com.android.volley.toolbox.JsonObjectRequest;
 import com.android.volley.toolbox.RequestFuture;
@@ -18,6 +19,9 @@ import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
 import com.google.gson.JsonObject;
 import com.google.gson.reflect.TypeToken;
+import com.note8.sanxing.models.BroadcastQuestion;
+import com.note8.sanxing.models.Question;
+import com.note8.sanxing.models.TodayQuestion;
 import com.note8.sanxing.models.User;
 
 
@@ -45,13 +49,12 @@ public class SanxingApiClient {
     private static Context mCtx;
     CookieManager cookieManager;
 
-    private String cookie;
     private User user = null;
     private String mMessage;
     private boolean isLogin = false;
 
-    //private static final String BASE_URL = "http://192.168.1.135:3000"; // test
-    private static final String BASE_URL = "http://api.sanxing.life"; // production
+    //private static final String BASE_URL = "http://10.0.0.10:3000/"; // test
+    private static final String BASE_URL = "http://api.sanxing.life/"; // production
 
     // user related path
     private static final String USER_PATH = "user";
@@ -62,14 +65,16 @@ public class SanxingApiClient {
 
     // other paths
     private static final String QUESTIONS_PATH = "questions";
+    private static final String TODAY_QUESTIONS_PATH = QUESTIONS_PATH + "/today";
+    private static final String BROADCAST_QUESTIONS_PATH = QUESTIONS_PATH + "/broadcast/all";
     private static final String ANSWER_PATH = "answers";
     private static final String TAG_PATH = "tags";
     private static final String ARTICLE_PATH = "articles";
     private static final String WEEKLY_PATH = "weeklies";
     private static final String IMAGE_PATH = "/images/";
 
-    private static final int SUCCESS_CODE = 1;
-    private static final int ERROR_CODE = -1;
+    public static final int SUCCESS_CODE = 1;
+    public static final int ERROR_CODE = -1;
 
     private SanxingApiClient(Context context) {
         mCtx = context;
@@ -100,6 +105,14 @@ public class SanxingApiClient {
         isLogin = false;
     }
 
+    /**
+     * Asynchronous Json HTTP Request
+     * @param method HTTP Request Method
+     * @param url
+     * @param requestBody
+     * @param listener Response listener
+     * @param errorListener Response error listener
+     */
     private static void asyncJsonRequest(int method, String url, JSONObject requestBody,
                                          Response.Listener<JSONObject> listener,
                                          Response.ErrorListener errorListener) {
@@ -108,8 +121,18 @@ public class SanxingApiClient {
         VolleyUtil.getInstance(mCtx).addToRequestQueue(jsonObjectRequest);
     }
 
+    /**
+     * Synchronous Json HTTP Request
+     * @param method
+     * @param url
+     * @param requestBody
+     * @param params can be null
+     * @param retryPolicy can be null to use DefaultRetryPolicy
+     * @return
+     */
     private static JSONObject syncJsonRequest(int method, String url, JSONObject requestBody,
-                                                 final Map<String, String> params) {
+                                              final Map<String, String> params,
+                                              RetryPolicy retryPolicy) {
         RequestFuture<JSONObject> future = RequestFuture.newFuture();
         JsonObjectRequest jsonObjectRequest = new JsonObjectRequest(
                 method, url, requestBody, future, future) {
@@ -119,6 +142,8 @@ public class SanxingApiClient {
                 return params;
             }
         };
+        if (retryPolicy != null) jsonObjectRequest.setRetryPolicy(retryPolicy);
+
         VolleyUtil.getInstance(mCtx).addToRequestQueue(jsonObjectRequest);
 
         JSONObject responseBody = null;
@@ -130,7 +155,7 @@ public class SanxingApiClient {
         return responseBody;
     }
 
-    private static boolean isSuccess(JSONObject response) {
+    private boolean isSuccess(JSONObject response) {
         try {
             if (response.getString("enmsg").equals("ok")) return true;
         } catch (JSONException e) {
@@ -148,7 +173,8 @@ public class SanxingApiClient {
         JSONObject requestBody = new JSONObject(request);
 
         // send request
-        JSONObject responseBody = syncJsonRequest(Request.Method.POST, getAbsoluteUrl(USER_PATH), requestBody, null);
+        JSONObject responseBody = syncJsonRequest(Request.Method.POST, getAbsoluteUrl(USER_PATH),
+                requestBody, null, null);
 
         try {
             if (isSuccess(responseBody)) {
@@ -158,6 +184,7 @@ public class SanxingApiClient {
                 this.user = getUserInfo();
                 return user != null;
             } else {
+                Log.d("register error", responseBody.toString());
                 mMessage = responseBody.getString("cnmsg");
             }
         } catch (Exception e) {
@@ -168,14 +195,15 @@ public class SanxingApiClient {
     }
 
     public boolean loginAccount(final String username, final String password) {
-        Map<String, String> request = new HashMap<String, String>();
+        Map<String, String> request = new HashMap<>();
         request.put("username", username);
         request.put("password", password);
 
         JSONObject requestBody = new JSONObject(request);
 
         // send request
-        JSONObject responseBody = syncJsonRequest(Request.Method.POST, getAbsoluteUrl(SESSION_PATH), requestBody, null);
+        JSONObject responseBody = syncJsonRequest(Request.Method.POST, getAbsoluteUrl(SESSION_PATH),
+                requestBody, null, null);
 
         try {
             if (isSuccess(responseBody)) {
@@ -193,10 +221,123 @@ public class SanxingApiClient {
         return false;
     }
 
+    /**
+     * Get Today Questions from server, message sent back by the handler as a List
+     * @param handler
+     */
+    public void getTodayQuestions(final Handler handler) {
+        asyncJsonRequest(Request.Method.GET, getAbsoluteUrl(TODAY_QUESTIONS_PATH), null,
+                new Response.Listener<JSONObject>() {
+                    @Override
+                    public void onResponse(JSONObject response) {
+                        Message message = new Message();
+
+                        try {
+                            if (isSuccess(response)) {
+                                Gson gson = new GsonBuilder().create();
+
+                                List<TodayQuestion> todayQuestions =
+                                            gson.fromJson(response.getString("data"),
+                                                    new TypeToken<List<TodayQuestion>>(){}.getType());
+                                message.what = SUCCESS_CODE;
+                                message.obj = todayQuestions;
+                            } else {
+                                message.what = ERROR_CODE;
+                                message.obj = response.getString("cnmsg");
+                            }
+                        } catch (Exception e) {
+                            e.printStackTrace();
+                        }
+
+                        handler.sendMessage(message);
+                    }
+                }, new Response.ErrorListener() {
+                    @Override
+                    public void onErrorResponse(VolleyError error) {
+                        Message message = new Message();
+                        message.what = ERROR_CODE;
+                        message.obj = String.valueOf(error.networkResponse.statusCode);
+                        handler.sendMessage(message);
+                    }
+                });
+    }
+
+    /**
+     * Get Broadcast Questions from server, message sent back by the handler as a List
+     * @param handler
+     */
+    public void getBroadcastQuestions(final Handler handler) {
+        asyncJsonRequest(Request.Method.GET, getAbsoluteUrl(BROADCAST_QUESTIONS_PATH), null,
+                new Response.Listener<JSONObject>() {
+                    @Override
+                    public void onResponse(JSONObject response) {
+                        Message message = new Message();
+
+                        try {
+                            if (isSuccess(response)) {
+                                Gson gson = new GsonBuilder().create();
+
+                                List<BroadcastQuestion> broadcastQuestions =
+                                        gson.fromJson(response.getString("data"),
+                                                new TypeToken<List<BroadcastQuestion>>(){}.getType());
+                                message.what = SUCCESS_CODE;
+                                message.obj = broadcastQuestions;
+                            } else {
+                                message.what = ERROR_CODE;
+                                message.obj = response.getString("cnmsg");
+                            }
+                        } catch (Exception e) {
+                            e.printStackTrace();
+                        }
+
+                        handler.sendMessage(message);
+                    }
+                }, new Response.ErrorListener() {
+                    @Override
+                    public void onErrorResponse(VolleyError error) {
+                        Message message = new Message();
+                        message.what = ERROR_CODE;
+                        message.obj = String.valueOf(error.networkResponse.statusCode);
+                        handler.sendMessage(message);
+                    }
+                });
+    }
+
+    /**
+     * Create new answer
+     * @param question
+     * @param answerContent
+     * @return isSuccess
+     */
+    public boolean createAnswer(Question question, String answerContent, Integer mood) {
+        Map<String, String> request = new HashMap<>();
+        request.put("questionId", question.getQuestionId());
+        request.put("content", answerContent);
+        request.put("questionContent", question.getContent());
+        request.put("mood", mood.toString());
+
+        JSONObject requestBody = new JSONObject(request);
+
+        JSONObject responseBody = syncJsonRequest(Request.Method.POST, getAbsoluteUrl(ANSWER_PATH),
+                requestBody, null,
+                new DefaultRetryPolicy(30*1000, 1, 1.0f));
+
+        try {
+            if (isSuccess(responseBody)) {
+                return true;
+            } else {
+                mMessage = responseBody.getString("cnmsg");
+            }
+        } catch (Exception e) {
+            Log.d("ERROR", "error => " + e.toString());
+        }
+        return false;
+    }
+
     private User getUserInfo() {
 
         JSONObject responseBody = syncJsonRequest(Request.Method.GET,
-                getAbsoluteUrl(SESSION_PATH), null, null);
+                getAbsoluteUrl(SESSION_PATH), null, null, null);
         try {
             if (isSuccess(responseBody)) {
                 isLogin = true;
@@ -206,6 +347,7 @@ public class SanxingApiClient {
 
                 return gson.fromJson(responseBody.getString("data"), User.class);
             } else {
+                Log.d("get session", responseBody.toString());
                 mMessage = responseBody.getString("cnmsg");
             }
         } catch (Exception e) {

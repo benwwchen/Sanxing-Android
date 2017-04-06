@@ -46,8 +46,12 @@ import android.widget.SeekBar;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import com.note8.sanxing.models.Question;
+import com.note8.sanxing.utils.network.SanxingApiClient;
 import com.note8.sanxing.utils.ui.CustomGradientDrawable;
 import com.note8.sanxing.utils.ui.StatusBarUtils;
+
+import org.w3c.dom.Text;
 
 import java.io.ByteArrayOutputStream;
 import java.io.File;
@@ -58,6 +62,8 @@ import java.util.Arrays;
 
 public class AnswerActivity extends AppCompatActivity {
 
+    private Context mContext;
+
     private RelativeLayout topPanel;
     private ImageButton returnBtn;
     private ImageButton saveBtn;
@@ -65,12 +71,17 @@ public class AnswerActivity extends AppCompatActivity {
     private ImageButton insertImg;
     private TextView moodDescribe;
     private SeekBar answerSeekBar;
+    private TextView questionTxt;
     private TextView answerTxt;
     private ImageView answerImg;
     private ScrollView answerLayout;
     private View progressView;
     private UploadTask mUploadTask;
-    private String answerTxtString;
+
+    // data
+    private Question mQuestion;
+    private String mAnswerContent;
+    private Integer mMood;
 
     private static final int RESULT_CODE_SUCCESS_RECIEVED = 1;
     private static final int RESULT_CODE_FAILED_RECIEVED = -1;
@@ -93,6 +104,15 @@ public class AnswerActivity extends AppCompatActivity {
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+
+        mContext = AnswerActivity.this;
+
+        initView();
+
+        loadData(); // load data from args
+    }
+
+    private void initView() {
         //隐藏标题栏并使状态栏透明
         getWindow().addFlags(WindowManager.LayoutParams.FLAG_TRANSLUCENT_STATUS);
         setContentView(R.layout.activity_answer);
@@ -132,6 +152,7 @@ public class AnswerActivity extends AppCompatActivity {
                     ((ImageButton)v).setImageDrawable(getResources().getDrawable(R.drawable.save_press));
                 }
                 else if(event.getAction() == MotionEvent.ACTION_UP){
+                    sendAnswer();
                     ((ImageButton)v).setImageDrawable(getResources().getDrawable(R.drawable.save_release));
                 }
                 return false;
@@ -188,7 +209,6 @@ public class AnswerActivity extends AppCompatActivity {
                 handleFAB();
             }
         });
-
         try {
             mBitmap = MediaStore.Images.Media.getBitmap(this.getContentResolver(),
                     this.getIntent().getData());
@@ -196,6 +216,24 @@ public class AnswerActivity extends AppCompatActivity {
             Log.d("fail", "fail to create bitmap");
         }
         answerImg.setImageBitmap(ThumbnailUtils.extractThumbnail(mBitmap, 1000, 1000));
+    }
+
+    /**
+     * Load question data from args(intent extra)
+     */
+    private void loadData() {
+        Intent intent = getIntent();
+        mQuestion = (Question) intent.getSerializableExtra("question");
+        questionTxt.setText(mQuestion.getContent());
+    }
+
+    /**
+     * Send answer to the server
+     */
+    private void sendAnswer() {
+        mAnswerContent = answerTxt.getText().toString();
+        mMood = answerSeekBar.getProgress();
+        attemptUpload();
     }
 
     //获取控件
@@ -206,6 +244,7 @@ public class AnswerActivity extends AppCompatActivity {
         insertImg = (ImageButton)findViewById(R.id.insert_img);
         moodDescribe = (TextView)findViewById(R.id.moodDescribe);
         answerSeekBar = (SeekBar)findViewById(R.id.answerSeekBar);
+        questionTxt = (TextView) findViewById(R.id.question);
         answerTxt = (TextView)findViewById(R.id.answer_txt);
         answerImg = (ImageView)findViewById(R.id.answer_img);
         answerLayout = (ScrollView)findViewById(R.id.answer_txt_img_layout);
@@ -235,6 +274,10 @@ public class AnswerActivity extends AppCompatActivity {
         return statusBarHeight;
     }
     /*************************************************设置状态栏颜色**************************************************/
+
+
+
+
 
     private void handleFAB() {
         AlertDialog.Builder builder = new AlertDialog.Builder(this);
@@ -474,7 +517,7 @@ public class AnswerActivity extends AppCompatActivity {
 
         if (id == R.id.answerPageShare) {
             Toast.makeText(this, "发布中", Toast.LENGTH_SHORT).show();
-            attemptUpload();
+            sendAnswer();
             return true;
         } else if (id == android.R.id.home) {
             finish();
@@ -496,7 +539,6 @@ public class AnswerActivity extends AppCompatActivity {
 
 
     private void attemptUpload() {
-        answerTxtString = answerTxt.getText().toString();
         showProgress(true);
         mUploadTask = new UploadTask(AnswerActivity.this);
         mUploadTask.execute((Void) null);
@@ -512,18 +554,7 @@ public class AnswerActivity extends AppCompatActivity {
 
         @Override
         protected Boolean doInBackground(Void... params) {
-            boolean isSuccess;
-
-
-        /*    try {
-                // check if cookie still valid
-                //isSuccess = SanxingAPIClient.getInstance(getApplicationContext()).createPost(Bitmap2StrByBase64(mBitmap), answerTxtString);
-            } catch (Exception e) {
-                return false;
-            }
-*/
-            //return isSuccess;
-            return false;
+            return SanxingApiClient.getInstance(mContext).createAnswer(mQuestion, mAnswerContent, mMood);
         }
 
         @Override
@@ -535,6 +566,7 @@ public class AnswerActivity extends AppCompatActivity {
                 finish();
             } else {
                 showProgress(false);
+                Toast.makeText(mContext, SanxingApiClient.getInstance(mContext).getMessage(), Toast.LENGTH_SHORT).show();
             }
         }
 

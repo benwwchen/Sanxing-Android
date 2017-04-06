@@ -8,7 +8,7 @@ import android.util.Log;
 import android.view.View;
 
 import com.note8.sanxing.adapters.TimeLineAdapter;
-import com.note8.sanxing.models.TimeLineModel;
+import com.note8.sanxing.models.Answer;
 import com.note8.sanxing.utils.ui.CustomGradientDrawable;
 import com.note8.sanxing.utils.ui.StatusBarUtils;
 import com.prolificinteractive.materialcalendarview.MaterialCalendarView;
@@ -20,7 +20,7 @@ public class CalenderActivity extends AppCompatActivity {
     private RecyclerView mRecyclerView;
     private View backgroundView;
     private TimeLineAdapter mTimeLineAdapter;
-    private List<TimeLineModel> mDataList = new ArrayList<>();
+    private List<Answer> mDataList = Answer.sampleAnswerData;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -60,21 +60,8 @@ public class CalenderActivity extends AppCompatActivity {
     }
 
     private void initView() {
-        setDataListItems();
         mTimeLineAdapter = new TimeLineAdapter(mDataList);
         mRecyclerView.setAdapter(mTimeLineAdapter);
         Log.d("Cal", "initial view");
-    }
-
-    private void setDataListItems() {
-        mDataList.add(new TimeLineModel("Item successfully delivered", "", "Happy"));
-        mDataList.add(new TimeLineModel("Courier is out to delivery your order", "2017-02-12 08:00", "Happy"));
-        mDataList.add(new TimeLineModel("Item has reached courier facility at New Delhi", "2017-02-11 21:00", "Happy"));
-        mDataList.add(new TimeLineModel("Item has been given to the courier", "2017-02-11 18:00", "Happy"));
-        mDataList.add(new TimeLineModel("Item is packed and will dispatch soon", "2017-02-11 09:30", "Happy"));
-        mDataList.add(new TimeLineModel("Order is being readied for dispatch", "2017-02-11 08:00", "Happy"));
-        mDataList.add(new TimeLineModel("Order processing initiated", "2017-02-10 15:00", "Happy"));
-        mDataList.add(new TimeLineModel("Order confirmed by seller", "2017-02-10 14:30", "Happy"));
-        mDataList.add(new TimeLineModel("Order placed successfully", "2017-02-10 14:00", "Happy"));
     }
 }

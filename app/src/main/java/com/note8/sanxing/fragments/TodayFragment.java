@@ -1,22 +1,30 @@
 package com.note8.sanxing.fragments;
 
 import android.content.Context;
+import android.content.Intent;
 import android.net.Uri;
 import android.os.Bundle;
+import android.os.Handler;
+import android.os.Message;
 import android.support.v4.app.Fragment;
 import android.support.v7.widget.LinearLayoutManager;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 
+import com.note8.sanxing.AnswerActivity;
+import com.note8.sanxing.MainActivity;
 import com.note8.sanxing.R;
 import com.note8.sanxing.adapters.TodayQuestionsAdapter;
 import com.note8.sanxing.listeners.OnItemClickListener;
 import com.note8.sanxing.models.TodayQuestion;
-import com.note8.sanxing.models.TimeLineModel;
+import com.note8.sanxing.models.Answer;
+import com.note8.sanxing.utils.network.SanxingApiClient;
 import com.yanzhenjie.recyclerview.swipe.SwipeMenuRecyclerView;
 
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.List;
 
 /**
@@ -34,15 +42,19 @@ public class TodayFragment extends Fragment {
     private Context mContext;
 
     // views
-    View todayView; // rootView
-    private SwipeMenuRecyclerView todayQuestionsRecyclerView;
+    View mTodayView; // rootView
+    private SwipeMenuRecyclerView mTodayQuestionsRecyclerView;
 
     // adapters
-    private TodayQuestionsAdapter todayQuestionsAdapter;
+    private TodayQuestionsAdapter mTodayQuestionsAdapter;
 
     // data
-    ArrayList<TodayQuestion> todayQuestions = TodayQuestion.sampleQuestions;
-    List<TimeLineModel> timelineData = TimeLineModel.sampleTimelineData;
+    ArrayList<TodayQuestion> mTodayQuestions;
+    List<Answer> mAnswers = Answer.sampleAnswerData;
+
+    // handlers
+    Handler mTodayQuestionsHandler;
+    Handler mAnswersHandler;
 
     public TodayFragment() {
         // Required empty public constructor
@@ -51,6 +63,7 @@ public class TodayFragment extends Fragment {
     /**
      * Use this factory method to create a new instance of
      * this fragment using the provided parameters.
+     *
      * @return A new instance of fragment TodayFragment.
      */
     public static TodayFragment newInstance() {
@@ -71,36 +84,69 @@ public class TodayFragment extends Fragment {
         mContext = getContext();
 
         // Inflate the layout for this fragment
-        todayView = inflater.inflate(R.layout.fragment_today, container, false);
+        mTodayView = inflater.inflate(R.layout.fragment_today, container, false);
 
         initView();
 
-        loadData();
+        initData();
 
-        return todayView;
+        updateData();
+
+        return mTodayView;
     }
 
     private void initView() {
         // setup views
-        todayQuestionsRecyclerView = (SwipeMenuRecyclerView) todayView.findViewById(R.id.recycler_view_today_questions);
+        mTodayQuestionsRecyclerView = (SwipeMenuRecyclerView) mTodayView.findViewById(R.id.recycler_view_today_questions);
 
         // set layout managers
-        todayQuestionsRecyclerView.setLayoutManager(new LinearLayoutManager(mContext));
+        mTodayQuestionsRecyclerView.setLayoutManager(new LinearLayoutManager(mContext));
     }
 
-    private void loadData() {
-        todayQuestionsAdapter = new TodayQuestionsAdapter(todayQuestions, timelineData, mContext);
-        todayQuestionsAdapter.setOnItemClickListener(onItemClickListener);
-        todayQuestionsRecyclerView.setAdapter(todayQuestionsAdapter);
+    private void initData() {
+        mTodayQuestions = new ArrayList<>();
+        mTodayQuestionsAdapter = new TodayQuestionsAdapter(mTodayQuestions, mAnswers, mContext);
+        mTodayQuestionsAdapter.setOnItemClickListener(onItemClickListener);
+        mTodayQuestionsRecyclerView.setAdapter(mTodayQuestionsAdapter);
+        mTodayQuestionsHandler = new Handler() {
+            @Override
+            public void handleMessage(Message msg) {
+                List<TodayQuestion> todayQuestions;
+
+                if (msg.what == SanxingApiClient.SUCCESS_CODE) {
+                    todayQuestions = (List<TodayQuestion>) msg.obj;
+                } else {
+                    Log.d("error", (String) msg.obj);
+                    todayQuestions = TodayQuestion.sampleQuestions;
+                }
+
+                // update data & notify the adapter
+                mTodayQuestions.clear();
+                mTodayQuestions.addAll(todayQuestions);
+                mTodayQuestionsAdapter.notifyDataSetChanged();
+            }
+        };
     }
 
     /**
-     * Item点击监听。
+     * Retrieve data from server
+     */
+    private void updateData() {
+        SanxingApiClient.getInstance(mContext).getTodayQuestions(mTodayQuestionsHandler);
+    }
+
+    /**
+     * Item click listener, start AnswerActivity
      */
     private OnItemClickListener onItemClickListener = new OnItemClickListener() {
         @Override
         public void onItemClick(int position) {
-            //Toast.makeText(mContext, "我是第" + position + "条。", Toast.LENGTH_SHORT).show();
+            if (position < mTodayQuestions.size()) {
+                Intent intent = new Intent(mContext, AnswerActivity.class);
+                intent.putExtra("question", mTodayQuestions.get(position));
+                startActivity(intent);
+            }
+
         }
     };
 

@@ -48,7 +48,9 @@ public class RegisterActivity extends AppCompatActivity {
         mUsernameView = (EditText) findViewById(R.id.username);
 
         mPasswordView = (EditText) findViewById(R.id.password);
-        mPasswordView.setOnEditorActionListener(new TextView.OnEditorActionListener() {
+        mRepeatPasswordView = (EditText) findViewById(R.id.repeat_password);
+        mBioView = (EditText) findViewById(R.id.bio);
+        mBioView.setOnEditorActionListener(new TextView.OnEditorActionListener() {
             @Override
             public boolean onEditorAction(TextView textView, int id, KeyEvent keyEvent) {
                 if (id == R.id.login || id == EditorInfo.IME_NULL) {
@@ -58,8 +60,6 @@ public class RegisterActivity extends AppCompatActivity {
                 return false;
             }
         });
-        mRepeatPasswordView = (EditText) findViewById(R.id.repeat_password);
-        mBioView = (EditText) findViewById(R.id.bio);
 
         Button mEmailSignUpButton = (Button) findViewById(R.id.sign_up_button);
         mEmailSignUpButton.setOnClickListener(new OnClickListener() {

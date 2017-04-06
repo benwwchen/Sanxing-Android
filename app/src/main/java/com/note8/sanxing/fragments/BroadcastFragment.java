@@ -1,20 +1,30 @@
 package com.note8.sanxing.fragments;
 
 import android.content.Context;
+import android.content.Intent;
 import android.net.Uri;
 import android.os.Bundle;
+import android.os.Handler;
+import android.os.Message;
 import android.support.v4.app.Fragment;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 
+import com.note8.sanxing.AnswerActivity;
 import com.note8.sanxing.R;
 import com.note8.sanxing.adapters.BroadcastQuestionsAdapter;
+import com.note8.sanxing.listeners.OnItemClickListener;
 import com.note8.sanxing.models.BroadcastQuestion;
+import com.note8.sanxing.models.TodayQuestion;
+import com.note8.sanxing.utils.network.SanxingApiClient;
 
 import java.util.ArrayList;
+import java.util.Collections;
+import java.util.List;
 
 /**
  * A simple {@link Fragment} subclass.
@@ -31,14 +41,17 @@ public class BroadcastFragment extends Fragment {
     private Context mContext;
 
     // views
-    private View broadcastView;
-    private RecyclerView broadcastRecyclerView;
+    private View mBroadcastView;
+    private RecyclerView mBroadcastRecyclerView;
 
     // adapter
-    private BroadcastQuestionsAdapter broadcastQuestionsAdapter;
+    private BroadcastQuestionsAdapter mBroadcastQuestionsAdapter;
 
     // data
-    private ArrayList<BroadcastQuestion> broadcastQuestions = BroadcastQuestion.sampleQuestions;
+    private ArrayList<BroadcastQuestion> mBroadcastQuestions;
+
+    // handler
+    private Handler mBroadcastQuestionsHandler;
 
     public BroadcastFragment() {
         // Required empty public constructor
@@ -67,27 +80,68 @@ public class BroadcastFragment extends Fragment {
         mContext = getContext();
 
         // Inflate the layout for this fragment
-        broadcastView = inflater.inflate(R.layout.fragment_broadcast, container, false);
+        mBroadcastView = inflater.inflate(R.layout.fragment_broadcast, container, false);
 
         initView();
 
-        loadData();
+        initData();
 
-        return broadcastView;
+        updateData();
+
+        return mBroadcastView;
     }
 
     private void initView() {
         // setup views
-        broadcastRecyclerView = (RecyclerView) broadcastView.findViewById(R.id.recycler_view_broadcast_questions);
+        mBroadcastRecyclerView = (RecyclerView) mBroadcastView.findViewById(R.id.recycler_view_broadcast_questions);
 
         // set layout manager
-        broadcastRecyclerView.setLayoutManager(new LinearLayoutManager(mContext));
+        mBroadcastRecyclerView.setLayoutManager(new LinearLayoutManager(mContext));
     }
 
-    private void loadData() {
-        broadcastQuestionsAdapter = new BroadcastQuestionsAdapter(broadcastQuestions, mContext);
-        broadcastRecyclerView.setAdapter(broadcastQuestionsAdapter);
+    private void initData() {
+        mBroadcastQuestions = new ArrayList<>();
+        mBroadcastQuestionsAdapter = new BroadcastQuestionsAdapter(mBroadcastQuestions, mContext);
+        mBroadcastQuestionsAdapter.setOnItemClickListener(onItemClickListener);
+        mBroadcastRecyclerView.setAdapter(mBroadcastQuestionsAdapter);
+        mBroadcastQuestionsHandler = new Handler() {
+            @Override
+            public void handleMessage(Message msg) {
+                List<BroadcastQuestion> broadcastQuestions;
+
+                if(msg.what == SanxingApiClient.SUCCESS_CODE){
+                    broadcastQuestions = (List<BroadcastQuestion>) msg.obj;
+                } else {
+                    Log.d("error", (String) msg.obj);
+                    broadcastQuestions = BroadcastQuestion.sampleQuestions;
+                }
+
+                // update data & notify the adapter
+                mBroadcastQuestions.clear();
+                mBroadcastQuestions.addAll(broadcastQuestions);
+                mBroadcastQuestionsAdapter.notifyDataSetChanged();
+            }
+        };
     }
+
+    /**
+     * Retrieve data from server
+     */
+    private void updateData() {
+        SanxingApiClient.getInstance(mContext).getBroadcastQuestions(mBroadcastQuestionsHandler);
+    }
+
+    /**
+     * Item click listener, start AnswerActivity
+     */
+    private OnItemClickListener onItemClickListener = new OnItemClickListener() {
+        @Override
+        public void onItemClick(int position) {
+            Intent intent = new Intent(mContext, AnswerActivity.class);
+            intent.putExtra("question", mBroadcastQuestions.get(position));
+            startActivity(intent);
+        }
+    };
 
     // TODO: Rename method, update argument and hook method into UI event
     public void onButtonPressed(Uri uri) {
