@@ -120,7 +120,7 @@ public class AnswerActivity extends AppCompatActivity {
         setStatusBar();
         //获取页面控件
         findViewById();
-        answerImg.setVisibility(View.GONE);
+        //answerImg.setVisibility(View.GONE);
         mBitmap = null;
 
         //点击返回按钮，结束当前页面
@@ -156,6 +156,13 @@ public class AnswerActivity extends AppCompatActivity {
                     ((ImageButton)v).setImageDrawable(getResources().getDrawable(R.drawable.save_release));
                 }
                 return false;
+            }
+        });
+        saveBtn.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                Toast.makeText(view.getContext(), "保存中", Toast.LENGTH_SHORT).show();
+                attemptUpload();
             }
         });
 
@@ -212,6 +219,7 @@ public class AnswerActivity extends AppCompatActivity {
         try {
             mBitmap = MediaStore.Images.Media.getBitmap(this.getContentResolver(),
                     this.getIntent().getData());
+            answerImg.setVisibility(View.VISIBLE);
         } catch (Exception e) {
             Log.d("fail", "fail to create bitmap");
         }
@@ -273,7 +281,6 @@ public class AnswerActivity extends AppCompatActivity {
         }
         return statusBarHeight;
     }
-    /*************************************************设置状态栏颜色**************************************************/
 
 
 
@@ -499,10 +506,10 @@ public class AnswerActivity extends AppCompatActivity {
                     .show();
         }
 
-        Uri uri= FileProvider.getUriForFile(this,
-                CONTENT_PROVIDER, mOutputFile);
+        Uri uri= FileProvider.getUriForFile(this, CONTENT_PROVIDER, mOutputFile);
         this.getIntent().setData(uri);
         startActivityForResult(this.getIntent(), REQUEST_CODE_CREATE_POST);
+        finish();
         /*
         Intent intent = new Intent(AnswerActivity.this, AnswerActivity.class);
         Uri uri= FileProvider.getUriForFile(this, CONTENT_PROVIDER, mOutputFile);
@@ -516,8 +523,8 @@ public class AnswerActivity extends AppCompatActivity {
         int id = item.getItemId();
 
         if (id == R.id.answerPageShare) {
-            Toast.makeText(this, "发布中", Toast.LENGTH_SHORT).show();
-            sendAnswer();
+            Toast.makeText(this, "保存中", Toast.LENGTH_SHORT).show();
+            attemptUpload();
             return true;
         } else if (id == android.R.id.home) {
             finish();
@@ -588,7 +595,7 @@ public class AnswerActivity extends AppCompatActivity {
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.HONEYCOMB_MR2) {
             int shortAnimTime = getResources().getInteger(android.R.integer.config_shortAnimTime);
 
-            answerLayout.setVisibility(show ? View.GONE : View.VISIBLE);
+/*            answerLayout.setVisibility(show ? View.GONE : View.VISIBLE);
             answerLayout.animate().setDuration(shortAnimTime).alpha(
                     show ? 0 : 1).setListener(new AnimatorListenerAdapter() {
                 @Override
@@ -596,7 +603,7 @@ public class AnswerActivity extends AppCompatActivity {
                     answerLayout.setVisibility(show ? View.GONE : View.VISIBLE);
                 }
             });
-
+*/
             progressView.setVisibility(show ? View.VISIBLE : View.GONE);
             progressView.animate().setDuration(shortAnimTime).alpha(
                     show ? 1 : 0).setListener(new AnimatorListenerAdapter() {
@@ -609,7 +616,7 @@ public class AnswerActivity extends AppCompatActivity {
             // The ViewPropertyAnimator APIs are not available, so simply show
             // and hide the relevant UI components.
             progressView.setVisibility(show ? View.VISIBLE : View.GONE);
-            answerLayout.setVisibility(show ? View.GONE : View.VISIBLE);
+            //answerLayout.setVisibility(show ? View.GONE : View.VISIBLE);
         }
     }
 

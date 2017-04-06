@@ -10,28 +10,32 @@ import java.util.List;
  */
 public class LikedQuestionsClass{
     public int id;
-    public String title;
     public String time;
-    public int backgroundImg;
-    public boolean hasBackground;
+    public String title;
+    public String answerTxt;
+    public int answerImg;
+    public int broadcastImg;
+    public boolean isBroadcastQuestion;
 
-    public LikedQuestionsClass(int _id, String _title, String _time, int _backgroundImg, boolean _hasBackground) {
+    public LikedQuestionsClass(int _id, String _time, String _title, String _answerTxt, int _answerImg, int _broadcastImg, boolean _isBroadcastQuestion) {
         id = _id;
-        title = _title;
         time = _time;
-        backgroundImg = _backgroundImg;
-        hasBackground = _hasBackground;
+        title = _title;
+        answerTxt = _answerTxt;
+        answerImg = _answerImg;
+        broadcastImg = _broadcastImg;
+        isBroadcastQuestion = _isBroadcastQuestion;
     }
     public static List<LikedQuestionsClass> likedQuestionsList = initLikedQuestionsList();
     private static ArrayList<LikedQuestionsClass> initLikedQuestionsList() {
         ArrayList<LikedQuestionsClass> list = new ArrayList<>();
-        LikedQuestionsClass temp = new LikedQuestionsClass(0, "深夜最能安抚人心的食物是什么", "2017年3月21日22:00", R.drawable.broadcast_question_background1, true);
+        LikedQuestionsClass temp = new LikedQuestionsClass(0, "2017年3月21日22:00", "深夜最能安抚人心的食物是什么","" ,0, R.drawable.broadcast_question_background1, true);
         list.add(temp);
-        temp = new LikedQuestionsClass(1, "生命剩下最后一个小时里你最想要吃什么", "2017年3月20日7:00", R.drawable.broadcast_question_background2, true);
+        temp = new LikedQuestionsClass(1, "2017年3月20日7:00", "生命剩下最后一个小时里你最想要吃什么","",0, R.drawable.broadcast_question_background2, true);
         list.add(temp);
-        temp = new LikedQuestionsClass(2, "最近上映电影《美女与野兽》，你看了吗", "2017年3月19日16:40", 0, false);
+        temp = new LikedQuestionsClass(2, "2017年3月19日16:40","你看腻了哪些打着极简旗号的东西？","没有图案的东西都叫性冷淡",R.drawable.answer_img1_dalao , 0, false);
         list.add(temp);
-        temp = new LikedQuestionsClass(3, "用一首歌形容今天下午", "2017年3月18日16:40", R.drawable.broadcast_question_background3, true);
+        temp = new LikedQuestionsClass(3, "2017年3月18日16:40", "用一首歌形容今天下午","",0, R.drawable.broadcast_question_background3, true);
         list.add(temp);
         return list;
     }

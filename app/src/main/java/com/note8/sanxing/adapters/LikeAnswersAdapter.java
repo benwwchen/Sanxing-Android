@@ -51,6 +51,7 @@ public class LikeAnswersAdapter extends ArrayAdapter<LikedAnswersClass> {
                 Intent intent;
                 Bundle bundle = new Bundle();
                 bundle.putString("title", likedAnswers.title);
+                bundle.putString("answerTxt", likedAnswers.answerTxt);
 //              bundle.putString("date", today.date);
 //                if (position == 0) {  //  第一个item进入问题回答界面
 //                    bundle.putBoolean("newAns", true);
