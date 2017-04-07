@@ -152,10 +152,32 @@ public class TodayQuestionsAdapter extends RecyclerView.Adapter<RecyclerView.Vie
         Answer answer = mAnswerList.get(position);
         holder.mTimelineView.setMarker(VectorDrawableUtils.getDrawable(mContext,
                 R.drawable.ic_marker_active, R.color.colorPrimary));
-        holder.mDate.setVisibility(View.VISIBLE);
+//        holder.mDate.setVisibility(View.VISIBLE);
+//        holder.mDate.setText(DateTimeUtils.parseDateTime(answer.getDate(),
+//                "yyyy-MM-dd HH:mm", "hh:mm a, dd-MMM-yyyy"));
+//        holder.mMessage.setText(answer.getQuestionContent());
+
+        //  render date
+        if (!answer.isFirst()) {
+            holder.mDate.setVisibility(View.GONE);
+        } else {
+            holder.mDate.setVisibility(View.VISIBLE);
+        }
         holder.mDate.setText(DateTimeUtils.parseDateTime(answer.getDate(),
-                "yyyy-MM-dd HH:mm", "hh:mm a, dd-MMM-yyyy"));
+                "yyyy-MM-dd HH:mm", "yyyy MMM dd"));
+
+        //  render mood
+        if (answer.getMood() > 50) {
+            holder.mMood.setImageResource(R.drawable.good_mood);
+        } else {
+            holder.mMood.setImageResource(R.drawable.bad_mood);
+        }
+
+        //  feed question content
         holder.mMessage.setText(answer.getQuestionContent());
+
+        //  feed time
+        holder.mTime.setText(answer.getTime());
     }
 
     // Return the size of your dataset (invoked by the layout manager)
