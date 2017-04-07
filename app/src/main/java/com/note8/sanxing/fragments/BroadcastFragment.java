@@ -116,6 +116,9 @@ public class BroadcastFragment extends Fragment {
                     broadcastQuestions = BroadcastQuestion.sampleQuestions;
                 }
 
+                // TODO: remove the following line after demo
+                if (broadcastQuestions.size() < 0) return;
+
                 // update data & notify the adapter
                 mBroadcastQuestions.clear();
                 mBroadcastQuestions.addAll(broadcastQuestions);

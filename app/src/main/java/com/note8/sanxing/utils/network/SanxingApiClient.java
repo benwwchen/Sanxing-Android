@@ -19,6 +19,7 @@ import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
 import com.google.gson.JsonObject;
 import com.google.gson.reflect.TypeToken;
+import com.note8.sanxing.models.Answer;
 import com.note8.sanxing.models.BroadcastQuestion;
 import com.note8.sanxing.models.Question;
 import com.note8.sanxing.models.TodayQuestion;
@@ -66,8 +67,9 @@ public class SanxingApiClient {
     // other paths
     private static final String QUESTIONS_PATH = "questions";
     private static final String TODAY_QUESTIONS_PATH = QUESTIONS_PATH + "/today";
-    private static final String BROADCAST_QUESTIONS_PATH = QUESTIONS_PATH + "/broadcast/all";
+    private static final String BROADCAST_QUESTIONS_PATH = QUESTIONS_PATH + "/broadcast/public";
     private static final String ANSWER_PATH = "answers";
+    private static final String ANSWER_HISTORY_PATH = "answers/history";
     private static final String TAG_PATH = "tags";
     private static final String ARTICLE_PATH = "articles";
     private static final String WEEKLY_PATH = "weeklies";
@@ -282,6 +284,129 @@ public class SanxingApiClient {
                                                 new TypeToken<List<BroadcastQuestion>>(){}.getType());
                                 message.what = SUCCESS_CODE;
                                 message.obj = broadcastQuestions;
+                            } else {
+                                message.what = ERROR_CODE;
+                                message.obj = response.getString("cnmsg");
+                            }
+                        } catch (Exception e) {
+                            e.printStackTrace();
+                        }
+
+                        handler.sendMessage(message);
+                    }
+                }, new Response.ErrorListener() {
+                    @Override
+                    public void onErrorResponse(VolleyError error) {
+                        Message message = new Message();
+                        message.what = ERROR_CODE;
+                        message.obj = String.valueOf(error.networkResponse.statusCode);
+                        handler.sendMessage(message);
+                    }
+                });
+    }
+
+    /**
+     * Get Answers History from server, message sent back by the handler as a List
+     * @param handler
+     */
+    public void getAnswerHistory(final Handler handler) {
+        asyncJsonRequest(Request.Method.GET, getAbsoluteUrl(ANSWER_HISTORY_PATH), null,
+                new Response.Listener<JSONObject>() {
+                    @Override
+                    public void onResponse(JSONObject response) {
+                        Message message = new Message();
+
+                        try {
+                            if (isSuccess(response)) {
+                                Gson gson = new GsonBuilder().create();
+
+                                List<Answer> answers =
+                                        gson.fromJson(response.getString("data"),
+                                                new TypeToken<List<Answer>>(){}.getType());
+                                message.what = SUCCESS_CODE;
+                                message.obj = answers;
+                            } else {
+                                message.what = ERROR_CODE;
+                                message.obj = response.getString("cnmsg");
+                            }
+                        } catch (Exception e) {
+                            e.printStackTrace();
+                        }
+
+                        handler.sendMessage(message);
+                    }
+                }, new Response.ErrorListener() {
+                    @Override
+                    public void onErrorResponse(VolleyError error) {
+                        Message message = new Message();
+                        message.what = ERROR_CODE;
+                        message.obj = String.valueOf(error.networkResponse.statusCode);
+                        handler.sendMessage(message);
+                    }
+                });
+    }
+
+    /**
+     * Get Favorite Questions from server, message sent back by the handler as a List
+     * @param handler
+     */
+    public void getFavoriteQuestions(final Handler handler) {
+        asyncJsonRequest(Request.Method.GET, getAbsoluteUrl(FAVORITE_QUESTIONS_PATH), null,
+                new Response.Listener<JSONObject>() {
+                    @Override
+                    public void onResponse(JSONObject response) {
+                        Message message = new Message();
+
+                        try {
+                            if (isSuccess(response)) {
+                                Gson gson = new GsonBuilder().create();
+
+                                List<Question> questions =
+                                        gson.fromJson(response.getString("data"),
+                                                new TypeToken<List<Question>>(){}.getType());
+                                message.what = SUCCESS_CODE;
+                                message.obj = questions;
+                            } else {
+                                message.what = ERROR_CODE;
+                                message.obj = response.getString("cnmsg");
+                            }
+                        } catch (Exception e) {
+                            e.printStackTrace();
+                        }
+
+                        handler.sendMessage(message);
+                    }
+                }, new Response.ErrorListener() {
+                    @Override
+                    public void onErrorResponse(VolleyError error) {
+                        Message message = new Message();
+                        message.what = ERROR_CODE;
+                        message.obj = String.valueOf(error.networkResponse.statusCode);
+                        handler.sendMessage(message);
+                    }
+                });
+    }
+
+    /**
+     * Get Favorite Answers from server, message sent back by the handler as a List
+     * @param handler
+     */
+    public void getFavoriteAnswers(final Handler handler) {
+        asyncJsonRequest(Request.Method.GET, getAbsoluteUrl(FAVORITE_ANSWERS_PATH), null,
+                new Response.Listener<JSONObject>() {
+                    @Override
+                    public void onResponse(JSONObject response) {
+                        Message message = new Message();
+
+                        try {
+                            if (isSuccess(response)) {
+                                Gson gson = new GsonBuilder().create();
+
+                                List<Answer> answers =
+                                        gson.fromJson(response.getString("data"),
+                                                new TypeToken<List<Answer>>(){}.getType());
+                                message.what = SUCCESS_CODE;
+                                message.obj = answers;
                             } else {
                                 message.what = ERROR_CODE;
                                 message.obj = response.getString("cnmsg");

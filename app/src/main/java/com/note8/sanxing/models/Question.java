@@ -18,6 +18,7 @@ public class Question implements Serializable {
     @SerializedName("likes")
     protected Integer likeCount;
     protected List<String> tags;
+    @SerializedName("answered")
     protected boolean isAnswered;
     protected boolean isFavorite;
 

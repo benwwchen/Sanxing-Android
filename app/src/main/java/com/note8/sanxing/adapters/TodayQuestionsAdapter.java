@@ -103,7 +103,9 @@ public class TodayQuestionsAdapter extends RecyclerView.Adapter<RecyclerView.Vie
         } else {
             View view = LayoutInflater.from(parent.getContext())
                     .inflate(R.layout.item_timeline, parent, false);
-            return new TimeLineViewHolder(view, viewType);
+            TimeLineViewHolder viewHolder = new TimeLineViewHolder(view, viewType);
+            viewHolder.mOnItemClickListener = mOnItemClickListener;
+            return viewHolder;
         }
     }
 

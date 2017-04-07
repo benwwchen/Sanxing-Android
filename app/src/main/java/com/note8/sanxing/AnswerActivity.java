@@ -356,7 +356,7 @@ public class AnswerActivity extends AppCompatActivity {
             }
         }
         // permissons granted, try again
-        takePhoto();
+        handleFAB();
     }
 
     @Override

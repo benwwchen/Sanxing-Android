@@ -8,6 +8,7 @@ public class Answer {
     @SerializedName("_id")
     private String answerId;
     private String content;
+    private String questionId;
     private String questionContent;
     private Integer mood;
     @SerializedName("likes")

@@ -15,6 +15,7 @@ import android.view.ViewGroup;
 
 import com.note8.sanxing.AnswerActivity;
 import com.note8.sanxing.MainActivity;
+import com.note8.sanxing.QuestionDetailActivity;
 import com.note8.sanxing.R;
 import com.note8.sanxing.adapters.TodayQuestionsAdapter;
 import com.note8.sanxing.listeners.OnItemClickListener;
@@ -25,6 +26,7 @@ import com.yanzhenjie.recyclerview.swipe.SwipeMenuRecyclerView;
 
 import java.util.ArrayList;
 import java.util.Collections;
+import java.util.Iterator;
 import java.util.List;
 
 /**
@@ -40,6 +42,10 @@ public class TodayFragment extends Fragment {
     private OnFragmentInteractionListener mListener;
 
     private Context mContext;
+
+    // request/response code
+    private static final int REQUEST_CODE_ANSWER = 0;
+    private static final int RESPONSE_CODE_SUCCESS = 1;
 
     // views
     View mTodayView; // rootView
@@ -120,9 +126,39 @@ public class TodayFragment extends Fragment {
                     todayQuestions = TodayQuestion.sampleQuestions;
                 }
 
+                // remove answered today questions
+                Iterator<TodayQuestion> iterator = todayQuestions.iterator();
+                while (iterator.hasNext()) {
+                    TodayQuestion todayQuestion = iterator.next();
+                    if (todayQuestion.isAnswered()) iterator.remove();
+                }
+
                 // update data & notify the adapter
                 mTodayQuestions.clear();
                 mTodayQuestions.addAll(todayQuestions);
+                mTodayQuestionsAdapter.notifyDataSetChanged();
+            }
+        };
+        mAnswersHandler = new Handler() {
+            @Override
+            public void handleMessage(Message msg) {
+                List<Answer> answers;
+
+                if (msg.what == SanxingApiClient.SUCCESS_CODE) {
+                    answers = (List<Answer>) msg.obj;
+                } else {
+                    Log.d("error", (String) msg.obj);
+                    answers = Answer.sampleAnswerData;
+                }
+
+                // TODO: remove the following if statement after demo
+                if (answers.size() == 0) {
+                    answers = Answer.sampleAnswerData;
+                }
+
+                // update data & notify the adapter
+                mAnswers.clear();
+                mAnswers.addAll(answers);
                 mTodayQuestionsAdapter.notifyDataSetChanged();
             }
         };
@@ -136,7 +172,7 @@ public class TodayFragment extends Fragment {
     }
 
     /**
-     * Item click listener, start AnswerActivity
+     * Item click listener, start AnswerActivity / QuestionDetailActivity
      */
     private OnItemClickListener onItemClickListener = new OnItemClickListener() {
         @Override
@@ -144,11 +180,27 @@ public class TodayFragment extends Fragment {
             if (position < mTodayQuestions.size()) {
                 Intent intent = new Intent(mContext, AnswerActivity.class);
                 intent.putExtra("question", mTodayQuestions.get(position));
-                startActivity(intent);
+                startActivityForResult(intent, REQUEST_CODE_ANSWER);
+            } else {
+                // timeline click
+                int index = position - mTodayQuestions.size();
+                Bundle bundle = new Bundle();
+                bundle.putString("title", mAnswers.get(index).getQuestionContent());
+                bundle.putString("answerTxt", mAnswers.get(index).getContent());
+                Intent intent = new Intent(mContext, QuestionDetailActivity.class);
+                intent.putExtras(bundle);
             }
 
         }
     };
+
+    @Override
+    public void onActivityResult(int requestCode, int resultCode, Intent data) {
+        super.onActivityResult(requestCode, resultCode, data);
+        if (requestCode == REQUEST_CODE_ANSWER && resultCode == RESPONSE_CODE_SUCCESS) {
+            updateData();
+        }
+    }
 
     // TODO: Rename method, update argument and hook method into UI event
     public void onButtonPressed(Uri uri) {

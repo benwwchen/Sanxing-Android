@@ -30,6 +30,10 @@ public class RegisterActivity extends AppCompatActivity {
      */
     private UserRegisterTask mRegisterTask = null;
 
+    private static final int REQUEST_CODE_SIGN_UP = 0;
+    private static final int RESULT_CODE_SUCCESS = 1;
+    private static final int RESULT_CODE_CANCELLED = 2;
+
     // UI references.
     private EditText mEmailView;
     private EditText mUsernameView;
@@ -228,8 +232,7 @@ public class RegisterActivity extends AppCompatActivity {
 
             if (success) {
                 Toast.makeText(getApplicationContext(),"注册成功",Toast.LENGTH_SHORT).show();
-                Intent intent = new Intent(getApplicationContext(), MainActivity.class);
-                startActivity(intent);
+                setResult(RESULT_CODE_SUCCESS);
                 finish();
             } else {
                 Toast.makeText(getApplicationContext(),mMessage,Toast.LENGTH_SHORT).show();

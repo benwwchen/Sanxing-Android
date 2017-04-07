@@ -33,6 +33,10 @@ public class LoginActivity extends AppCompatActivity {
     private UserLoginTask mAuthTask = null;
     private AutoLoginTask mAutoLoginTask = null;
 
+    private static final int REQUEST_CODE_SIGN_UP = 0;
+    private static final int RESULT_CODE_SUCCESS = 1;
+    private static final int RESULT_CODE_CANCELLED = 2;
+
     // UI references.
     private AutoCompleteTextView mUserNameView;
     private EditText mPasswordView;
@@ -71,7 +75,7 @@ public class LoginActivity extends AppCompatActivity {
             @Override
             public void onClick(View view) {
                 Intent intent = new Intent(LoginActivity.this, RegisterActivity.class);
-                startActivity(intent);
+                startActivityForResult(intent, REQUEST_CODE_SIGN_UP);
             }
         });
 
@@ -83,6 +87,21 @@ public class LoginActivity extends AppCompatActivity {
         autoLogin();
     }
 
+    @Override
+    protected void onActivityResult(int requestCode, int resultCode, Intent data) {
+        super.onActivityResult(requestCode, resultCode, data);
+        if (requestCode == REQUEST_CODE_SIGN_UP) {
+            onSingUpReturn(resultCode, data);
+        }
+    }
+
+    private void onSingUpReturn(int resultCode, Intent data) {
+        if (resultCode == RESULT_CODE_SUCCESS) {
+            Intent intent = new Intent(LoginActivity.this, MainActivity.class);
+            startActivity(intent);
+            finish();
+        }
+    }
 
     /**
      * Attempts to sign in or register the account specified by the login form.
