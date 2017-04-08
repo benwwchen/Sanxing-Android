@@ -31,7 +31,7 @@ public class LikedQuestionsClass{
         ArrayList<LikedQuestionsClass> list = new ArrayList<>();
         LikedQuestionsClass temp = new LikedQuestionsClass(0, "2017年3月21日22:00", "深夜最能安抚人心的食物是什么","" ,0, R.drawable.broadcast_question_background1, true);
         list.add(temp);
-        temp = new LikedQuestionsClass(1, "2017年3月20日7:00", "生命剩下最后一个小时里你最想要吃什么","",0, R.drawable.broadcast_question_background2, true);
+        temp = new LikedQuestionsClass(1, "2017年3月20日7:00", "若生命只剩下最后一个小时，你最想要吃什么","",0, R.drawable.broadcast_question_background2, true);
         list.add(temp);
         temp = new LikedQuestionsClass(2, "2017年3月19日16:40","你看腻了哪些打着极简旗号的东西？","没有图案的东西都叫性冷淡",R.drawable.broadcast_question_background2 , 0, false);
         list.add(temp);

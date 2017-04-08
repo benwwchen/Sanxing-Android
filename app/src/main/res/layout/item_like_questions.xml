@@ -45,6 +45,8 @@
                         android:layout_marginBottom="@dimen/liked_question_txt_dis"
                         android:textColor="@color/colorTitle"
                         android:textSize="@dimen/liked_answer_queTxt_size"
+                        android:maxLines="1"
+                        android:ellipsize = "end"
                         android:text="深夜食堂最能抚慰人心的食物是什么"/>
                     <TextView
                         android:id="@+id/me_like_question_time"

@@ -42,6 +42,7 @@
                 android:layout_weight="0"
                 android:paddingBottom="20dp"
                 android:paddingLeft="28dp"
+                android:paddingRight="28dp"
                 android:paddingTop="20dp">
 
                 <TextView
@@ -50,6 +51,8 @@
                     android:layout_height="wrap_content"
                     android:layout_weight="1"
                     android:text="为什么你考不上清华"
+                    android:maxLines="1"
+                    android:ellipsize = "end"
                     android:textColor="@color/colorTitle"
                     android:textSize="18sp" />
 

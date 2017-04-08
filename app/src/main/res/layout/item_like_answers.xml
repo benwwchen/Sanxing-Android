@@ -39,6 +39,8 @@
                 android:layout_height="wrap_content"
                 android:textColor="@color/tabText"
                 android:textSize="@dimen/liked_answer_queTxt_size"
+                android:maxLines="1"
+                android:ellipsize = "end"
                 android:text="深夜食堂最能抚慰人心的食物是什么" />
 
             <ImageView
@@ -53,6 +55,8 @@
                 android:textColor="@color/colorTitle"
                 android:layout_marginTop="@dimen/liked_answer_margin_top"
                 android:textSize="@dimen/liked_answer_ansTxt_size"
+                android:maxLines="2"
+                android:ellipsize = "end"
                 android:text="有时候听这些歌就是在听自己的心情，任凭思绪慢慢流淌"/>
         </LinearLayout>
 

@@ -21,6 +21,7 @@ import android.widget.ImageView;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import com.githang.statusbar.StatusBarCompat;
 import com.note8.sanxing.utils.ui.StatusBarUtils;
 
 public class QuestionDetailActivity extends AppCompatActivity {
@@ -45,8 +46,11 @@ public class QuestionDetailActivity extends AppCompatActivity {
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+        setContentView(R.layout.activity_question_detail);
 
-        setStatusBar();   //设置状态栏颜色为白色且图标为对比色
+        //设置状态栏颜色为白色且图标为对比色
+        StatusBarCompat.setStatusBarColor(this, Color.parseColor("#ffffff"),true);
+
         findViewById();   //获取页面控件
         accessData();     //接收数据
         setViewContents();//设置控件内容
@@ -101,32 +105,6 @@ public class QuestionDetailActivity extends AppCompatActivity {
                 publicStatue[0] = 1 - publicStatue[0];
             }
         });*/
-    }
-
-    //设置手机状态栏颜色为白色且通知图标为对比色
-    private void setStatusBar(){
-        //隐藏标题栏并使状态栏透明
-        getWindow().addFlags(WindowManager.LayoutParams.FLAG_TRANSLUCENT_STATUS);
-        setContentView(R.layout.activity_question_detail);
-        ViewGroup decorViewGroup = (ViewGroup) getWindow().getDecorView();
-        View statusBarView = new View(getWindow().getContext());
-        int statusBarHeight = getStatusBarHeight(getWindow().getContext());
-        FrameLayout.LayoutParams params = new FrameLayout.LayoutParams(FrameLayout.LayoutParams.MATCH_PARENT, statusBarHeight);
-        params.gravity = Gravity.TOP;
-        statusBarView.setLayoutParams(params);
-        statusBarView.setBackgroundColor(getResources().getColor(R.color.colorWhite));
-        decorViewGroup.addView(statusBarView);
-    }
-
-    //获取手机状态栏高度
-    private static int getStatusBarHeight(Context context) {
-        int statusBarHeight = 0;
-        Resources res = context.getResources();
-        int resourceId = res.getIdentifier("status_bar_height", "dimen", "android");
-        if (resourceId > 0) {
-            statusBarHeight = res.getDimensionPixelSize(resourceId);
-        }
-        return statusBarHeight;
     }
 
     //获取控件
