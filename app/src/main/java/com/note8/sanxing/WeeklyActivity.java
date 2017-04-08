@@ -26,11 +26,13 @@ public class WeeklyActivity extends AppCompatActivity {
             mContext = c;
         }
         @JavascriptInterface
-        public void showPage(String name) {
-            Toast.makeText(mContext, name, Toast.LENGTH_SHORT).show();
+        public void showPage(String name, String answer) {
+//            Toast.makeText(mContext, name, Toast.LENGTH_SHORT).show();
             Intent intent;
             Bundle bundle = new Bundle();
             bundle.putString("title", name);
+            bundle.putString("answerTxt", answer);
+            bundle.putInt("publicStatus", 1);
 //              bundle.putString("date", today.date);
 //                if (position == 0) {  //  第一个item进入问题回答界面
 //                    bundle.putBoolean("newAns", true);
