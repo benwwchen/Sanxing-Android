@@ -1,6 +1,8 @@
 package com.note8.sanxing.adapters;
 
 import android.content.Context;
+import android.content.res.Resources;
+import android.graphics.drawable.Drawable;
 import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -30,21 +32,38 @@ public class TimeLineAdapter extends RecyclerView.Adapter<TimeLineViewHolder> {
 
     @Override
     public TimeLineViewHolder onCreateViewHolder(ViewGroup parent, int viewType) {
-        mContext = parent.getContext();
-        mLayoutInflater = LayoutInflater.from(mContext);
-        View view = mLayoutInflater.inflate(R.layout.item_timeline, parent, false);
+        this.mContext = parent.getContext();
+        this.mLayoutInflater = LayoutInflater.from(mContext);
+        View view = this.mLayoutInflater.inflate(R.layout.item_timeline, parent, false);
         return new TimeLineViewHolder(view, viewType);
     }
 
     @Override
     public void onBindViewHolder(TimeLineViewHolder holder, int position) {
-        Answer answer = mDataList.get(position);
+        Answer answer = this.mDataList.get(position);
         holder.mTimelineView.setMarker(VectorDrawableUtils.getDrawable(mContext,
                 R.drawable.ic_marker_active, R.color.colorPrimary));
-        holder.mDate.setVisibility(View.VISIBLE);
+        //  render date
+        if (!answer.isFirst()) {
+            holder.mDate.setVisibility(View.GONE);
+        } else {
+            holder.mDate.setVisibility(View.VISIBLE);
+        }
         holder.mDate.setText(DateTimeUtils.parseDateTime(answer.getDate(),
-                "yyyy-MM-dd HH:mm", "hh:mm a, dd-MMM-yyyy"));
+                "yyyy-MM-dd HH:mm", "yyyy MMM dd"));
+
+        //  render mood
+        if (answer.getMood() > 50) {
+            holder.mMood.setImageResource(R.drawable.good_mood);
+        } else {
+            holder.mMood.setImageResource(R.drawable.bad_mood);
+        }
+
+        //  feed question content
         holder.mMessage.setText(answer.getQuestionContent());
+
+        //  feed time
+        holder.mTime.setText(answer.getTime());
     }
 
     @Override

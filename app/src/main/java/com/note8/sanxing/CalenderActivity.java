@@ -1,25 +1,41 @@
 package com.note8.sanxing;
 
+import android.support.annotation.NonNull;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.util.Log;
 import android.view.View;
+import android.widget.TextView;
+import android.widget.Toast;
 
 import com.note8.sanxing.adapters.TimeLineAdapter;
 import com.note8.sanxing.models.Answer;
 import com.note8.sanxing.utils.ui.CustomGradientDrawable;
 import com.note8.sanxing.utils.ui.StatusBarUtils;
+import com.prolificinteractive.materialcalendarview.CalendarDay;
 import com.prolificinteractive.materialcalendarview.MaterialCalendarView;
+import com.prolificinteractive.materialcalendarview.OnDateSelectedListener;
+import com.prolificinteractive.materialcalendarview.OnMonthChangedListener;
 
 import java.util.ArrayList;
+import java.util.Calendar;
 import java.util.List;
 
-public class CalenderActivity extends AppCompatActivity {
+public class CalenderActivity extends AppCompatActivity
+    implements OnDateSelectedListener, OnMonthChangedListener {
     private RecyclerView mRecyclerView;
-    private View backgroundView;
+    private View mBackgroundView;
     private TimeLineAdapter mTimeLineAdapter;
+    //  support for mcv
+    private TextView topBarYear;
+    private TextView topBarMonth;
+    private String[] monthStr = new String[] {
+        "Jan", "Feb", "Mar", "Apr", "May", "Jun",
+        "Jul", "Aug", "Sep", "Oct", "Nov", "Dec"
+    };
+    //  TODO: Get Real Data From the Server
     private List<Answer> mDataList = Answer.sampleAnswerData;
 
     @Override
@@ -27,9 +43,9 @@ public class CalenderActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_calender);
 
-        initBackgroundGradient();
-        customizeCalendar();
-        initTimeline();
+        this.initBackgroundGradient();
+        this.initCalendar();
+        this.initTimeline();
     }
 
     private void initBackgroundGradient() {
@@ -37,31 +53,68 @@ public class CalenderActivity extends AppCompatActivity {
         StatusBarUtils.setContentToTop(this);
 
         // set background gradient color
-        CustomGradientDrawable gradientDrawable = new CustomGradientDrawable(
-                new int[] {0xfff78ca0, 0xfff9748f, 0xfffd868c, 0xfffe9a8b},
-                new float[] {0, 0.19f, 0.60f, 1});
-        backgroundView = findViewById(R.id.view_background);
-        backgroundView.setBackground(gradientDrawable);
+        this.mBackgroundView = findViewById(R.id.view_background);
+        this.mBackgroundView.setBackground(new CustomGradientDrawable(
+            new int[] { 0xfff78ca0, 0xfff9748f, 0xfffd868c, 0xfffe9a8b },
+            new float[] { 0, 0.19f, 0.60f, 1 })
+        );
     }
 
-    void customizeCalendar() {
+    private void initCalendar() {
+        this.topBarYear = (TextView) findViewById(R.id.cal_top_bar_year);
+        this.topBarMonth = (TextView) findViewById(R.id.cal_top_bar_mouth);
+
+        Calendar calendar = Calendar.getInstance();
         MaterialCalendarView mcv = (MaterialCalendarView) findViewById(R.id.cal_calendar_view);
-        mcv.setTopbarVisible(false);  //  隐藏TopBar 改用自己定制的TopBar
-        mcv.setWeekDayLabels(new String[]{"S", "M", "T", "W", "T", "F", "S"});
-        Log.d("Cal", "customize calendar");
+        mcv.setTopbarVisible(false);  //  Hide top bar
+        mcv.setWeekDayLabels(new String[] { "S", "M", "T", "W", "T", "F", "S" });
+        mcv.setOnDateChangedListener(this);
+        mcv.setOnMonthChangedListener(this);
+        mcv.setDateSelected(calendar, true);
+
+        String yearStr = calendar.get(Calendar.YEAR) + "";
+        this.topBarYear.setText(yearStr);
+        this.topBarMonth.setText(this.monthStr[calendar.get(Calendar.DAY_OF_MONTH)]);
     }
 
-    void initTimeline() {
-        mRecyclerView = (RecyclerView) findViewById(R.id.cal_timeline_list);
-        mRecyclerView.setLayoutManager(new LinearLayoutManager(this, LinearLayoutManager.VERTICAL, false));
-        mRecyclerView.setHasFixedSize(true);
-        Log.d("Cal", "initial timeline");
-        initView();
+    private void initTimeline() {
+        this.mRecyclerView = (RecyclerView) findViewById(R.id.cal_timeline_list);
+        this.mRecyclerView.setHasFixedSize(true);
+        initLayoutManager();
+        initAdapter();
     }
 
-    private void initView() {
-        mTimeLineAdapter = new TimeLineAdapter(mDataList);
-        mRecyclerView.setAdapter(mTimeLineAdapter);
-        Log.d("Cal", "initial view");
+    private void initLayoutManager() {
+        this.mRecyclerView.setLayoutManager(new LinearLayoutManager(
+                this, LinearLayoutManager.VERTICAL, false));
+    }
+
+    private void initAdapter() {
+        this.mTimeLineAdapter = new TimeLineAdapter(this.mDataList);
+        this.mRecyclerView.setAdapter(this.mTimeLineAdapter);
+    }
+
+    private void smoothScroll(CalendarDay d) {
+        //  smooth sliding to suitable date
+        String date = d.getYear() + "-" + (d.getMonth() + 1) + "-" + d.getDay();
+        Integer destPos = Answer.positionMap.get(date);
+        Toast.makeText(this, destPos + "", Toast.LENGTH_SHORT).show();
+        if (destPos != null) {
+            this.mRecyclerView.smoothScrollToPosition(destPos);
+        }
+    }
+
+    //  implement OnDateSelectedListener interface
+    @Override
+    public void onDateSelected(@NonNull MaterialCalendarView mcv, @NonNull CalendarDay date, boolean selected) {
+        smoothScroll(date);
+    }
+
+    //  implement OnMonthChangedListener interface
+    @Override
+    public void onMonthChanged(MaterialCalendarView mcv, CalendarDay date) {
+        String yearStr = date.getYear() + "";
+        this.topBarYear.setText(yearStr);
+        this.topBarMonth.setText(this.monthStr[date.getMonth()]);
     }
 }

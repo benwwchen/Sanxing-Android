@@ -1,8 +1,10 @@
 package com.note8.sanxing.models;
 
 import com.google.gson.annotations.SerializedName;
+import com.note8.sanxing.utils.ui.DateTimeUtils;
 
 import java.util.ArrayList;
+import java.util.HashMap;
 
 public class Answer {
     @SerializedName("_id")
@@ -16,18 +18,35 @@ public class Answer {
     private String date;
     private Answerer answerer;
 
+    private boolean isFirst;
+
     public static class Answerer {
         public String username;
         public String avatar;
     }
 
-    public Answer(String answerId, String content, Integer mood, Integer likeCount, String date, Answerer answerer) {
+    public static HashMap<String, Integer> positionMap = new HashMap<>();
+
+    public Answer(String answerId, String content, Integer mood,
+                  Integer likeCount, String date, Answerer answerer) {
         this.answerId = answerId;
         this.content = content;
         this.mood = mood;
         this.likeCount = likeCount;
         this.date = date;
         this.answerer = answerer;
+    }
+
+    private Answer(String content, String date, Integer mood, boolean isFirst) {
+        this.questionContent = content;
+        this.date = date;
+        this.mood = mood;
+        this.isFirst = isFirst;
+
+        String aKey = DateTimeUtils.parseDateTime(this.date, "yyyy-MM-dd HH:mm", "yyyy-M-d");
+        if (isFirst) {
+            Answer.positionMap.put(aKey, Answer.positionMap.size() * 3);
+        }
     }
 
     public String getAnswerId() {
@@ -70,12 +89,18 @@ public class Answer {
         this.likeCount = likeCount;
     }
 
-    public String getDate() {
-        return date;
+    public String getTime() {
+        return DateTimeUtils.parseDateTime(this.date, "yyyy-MM-dd HH:mm", "HH:mm");
     }
+
+    public String getDate() { return date; }
 
     public void setDate(String date) {
         this.date = date;
+    }
+
+    public boolean isFirst() {
+        return this.isFirst;
     }
 
     public Answerer getAnswerer() {
@@ -86,25 +111,21 @@ public class Answer {
         this.answerer = answerer;
     }
 
-    private Answer(String content, String date, Integer mood) {
-        this.questionContent = content;
-        this.date = date;
-        this.mood = mood;
-    }
-
     public static ArrayList<Answer> sampleAnswerData = initSampleData();
 
     private static ArrayList<Answer> initSampleData() {
         ArrayList<Answer> answerList = new ArrayList<>();
-        answerList.add(new Answer("Item successfully delivered", "", 80));
-        answerList.add(new Answer("Courier is out to delivery your order", "2017-02-12 08:00", 80));
-        answerList.add(new Answer("Item has reached courier facility at New Delhi", "2017-02-11 21:00", 80));
-        answerList.add(new Answer("Item has been given to the courier", "2017-02-11 18:00", 80));
-        answerList.add(new Answer("Item is packed and will dispatch soon", "2017-02-11 09:30", 80));
-        answerList.add(new Answer("Order is being readied for dispatch", "2017-02-11 08:00", 80));
-        answerList.add(new Answer("Order processing initiated", "2017-02-10 15:00", 80));
-        answerList.add(new Answer("Order confirmed by seller", "2017-02-10 14:30", 80));
-        answerList.add(new Answer("Order placed successfully", "2017-02-10 14:00", 80));
+        //  Answer(content, date, time, mood)
+        //  manage data in groups here, 3 items per day; only the first item need "date"
+        answerList.add(new Answer("Item successfully delivered", "2017-04-07 08:00", 80, true));
+        answerList.add(new Answer("Courier is out to delivery your order", "2017-04-07 09:00", 40, false));
+        answerList.add(new Answer("Item has reached courier facility at New Delhi", "2017-04-07 21:00", 80, false));
+        answerList.add(new Answer("Item has been given to the courier", "2017-04-06 18:00", 30, true));
+        answerList.add(new Answer("Item is packed and will dispatch soon", "2017-04-06 09:30", 80, false));
+        answerList.add(new Answer("Order is being readied for dispatch", "2017-04-06 08:00", 80, false));
+        answerList.add(new Answer("Order processing initiated", "2017-04-05 15:00", 30, true));
+        answerList.add(new Answer("Order confirmed by seller", "2017-04-05 14:30", 80, false));
+        answerList.add(new Answer("Order placed successfully", "2017-04-05 14:00", 20, false));
 
         return answerList;
     }

@@ -44,9 +44,10 @@
                 <ImageView
                     android:id="@+id/image_view_clock"
                     android:layout_width="wrap_content"
+                    android:padding="12dp"
                     android:layout_height="120dp"
                     android:layout_weight="1"
-                    app:srcCompat="@drawable/today_question_clock_8am" />
+                    app:srcCompat="@drawable/today_question_clock_10am" />
 
                 <RelativeLayout
                     android:layout_width="match_parent"

@@ -19,14 +19,14 @@
             android:background="@color/colorPrimary" />
 
         <LinearLayout
-            android:layout_width="@dimen/cal_width"
+            android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_gravity="center"
             android:layout_marginTop="16dp"
             android:orientation="vertical">
 
             <LinearLayout
-                android:layout_width="match_parent"
+                android:layout_width="@dimen/cal_width"
                 android:layout_height="wrap_content"
                 android:layout_marginTop="10dp"
                 android:orientation="horizontal"
@@ -57,7 +57,7 @@
                 android:id="@+id/cal_calendar_view"
                 android:background="@drawable/cal_calendar_background"
                 android:layout_gravity="center"
-                android:layout_width="wrap_content"
+                android:layout_width="@dimen/cal_width"
                 android:layout_height="wrap_content"
                 android:layout_marginTop="0dp"
                 android:paddingStart="15dp"

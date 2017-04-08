@@ -169,6 +169,7 @@ public class TodayFragment extends Fragment {
      */
     private void updateData() {
         SanxingApiClient.getInstance(mContext).getTodayQuestions(mTodayQuestionsHandler);
+        SanxingApiClient.getInstance(mContext).getAnswerHistory(mAnswersHandler);
     }
 
     /**
@@ -189,6 +190,7 @@ public class TodayFragment extends Fragment {
                 bundle.putString("answerTxt", mAnswers.get(index).getContent());
                 Intent intent = new Intent(mContext, QuestionDetailActivity.class);
                 intent.putExtras(bundle);
+                startActivity(intent);
             }
 
         }
