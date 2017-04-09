@@ -188,6 +188,7 @@ public class TodayFragment extends Fragment {
                 Bundle bundle = new Bundle();
                 bundle.putString("title", mAnswers.get(index).getQuestionContent());
                 bundle.putString("answerTxt", mAnswers.get(index).getContent());
+                bundle.putInt("mood", mAnswers.get(index).getMood());
                 Intent intent = new Intent(mContext, QuestionDetailActivity.class);
                 intent.putExtras(bundle);
                 startActivity(intent);

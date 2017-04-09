@@ -51,11 +51,16 @@ public class LikeQuestionsAdapter extends ArrayAdapter<LikedQuestionsClass>{
                 Intent intent;
                 Bundle bundle = new Bundle();
                 bundle.putString("title", likedQuestions.title);
-                if(!likedQuestions.isBroadcastQuestion)
+/*                if(!likedQuestions.isBroadcastQuestion)
                     bundle.putString("answerTxt", likedQuestions.answerTxt);
                 if(likedQuestions.answerImg!=0)
                     bundle.putInt("answerImg",likedQuestions.answerImg);
-                bundle.putString("time", likedQuestions.time);
+*/              bundle.putString("time", likedQuestions.time);
+                bundle.putString("answerTxt", likedQuestions.answerTxt);
+                bundle.putInt("answerImg",likedQuestions.answerImg);
+                bundle.putInt("mood",likedQuestions.mood);
+                bundle.putInt("publicStatus",likedQuestions.publicStatus);
+                bundle.putInt("answerCount",likedQuestions.answerCount);
                 intent = new Intent(view.getContext(), QuestionDetailActivity.class);
                 intent.putExtras(bundle);
                 view.getContext().startActivity(intent);

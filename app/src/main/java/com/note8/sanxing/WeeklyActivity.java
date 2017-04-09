@@ -33,6 +33,7 @@ public class WeeklyActivity extends AppCompatActivity {
             bundle.putString("title", name);
             bundle.putString("answerTxt", answer);
             bundle.putInt("publicStatus", 1);
+            bundle.putInt("mood",70);
 //              bundle.putString("date", today.date);
 //                if (position == 0) {  //  第一个item进入问题回答界面
 //                    bundle.putBoolean("newAns", true);

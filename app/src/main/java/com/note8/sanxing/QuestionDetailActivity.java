@@ -1,6 +1,7 @@
 package com.note8.sanxing;
 
 import android.content.Context;
+import android.content.Intent;
 import android.content.res.Resources;
 import android.graphics.Bitmap;
 import android.graphics.Color;
@@ -15,6 +16,7 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.view.Window;
 import android.view.WindowManager;
+import android.widget.Button;
 import android.widget.FrameLayout;
 import android.widget.ImageButton;
 import android.widget.ImageView;
@@ -22,10 +24,13 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 import com.githang.statusbar.StatusBarCompat;
+import com.note8.sanxing.models.Answer;
+import com.note8.sanxing.models.Question;
 import com.note8.sanxing.utils.ui.StatusBarUtils;
 
 public class QuestionDetailActivity extends AppCompatActivity {
 
+    private Answer mAnswer;
     private ImageButton returnBtn;
     private ImageButton commentBtn;
     private ImageButton publicStatueBtn;
@@ -36,10 +41,10 @@ public class QuestionDetailActivity extends AppCompatActivity {
     private TextView answerTimesCount;
 
     private int publicStatusInt;
-    private double moodIndexDouble;
+    private Integer moodIndexInt;
     private String questionTitleString;
     private String answerTxtString;
-    private String answerTimesCountString;
+    private Integer answerTimesCountInt;
     private int answerImgInt;
     private double intervalOfProgress = 20;
 
@@ -119,17 +124,27 @@ public class QuestionDetailActivity extends AppCompatActivity {
         answerTimesCount = (TextView)findViewById(R.id.answer_times_count);
     }
 
-    //接受问题相关数据
+    //接收问题相关数据
     private void accessData(){
         Bundle bundleFromQuestion = getIntent().getExtras();
         int type = bundleFromQuestion.getInt("type");
         //boolean fromToday = bundleFromQuestion.getBoolean("today");
 
         publicStatusInt = bundleFromQuestion.getInt("publicStatus");
-        moodIndexDouble = bundleFromQuestion.getDouble("moodIndex");
+        moodIndexInt = bundleFromQuestion.getInt("mood");
         questionTitleString = bundleFromQuestion.getString("title");
         answerTxtString = bundleFromQuestion.getString("answerTxt");
         answerImgInt = bundleFromQuestion.getInt("answerImg");
+        answerTimesCountInt = bundleFromQuestion.getInt("answerCount");
+        /*
+        Intent intent = getIntent();
+        mAnswer = (Answer) intent.getSerializableExtra("answer");
+        publicStatusInt = mAnswer.getPublicStatus();
+        moodIndexInt = mAnswer.getMood();
+        questionTitleString = mAnswer.getQuestionContent();
+        answerTxtString = mAnswer.getAnswerId();
+        //answerImgInt = bundleFromQuestion.getInt("answerImg");
+        */
     }
 
     //设置控件内容
@@ -141,19 +156,21 @@ public class QuestionDetailActivity extends AppCompatActivity {
             publicStatueBtn.setImageDrawable(getResources().getDrawable(R.drawable.scroll_visible));
 
         //设置心情描述文本
-        if(moodIndexDouble == 0) moodDescribe.setText("#当时我感觉整个人都不好了#");
-        else if(moodIndexDouble == 100) moodDescribe.setText("#当时我兴奋到了极点#");
-        else if(moodIndexDouble < intervalOfProgress) moodDescribe.setText("#当时我有点烦躁#");
-        else if(moodIndexDouble < 2*intervalOfProgress) moodDescribe.setText("#当时我感觉到了一股淡淡的忧伤#");
-        else if(moodIndexDouble < 3*intervalOfProgress) moodDescribe.setText("#当时我内心毫无波澜#");
-        else if(moodIndexDouble < 4*intervalOfProgress) moodDescribe.setText("#当时我心情还算愉悦#");
+        if(moodIndexInt == 0) moodDescribe.setText("#当时我感觉整个人都不好了#");
+        else if(moodIndexInt == 100) moodDescribe.setText("#当时我兴奋到了极点#");
+        else if(moodIndexInt < intervalOfProgress) moodDescribe.setText("#当时我有点烦躁#");
+        else if(moodIndexInt < 2*intervalOfProgress) moodDescribe.setText("#当时我感觉到了一股淡淡的忧伤#");
+        else if(moodIndexInt < 3*intervalOfProgress) moodDescribe.setText("#当时我内心毫无波澜#");
+        else if(moodIndexInt < 4*intervalOfProgress) moodDescribe.setText("#当时我心情还算愉悦#");
         else moodDescribe.setText("#当时我有点想笑#");
 
         //设置问题的标题、回答、历史回答次数
         questionTitle.setText(questionTitleString);
         answerTxt.setText(answerTxtString);
-        answerImg.setVisibility(View.VISIBLE);
-        //answerImg.setImageBitmap(ThumbnailUtils.extractThumbnail(answerImgBitmap, 1000, 1000));
-        //answerTimesCount.setText(answerTimesCountString);
+        if(answerImgInt!=0){
+            answerImg.setVisibility(View.VISIBLE);
+            answerImg.setImageDrawable(getResources().getDrawable(answerImgInt));
+        }
+        answerTimesCount.setText("你答过该问题共"+answerTimesCountInt+"次");
     }
 }

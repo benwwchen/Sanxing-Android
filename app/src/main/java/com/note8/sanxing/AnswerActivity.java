@@ -83,6 +83,7 @@ public class AnswerActivity extends AppCompatActivity {
     private Question mQuestion;
     private String mAnswerContent;
     private Integer mMood;
+    private Integer mPublicStatus;
 
     private static final int RESULT_CODE_SUCCESS_RECIEVED = 1;
     private static final int RESULT_CODE_FAILED_RECIEVED = -1;
@@ -249,6 +250,7 @@ public class AnswerActivity extends AppCompatActivity {
     private void sendAnswer() {
         mAnswerContent = answerTxt.getText().toString();
         mMood = answerSeekBar.getProgress();
+        mPublicStatus = publicStatue[0];
         attemptUpload();
     }
 
@@ -542,7 +544,7 @@ public class AnswerActivity extends AppCompatActivity {
 
         @Override
         protected Boolean doInBackground(Void... params) {
-            return SanxingApiClient.getInstance(mContext).createAnswer(mQuestion, mAnswerContent, mMood);
+            return SanxingApiClient.getInstance(mContext).createAnswer(mQuestion, mAnswerContent, mMood, mPublicStatus);
         }
 
         @Override

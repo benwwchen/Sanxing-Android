@@ -13,6 +13,7 @@ import android.widget.Button;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import com.github.vipulasri.timelineview.TimelineView;
 
@@ -59,6 +60,7 @@ public class TodayQuestionsAdapter extends RecyclerView.Adapter<RecyclerView.Vie
     public static class TodayQuestionsViewHolder extends RecyclerView.ViewHolder implements View.OnClickListener {
         public ImageView clockImageView;
         public TextView questionTextView;
+        public Button addToWeeklyButton;
         public Button answerButton;
         public Button favoriteButton;
         public LinearLayout contentView;
@@ -71,8 +73,16 @@ public class TodayQuestionsAdapter extends RecyclerView.Adapter<RecyclerView.Vie
             contentView.setOnClickListener(this);
             clockImageView = (ImageView) itemView.findViewById(R.id.image_view_clock);
             questionTextView = (TextView) itemView.findViewById(R.id.text_view_today_question);
+            addToWeeklyButton = (Button)itemView.findViewById(R.id.left_view);
             answerButton = (Button) itemView.findViewById(R.id.button_answer);
             favoriteButton = (Button) itemView.findViewById(R.id.button_favorite);
+
+            addToWeeklyButton.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View view) {
+                    Toast.makeText(view.getContext(),"已加入周报",Toast.LENGTH_SHORT).show();
+                }
+            });
         }
 
         @Override

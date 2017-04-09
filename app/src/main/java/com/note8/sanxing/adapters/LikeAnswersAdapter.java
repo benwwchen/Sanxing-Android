@@ -2,6 +2,7 @@ package com.note8.sanxing.adapters;
 
 import android.content.Context;
 import android.content.Intent;
+import android.graphics.Bitmap;
 import android.os.Bundle;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -36,15 +37,15 @@ public class LikeAnswersAdapter extends ArrayAdapter<LikedAnswersClass> {
         TextView titleTxt = (TextView) view.findViewById(R.id.me_like_answer_title);
         ImageView portraitImg = (ImageView) view.findViewById(R.id.me_like_answer_portrait);
         TextView answerTxt = (TextView) view.findViewById(R.id.me_like_answer_txt);
-        ImageView answerImg = (ImageView) view.findViewById(R.id.me_like_answer_img);
         final Button goBtn = (Button) view.findViewById(R.id.me_like_answer_go_btn);
 
         titleTxt.setText(likedAnswers.title);
+        answerTxt.setText(likedAnswers.answerTxt);
         portraitImg.setImageResource(likedAnswers.portraitImg);
-        if (!likedAnswers.hasAnswerImg) answerImg.setVisibility(View.GONE);
-        if(likedAnswers.hasAnswerImg)   answerImg.setImageResource(likedAnswers.answerImg);
-        if(!likedAnswers.hasAnswerTxt)  answerTxt.setVisibility(View.GONE);
-        if(likedAnswers.hasAnswerTxt)   answerTxt.setText(likedAnswers.answerTxt);
+//        if (!likedAnswers.hasAnswerImg) answerImg.setVisibility(View.GONE);
+//        if(likedAnswers.hasAnswerImg)   answerImg.setImageResource(likedAnswers.answerImg);
+//        if(!likedAnswers.hasAnswerTxt)  answerTxt.setVisibility(View.GONE);
+//        if(likedAnswers.hasAnswerTxt)   answerTxt.setText(likedAnswers.answerTxt);
         goBtn.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
@@ -52,6 +53,10 @@ public class LikeAnswersAdapter extends ArrayAdapter<LikedAnswersClass> {
                 Bundle bundle = new Bundle();
                 bundle.putString("title", likedAnswers.title);
                 bundle.putString("answerTxt", likedAnswers.answerTxt);
+                bundle.putInt("answerImg",likedAnswers.answerImg);
+                bundle.putInt("mood",likedAnswers.mood);
+                bundle.putInt("publicStatus",likedAnswers.publicStatus);
+                bundle.putInt("answerCount",likedAnswers.answerCount);
 //              bundle.putString("date", today.date);
 //                if (position == 0) {  //  第一个item进入问题回答界面
 //                    bundle.putBoolean("newAns", true);

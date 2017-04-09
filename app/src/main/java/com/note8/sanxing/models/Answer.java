@@ -3,16 +3,18 @@ package com.note8.sanxing.models;
 import com.google.gson.annotations.SerializedName;
 import com.note8.sanxing.utils.ui.DateTimeUtils;
 
+import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.HashMap;
 
-public class Answer {
+public class Answer{
     @SerializedName("_id")
     private String answerId;
     private String content;
     private String questionId;
     private String questionContent;
     private Integer mood;
+    private Integer publicStatus;
     @SerializedName("likes")
     private Integer likeCount;
     private String date;
@@ -27,11 +29,12 @@ public class Answer {
 
     public static HashMap<String, Integer> positionMap = new HashMap<>();
 
-    public Answer(String answerId, String content, Integer mood,
+    public Answer(String answerId, String content, Integer mood,Integer publicStatus,
                   Integer likeCount, String date, Answerer answerer) {
         this.answerId = answerId;
         this.content = content;
         this.mood = mood;
+        this.publicStatus = publicStatus;
         this.likeCount = likeCount;
         this.date = date;
         this.answerer = answerer;
@@ -79,6 +82,14 @@ public class Answer {
 
     public void setMood(Integer mood) {
         this.mood = mood;
+    }
+
+    public Integer getPublicStatus() {
+        return publicStatus;
+    }
+
+    public void setPublicStatus(Integer publicStatus) {
+        this.publicStatus = publicStatus;
     }
 
     public Integer getLikeCount() {

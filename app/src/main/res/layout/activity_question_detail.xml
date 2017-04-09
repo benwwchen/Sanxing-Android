@@ -39,70 +39,70 @@
                     android:layout_width="@dimen/answer_share_width"
                     android:layout_height="wrap_content"
                     android:layout_marginEnd="@dimen/answer_horizontal_margin"
-                    android:background="#FFFFFF"
+                    android:background="@color/colorWhite"
                     android:scaleType="fitCenter"
                     android:src="@drawable/comment_release"
                     android:layout_centerVertical="true"
                     android:layout_alignParentEnd="true" />
             </RelativeLayout>
+            <RelativeLayout
+                android:layout_width="wrap_content"
+                android:layout_height="@dimen/answer_horizontal_margin"
+                android:layout_marginTop="@dimen/answer_publicStatus_margin"
+                android:gravity="center_vertical">
+                <ImageButton
+                    android:id="@+id/publicStatue_detail"
+                    android:layout_width="52dp"
+                    android:layout_height="wrap_content"
+                    android:src="@drawable/scroll_invisible"
+                    android:layout_alignParentEnd="true"
+                    android:layout_marginEnd="@dimen/answer_horizontal_margin"
+                    android:background="@null"
+                    android:scaleType="fitCenter"/>
+            </RelativeLayout>
+            <TextView
+                android:id="@+id/question_detail"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="@dimen/answer_question_margin"
+                android:layout_marginBottom="@dimen/answer_question_margin"
+                android:layout_marginLeft="@dimen/answer_horizontal_margin"
+                android:layout_marginRight="@dimen/answer_horizontal_margin"
+                android:textStyle="bold"
+                android:textColor="@color/answer_question"
+                android:textSize="@dimen/answer_questionTxt_size"
+                android:text="听闻什么消息的时候，你宁愿它是假的？" />
+            <TextView
+                android:id="@+id/moodDescribe_detail"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginStart="@dimen/answer_horizontal_margin"
+                android:layout_marginBottom="@dimen/answer_question_margin"
+                android:textSize="@dimen/answer_moodTxt_size"
+                android:text="#当时我内心毫无波澜#"
+                android:textColor="@color/colorPrimary"/>
+            <TextView
+                android:layout_width="match_parent"
+                android:layout_height="0.5dp"
+                android:layout_marginLeft="@dimen/answer_horizontal_margin"
+                android:layout_marginRight="@dimen/answer_horizontal_margin"
+                android:background="@color/answer_line"/>
             <ScrollView
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:scrollbarStyle="outsideOverlay"
                 android:scrollbars="none"
                 android:overScrollMode="never"
-                android:layout_weight="9.3">
+                android:layout_weight="9.6">
                 <LinearLayout
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:orientation="vertical">
-                    <RelativeLayout
-                        android:layout_width="wrap_content"
-                        android:layout_height="@dimen/answer_horizontal_margin"
-                        android:layout_marginTop="@dimen/answer_publicStatus_margin"
-                        android:gravity="center_vertical">
-                        <ImageButton
-                            android:id="@+id/publicStatue_detail"
-                            android:layout_width="wrap_content"
-                            android:layout_height="match_parent"
-                            android:src="@drawable/scroll_invisible"
-                            android:layout_alignParentEnd="true"
-                            android:layout_marginEnd="@dimen/answer_publicStatus_margin"
-                            android:background="@null"
-                            android:scaleType="fitCenter"/>
-                    </RelativeLayout>
-                    <TextView
-                        android:id="@+id/question_detail"
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:layout_marginTop="@dimen/answer_question_margin"
-                        android:layout_marginBottom="@dimen/answer_question_margin"
-                        android:layout_marginLeft="@dimen/answer_horizontal_margin"
-                        android:layout_marginRight="@dimen/answer_horizontal_margin"
-                        android:textStyle="bold"
-                        android:textColor="@color/answer_question"
-                        android:textSize="@dimen/answer_questionTxt_size"
-                        android:text="听闻什么消息的时候，你宁愿它是假的？" />
-                    <TextView
-                        android:id="@+id/moodDescribe_detail"
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:layout_marginStart="@dimen/answer_horizontal_margin"
-                        android:layout_marginBottom="@dimen/answer_question_margin"
-                        android:textSize="@dimen/answer_moodTxt_size"
-                        android:text="#当时我内心毫无波澜#"
-                        android:textColor="@color/colorPrimary"/>
-                    <TextView
-                        android:layout_width="match_parent"
-                        android:layout_height="0.5dp"
-                        android:layout_marginLeft="@dimen/answer_horizontal_margin"
-                        android:layout_marginRight="@dimen/answer_horizontal_margin"
-                        android:layout_marginBottom="@dimen/answer_horizontal_margin"
-                        android:background="@color/answer_line"/>
                     <TextView
                         android:id="@+id/answerTxt_detail"
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
+                        android:paddingTop="@dimen/answer_horizontal_margin"
                         android:layout_marginLeft="@dimen/answer_horizontal_margin"
                         android:layout_marginRight="@dimen/answer_horizontal_margin"
                         android:textSize="@dimen/answer_answerTxt_size"
@@ -124,7 +124,7 @@
                 android:layout_height="wrap_content"
                 android:layout_marginLeft="@dimen/answer_horizontal_margin"
                 android:layout_marginRight="@dimen/answer_horizontal_margin"
-                android:layout_marginTop="@dimen/answer_question_margin"
+                android:layout_marginTop="2dp"
                 android:layout_marginBottom="@dimen/answer_question_margin"
                 android:background="@null"
                 android:textSize="@dimen/answer_moodTxt_size"

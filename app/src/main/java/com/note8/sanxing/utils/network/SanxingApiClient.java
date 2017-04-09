@@ -434,12 +434,13 @@ public class SanxingApiClient {
      * @param answerContent
      * @return isSuccess
      */
-    public boolean createAnswer(Question question, String answerContent, Integer mood) {
+    public boolean createAnswer(Question question, String answerContent, Integer mood, Integer publicStatus) {
         Map<String, String> request = new HashMap<>();
         request.put("questionId", question.getQuestionId());
         request.put("content", answerContent);
         request.put("questionContent", question.getContent());
         request.put("mood", mood.toString());
+        request.put("publicStatus",publicStatus.toString());
 
         JSONObject requestBody = new JSONObject(request);
 

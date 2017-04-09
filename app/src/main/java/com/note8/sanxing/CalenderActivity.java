@@ -98,7 +98,8 @@ public class CalenderActivity extends AppCompatActivity
         //  smooth sliding to suitable date
         String date = d.getYear() + "-" + (d.getMonth() + 1) + "-" + d.getDay();
         Integer destPos = Answer.positionMap.get(date);
-        Toast.makeText(this, destPos + "", Toast.LENGTH_SHORT).show();
+        //Toast.makeText(this, destPos + "", Toast.LENGTH_SHORT).show();
+        Toast.makeText(this, date + "", Toast.LENGTH_SHORT).show();
         if (destPos != null) {
             this.mRecyclerView.smoothScrollToPosition(destPos);
         }
