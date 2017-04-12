@@ -133,6 +133,12 @@ public class TodayFragment extends Fragment {
                     if (todayQuestion.isAnswered()) iterator.remove();
                 }
 
+                if (todayQuestions.isEmpty()) {
+                    // add placeholder
+                    todayQuestions.add(new TodayQuestion(true));
+                    Log.d("place", String.valueOf(todayQuestions.get(0).isPlaceholder()));
+                }
+
                 // update data & notify the adapter
                 mTodayQuestions.clear();
                 mTodayQuestions.addAll(todayQuestions);

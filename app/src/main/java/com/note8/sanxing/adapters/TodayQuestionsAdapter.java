@@ -148,6 +148,18 @@ public class TodayQuestionsAdapter extends RecyclerView.Adapter<RecyclerView.Vie
     private void bindTodayQuestionsView(TodayQuestionsViewHolder holder, int position) {
         final TodayQuestion curQuestion = mTodayQuestions.get(position);
 
+        if (curQuestion.isPlaceholder()) {
+            holder.clockImageView.setVisibility(View.GONE);
+            holder.questionTextView.setText("今天的问题答完了，明天再来看看吧！");
+            holder.questionTextView.setTextAlignment(View.TEXT_ALIGNMENT_CENTER);
+            holder.questionTextView.setPadding(0,30,0,30);
+            holder.answerButton.setVisibility(View.GONE);
+            holder.favoriteButton.setVisibility(View.GONE);
+            holder.swipeMenuLayout.setSwipeEnable(false);
+            holder.contentView.setOnClickListener(null);
+            return;
+        }
+
         // clock image
         int[] clockImages = {R.drawable.today_question_clock_8pm,
                 R.drawable.today_question_clock_2pm,

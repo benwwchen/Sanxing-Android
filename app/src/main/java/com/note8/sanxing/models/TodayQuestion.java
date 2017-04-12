@@ -10,6 +10,7 @@ import java.util.List;
 public class TodayQuestion extends Question {
 
     private String time;
+    private boolean isPlaceholder = false;
 
     public TodayQuestion(String questionId, String content, Integer answerCount, Integer likeCount,
                          boolean isAnswered, List<String> tags, boolean isFavorite, String time) {
@@ -21,14 +22,27 @@ public class TodayQuestion extends Question {
         super.tags = tags;
         super.isFavorite = isFavorite;
         this.time = time;
+        this.isPlaceholder = false;
     }
 
+    public TodayQuestion(boolean isPlaceholder) {
+        this("","",0,0,true,null,false,"");
+        this.isPlaceholder = true;
+    }
     public String getTime() {
         return time;
     }
 
     public void setTime(String time) {
         this.time = time;
+    }
+
+    public boolean isPlaceholder() {
+        return isPlaceholder;
+    }
+
+    public void setPlaceholder(boolean placeholder) {
+        isPlaceholder = placeholder;
     }
 
     private TodayQuestion(String content, Integer answerCount, Integer likeCount, String time) {
