@@ -1,5 +1,7 @@
 package com.note8.sanxing.models;
 
+import android.util.Log;
+
 import com.google.gson.annotations.SerializedName;
 import com.note8.sanxing.utils.ui.DateTimeUtils;
 
@@ -17,6 +19,7 @@ public class Answer{
     private Integer publicStatus;
     @SerializedName("likes")
     private Integer likeCount;
+    @SerializedName("date_formatted")
     private String date;
     private Answerer answerer;
 
@@ -104,7 +107,9 @@ public class Answer{
         return DateTimeUtils.parseDateTime(this.date, "yyyy-MM-dd HH:mm", "HH:mm");
     }
 
-    public String getDate() { return date; }
+    public String getDate() {
+        return DateTimeUtils.parseDateTime(this.date, "yyyy-MM-dd HH:mm", "yyyy-MM-dd");
+    }
 
     public void setDate(String date) {
         this.date = date;
@@ -113,6 +118,8 @@ public class Answer{
     public boolean isFirst() {
         return this.isFirst;
     }
+
+    public void setFirst(boolean first) {this.isFirst = first;}
 
     public Answerer getAnswerer() {
         return answerer;

@@ -13,6 +13,7 @@ import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.Toast;
 
 import com.note8.sanxing.AnswerActivity;
 import com.note8.sanxing.R;
@@ -140,9 +141,13 @@ public class BroadcastFragment extends Fragment {
     private OnItemClickListener onItemClickListener = new OnItemClickListener() {
         @Override
         public void onItemClick(int position) {
-            Intent intent = new Intent(mContext, AnswerActivity.class);
-            intent.putExtra("question", mBroadcastQuestions.get(position));
-            startActivity(intent);
+            if (mBroadcastQuestions.get(position).isAnswered() != true) {
+                Intent intent = new Intent(mContext, AnswerActivity.class);
+                intent.putExtra("question", mBroadcastQuestions.get(position));
+                startActivity(intent);
+            } else {
+                Toast.makeText(mContext,"你已经回答过这个问题了", Toast.LENGTH_SHORT).show();
+            }
         }
     };
 

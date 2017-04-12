@@ -219,10 +219,13 @@ public class AnswerActivity extends AppCompatActivity {
             }
         });
         //点击图片按钮，插入图片
+        // TODO: remove hiding button
+        insertImgBtn.setVisibility(View.GONE);
         insertImgBtn.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                handleFAB();
+                Toast.makeText(view.getContext(),"该功能尚未开通,敬请期待", Toast.LENGTH_SHORT).show();
+                //handleFAB();
             }
         });
         try {

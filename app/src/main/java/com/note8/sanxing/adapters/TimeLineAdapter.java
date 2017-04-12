@@ -10,6 +10,7 @@ import android.view.ViewGroup;
 
 import com.github.vipulasri.timelineview.TimelineView;
 import com.note8.sanxing.R;
+import com.note8.sanxing.listeners.OnItemClickListener;
 import com.note8.sanxing.models.Answer;
 import com.note8.sanxing.utils.ui.DateTimeUtils;
 import com.note8.sanxing.utils.ui.VectorDrawableUtils;
@@ -20,6 +21,12 @@ public class TimeLineAdapter extends RecyclerView.Adapter<TimeLineViewHolder> {
     private List<Answer> mDataList;
     private Context mContext;
     private LayoutInflater mLayoutInflater;
+
+    private OnItemClickListener mOnItemClickListener;
+
+    public void setOnItemClickListener(OnItemClickListener onItemClickListener) {
+        this.mOnItemClickListener = onItemClickListener;
+    }
 
     public TimeLineAdapter(List<Answer> dataList) {
         this.mDataList = dataList;
@@ -35,7 +42,9 @@ public class TimeLineAdapter extends RecyclerView.Adapter<TimeLineViewHolder> {
         this.mContext = parent.getContext();
         this.mLayoutInflater = LayoutInflater.from(mContext);
         View view = this.mLayoutInflater.inflate(R.layout.item_timeline, parent, false);
-        return new TimeLineViewHolder(view, viewType);
+        TimeLineViewHolder viewHolder = new TimeLineViewHolder(view, viewType);
+        viewHolder.mOnItemClickListener = mOnItemClickListener;
+        return viewHolder;
     }
 
     @Override
@@ -49,8 +58,7 @@ public class TimeLineAdapter extends RecyclerView.Adapter<TimeLineViewHolder> {
         } else {
             holder.mDate.setVisibility(View.VISIBLE);
         }
-        holder.mDate.setText(DateTimeUtils.parseDateTime(answer.getDate(),
-                "yyyy-MM-dd HH:mm", "yyyy MMM dd"));
+        holder.mDate.setText(answer.getDate());
 
         //  render mood
         if (answer.getMood() > 50) {

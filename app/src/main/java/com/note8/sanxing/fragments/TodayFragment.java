@@ -151,9 +151,12 @@ public class TodayFragment extends Fragment {
                     answers = Answer.sampleAnswerData;
                 }
 
-                // TODO: remove the following if statement after demo
-                if (answers.size() == 0) {
-                    answers = Answer.sampleAnswerData;
+                String prevDate = "";
+                for (int i = 0; i < answers.size(); i++) {
+                    if (!answers.get(i).getDate().equals(prevDate)) {
+                        prevDate = answers.get(i).getDate();
+                        answers.get(i).setFirst(true);
+                    }
                 }
 
                 // update data & notify the adapter

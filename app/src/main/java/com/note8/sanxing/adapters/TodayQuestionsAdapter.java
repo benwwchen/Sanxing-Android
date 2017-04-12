@@ -23,6 +23,7 @@ import com.note8.sanxing.models.Answer;
 import com.note8.sanxing.models.TodayQuestion;
 import com.note8.sanxing.utils.ui.DateTimeUtils;
 import com.note8.sanxing.utils.ui.VectorDrawableUtils;
+import com.yanzhenjie.recyclerview.swipe.SwipeMenuLayout;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -63,6 +64,7 @@ public class TodayQuestionsAdapter extends RecyclerView.Adapter<RecyclerView.Vie
         public Button addToWeeklyButton;
         public Button answerButton;
         public Button favoriteButton;
+        public SwipeMenuLayout swipeMenuLayout;
         public LinearLayout contentView;
 
         OnItemClickListener mOnItemClickListener;
@@ -71,6 +73,7 @@ public class TodayQuestionsAdapter extends RecyclerView.Adapter<RecyclerView.Vie
             super(itemView);
             contentView = (LinearLayout) itemView.findViewById(R.id.content_view);
             contentView.setOnClickListener(this);
+            swipeMenuLayout = (SwipeMenuLayout) itemView.findViewById(R.id.swipe_layout);
             clockImageView = (ImageView) itemView.findViewById(R.id.image_view_clock);
             questionTextView = (TextView) itemView.findViewById(R.id.text_view_today_question);
             addToWeeklyButton = (Button)itemView.findViewById(R.id.left_view);
@@ -81,6 +84,7 @@ public class TodayQuestionsAdapter extends RecyclerView.Adapter<RecyclerView.Vie
                 @Override
                 public void onClick(View view) {
                     Toast.makeText(view.getContext(),"已加入周报",Toast.LENGTH_SHORT).show();
+                    swipeMenuLayout.smoothCloseLeftMenu();
                 }
             });
         }
@@ -182,8 +186,7 @@ public class TodayQuestionsAdapter extends RecyclerView.Adapter<RecyclerView.Vie
         } else {
             holder.mDate.setVisibility(View.VISIBLE);
         }
-        holder.mDate.setText(DateTimeUtils.parseDateTime(answer.getDate(),
-                "yyyy-MM-dd HH:mm", "yyyy MMM dd"));
+        holder.mDate.setText(answer.getDate());
 
         //  render mood
         if (answer.getMood() > 50) {

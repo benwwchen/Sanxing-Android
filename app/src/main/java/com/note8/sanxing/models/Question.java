@@ -1,6 +1,7 @@
 package com.note8.sanxing.models;
 
 import com.google.gson.annotations.SerializedName;
+import com.note8.sanxing.utils.ui.DateTimeUtils;
 
 import java.io.Serializable;
 import java.util.List;
@@ -21,6 +22,8 @@ public class Question implements Serializable {
     @SerializedName("answered")
     protected boolean isAnswered;
     protected boolean isFavorite;
+    @SerializedName("date_formatted")
+    protected String date;
 
     public String getQuestionId() {
         return questionId;
@@ -76,5 +79,13 @@ public class Question implements Serializable {
 
     public void setFavorite(boolean favorite) {
         isFavorite = favorite;
+    }
+
+    public String getDate() {
+        return DateTimeUtils.parseDateTime(this.date, "yyyy-MM-dd HH:mm", "yyyy-MM-dd");
+    }
+
+    public void setDate(String date) {
+        this.date = date;
     }
 }

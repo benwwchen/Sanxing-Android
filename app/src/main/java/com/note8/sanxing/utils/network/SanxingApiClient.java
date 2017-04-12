@@ -54,7 +54,7 @@ public class SanxingApiClient {
     private String mMessage;
     private boolean isLogin = false;
 
-    //private static final String BASE_URL = "http://10.0.0.10:3000/"; // test
+    //private static final String BASE_URL = "http://192.168.1.135:3000/"; // test
     private static final String BASE_URL = "http://api.sanxing.life/"; // production
 
     // user related path

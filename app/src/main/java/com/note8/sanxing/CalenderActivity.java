@@ -1,5 +1,6 @@
 package com.note8.sanxing;
 
+import android.content.Intent;
 import android.support.annotation.NonNull;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
@@ -7,10 +8,13 @@ import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.util.Log;
 import android.view.View;
+import android.widget.AbsListView;
+import android.widget.LinearLayout;
 import android.widget.TextView;
 import android.widget.Toast;
 
 import com.note8.sanxing.adapters.TimeLineAdapter;
+import com.note8.sanxing.listeners.OnItemClickListener;
 import com.note8.sanxing.models.Answer;
 import com.note8.sanxing.utils.ui.CustomGradientDrawable;
 import com.note8.sanxing.utils.ui.StatusBarUtils;
@@ -28,6 +32,9 @@ public class CalenderActivity extends AppCompatActivity
     private RecyclerView mRecyclerView;
     private View mBackgroundView;
     private TimeLineAdapter mTimeLineAdapter;
+    private LinearLayoutManager mLinearLayoutManager;
+    private int mIndex;
+    private boolean move = false;
     //  support for mcv
     private TextView topBarYear;
     private TextView topBarMonth;
@@ -74,7 +81,7 @@ public class CalenderActivity extends AppCompatActivity
 
         String yearStr = calendar.get(Calendar.YEAR) + "";
         this.topBarYear.setText(yearStr);
-        this.topBarMonth.setText(this.monthStr[calendar.get(Calendar.DAY_OF_MONTH)]);
+        this.topBarMonth.setText(this.monthStr[calendar.get(Calendar.MONTH)]);
     }
 
     private void initTimeline() {
@@ -85,14 +92,66 @@ public class CalenderActivity extends AppCompatActivity
     }
 
     private void initLayoutManager() {
-        this.mRecyclerView.setLayoutManager(new LinearLayoutManager(
-                this, LinearLayoutManager.VERTICAL, false));
+        mLinearLayoutManager = new LinearLayoutManager(
+                this, LinearLayoutManager.VERTICAL, false);
+        this.mRecyclerView.setLayoutManager(mLinearLayoutManager);
     }
 
     private void initAdapter() {
         this.mTimeLineAdapter = new TimeLineAdapter(this.mDataList);
+        mTimeLineAdapter.setOnItemClickListener(onItemClickListener);
         this.mRecyclerView.setAdapter(this.mTimeLineAdapter);
+        this.mRecyclerView.addOnScrollListener(new RecyclerView.OnScrollListener() {
+
+            @Override
+            public void onScrollStateChanged(RecyclerView recyclerView, int newState) {
+                super.onScrollStateChanged(recyclerView, newState);
+                if (move && newState == RecyclerView.SCROLL_STATE_IDLE){
+                    move = false;
+                    int n = mIndex - mLinearLayoutManager.findFirstVisibleItemPosition();
+                    if ( 0 <= n && n < mRecyclerView.getChildCount()){
+                        int top = mRecyclerView.getChildAt(n).getTop();
+                        mRecyclerView.smoothScrollBy(0, top);
+                    }
+
+                }
+            }
+
+            @Override
+            public void onScrolled(RecyclerView recyclerView, int dx, int dy) {
+                super.onScrolled(recyclerView, dx, dy);
+                //在这里进行第二次滚动（最后的100米！）
+                if (false) {
+                    move = false;
+                    //获取要置顶的项在当前屏幕的位置，mIndex是记录的要置顶项在RecyclerView中的位置
+                    int n = mIndex - mLinearLayoutManager.findFirstVisibleItemPosition();
+                    if (0 <= n && n < mRecyclerView.getChildCount()) {
+                        //获取要置顶的项顶部离RecyclerView顶部的距离
+                        int top = mRecyclerView.getChildAt(n).getTop();
+                        //最后的移动
+                        mRecyclerView.smoothScrollBy(0, top);
+                    }
+                }
+            }
+        });
     }
+
+    /**
+     * Item click listener, start AnswerActivity / QuestionDetailActivity
+     */
+    private OnItemClickListener onItemClickListener = new OnItemClickListener() {
+        @Override
+        public void onItemClick(int position) {
+            Answer answer = mDataList.get(position);
+            Bundle bundle = new Bundle();
+            bundle.putString("title", answer.getQuestionContent());
+            bundle.putString("answerTxt", answer.getContent());
+            bundle.putInt("mood", answer.getMood());
+            Intent intent = new Intent(CalenderActivity.this, QuestionDetailActivity.class);
+            intent.putExtras(bundle);
+            startActivity(intent);
+        }
+    };
 
     private void smoothScroll(CalendarDay d) {
         //  smooth sliding to suitable date
@@ -101,8 +160,30 @@ public class CalenderActivity extends AppCompatActivity
         //Toast.makeText(this, destPos + "", Toast.LENGTH_SHORT).show();
         Toast.makeText(this, date + "", Toast.LENGTH_SHORT).show();
         if (destPos != null) {
-            this.mRecyclerView.smoothScrollToPosition(destPos);
+            moveToPosition(destPos);
+            mIndex = destPos;
         }
+    }
+
+    private void moveToPosition(int n) {
+        //先从RecyclerView的LayoutManager中获取第一项和最后一项的Position
+        int firstItem = mLinearLayoutManager.findFirstVisibleItemPosition();
+        int lastItem = mLinearLayoutManager.findLastVisibleItemPosition();
+        //然后区分情况
+        if (n <= firstItem ){
+            //当要置顶的项在当前显示的第一个项的前面时
+            mRecyclerView.smoothScrollToPosition(n);
+        }else if ( n <= lastItem ){
+            //当要置顶的项已经在屏幕上显示时
+            int top = mRecyclerView.getChildAt(n - firstItem).getTop();
+            mRecyclerView.smoothScrollBy(0, top);
+        }else{
+            //当要置顶的项在当前显示的最后一项的后面时
+            mRecyclerView.smoothScrollToPosition(n);
+            //这里这个变量是用在RecyclerView滚动监听里面的
+            move = true;
+        }
+
     }
 
     //  implement OnDateSelectedListener interface

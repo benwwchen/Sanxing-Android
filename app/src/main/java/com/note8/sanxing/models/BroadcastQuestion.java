@@ -1,5 +1,7 @@
 package com.note8.sanxing.models;
 
+import com.note8.sanxing.utils.ui.DateTimeUtils;
+
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Scanner;
@@ -26,7 +28,7 @@ public class BroadcastQuestion extends Question {
     }
 
     public String getReleaseTime() {
-        return releaseTime;
+        return DateTimeUtils.parseDateTime(this.date, "yyyy-MM-dd HH:mm", "yyyy-MM-dd");
     }
 
     private BroadcastQuestion(String content, String time) {
