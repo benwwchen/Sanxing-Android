@@ -1,0 +1,31 @@
+<?xml version="1.0" encoding="utf-8"?>
+<android.support.v4.widget.NestedScrollView xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:background="?android:attr/colorBackground"
+    app:layout_behavior="@string/appbar_scrolling_view_behavior"
+    tools:context="com.note8.sanxing.BroadcastQuestionDetailActivity"
+    tools:showIn="@layout/activity_broadcast_question_detail">
+
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="vertical">
+
+        <TextView
+            android:id="@+id/text_view_date"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="TextView"
+            android:paddingLeft="24dp"
+            android:paddingTop="16dp"
+            android:paddingBottom="12dp"/>
+
+        <include layout="@layout/recycler_view_broadcast_questions_answers" />
+
+    </LinearLayout>
+
+</android.support.v4.widget.NestedScrollView>

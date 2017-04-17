@@ -70,6 +70,8 @@ public class SanxingApiClient {
     private static final String BROADCAST_QUESTIONS_PATH = QUESTIONS_PATH + "/broadcast/public";
     private static final String ANSWER_PATH = "answers";
     private static final String ANSWER_HISTORY_PATH = "answers/history";
+    private static final String BROADCAST_QUESTIONS_ANSWERS_PATH = ANSWER_PATH + "/broadcast";
+    private static final String BROADCAST_QUESTIONS_IS_ANSWER_PATH = ANSWER_PATH + "/broadcast/isAnswer";
     private static final String TAG_PATH = "tags";
     private static final String ARTICLE_PATH = "articles";
     private static final String WEEKLY_PATH = "weeklies";
@@ -224,6 +226,30 @@ public class SanxingApiClient {
     }
 
     /**
+     * Check if the user has answered the question before
+     * @param questionId
+     * @return
+     */
+    public boolean isAnswer(final String questionId) {
+
+        // send request
+        JSONObject responseBody = syncJsonRequest(Request.Method.GET,
+                getAbsoluteUrl(BROADCAST_QUESTIONS_IS_ANSWER_PATH + "/" + questionId),
+                null, null, null);
+
+        try {
+            if (isSuccess(responseBody)) {
+                return responseBody.getBoolean("data");
+            } else {
+                mMessage = responseBody.getString("cnmsg");
+            }
+        } catch (Exception e) {
+            Log.d("ERROR", "error => " + e.toString());
+        }
+        return false;
+    }
+
+    /**
      * Get Today Questions from server, message sent back by the handler as a List
      * @param handler
      */
@@ -304,6 +330,52 @@ public class SanxingApiClient {
                     }
                 });
     }
+
+    /**
+     * Get Answers For the Broadcast Question from server, message sent back by the handler as a List
+     * @param broadcastQuestion
+     * @param handler
+     */
+    public void getBroadcastQuestionsAnswers(BroadcastQuestion broadcastQuestion, final Handler handler) {
+        asyncJsonRequest(Request.Method.GET,
+                getAbsoluteUrl(BROADCAST_QUESTIONS_ANSWERS_PATH + "/" + broadcastQuestion.getQuestionId()),
+                null,
+                new Response.Listener<JSONObject>() {
+                    @Override
+                    public void onResponse(JSONObject response) {
+                        Message message = new Message();
+
+                        try {
+                            if (isSuccess(response)) {
+                                Gson gson = new GsonBuilder().create();
+
+                                List<Answer> answers =
+                                        gson.fromJson(response.getString("data"),
+                                                new TypeToken<List<Answer>>(){}.getType());
+                                message.what = SUCCESS_CODE;
+                                message.obj = answers;
+                            } else {
+                                message.what = ERROR_CODE;
+                                message.obj = response.getString("cnmsg");
+                            }
+                        } catch (Exception e) {
+                            e.printStackTrace();
+                        }
+
+                        handler.sendMessage(message);
+                    }
+                }, new Response.ErrorListener() {
+                    @Override
+                    public void onErrorResponse(VolleyError error) {
+                        Message message = new Message();
+                        message.what = ERROR_CODE;
+                        message.obj = String.valueOf(error.networkResponse.statusCode);
+                        handler.sendMessage(message);
+                    }
+                });
+    }
+
+
 
     /**
      * Get Answers History from server, message sent back by the handler as a List

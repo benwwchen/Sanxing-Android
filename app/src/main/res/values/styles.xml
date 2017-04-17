@@ -35,4 +35,9 @@
         <item name="android:textSize">20sp</item>
     </style>
 
+    <style name="TextAppearance.ExpandedTitle"
+        parent="TextAppearance.AppCompat.Widget.ActionBar.Title">
+        <item name="android:textSize">18sp</item>
+    </style>
+
 </resources>

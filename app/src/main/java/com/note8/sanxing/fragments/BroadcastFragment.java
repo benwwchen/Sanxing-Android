@@ -16,6 +16,7 @@ import android.view.ViewGroup;
 import android.widget.Toast;
 
 import com.note8.sanxing.AnswerActivity;
+import com.note8.sanxing.BroadcastQuestionDetailActivity;
 import com.note8.sanxing.R;
 import com.note8.sanxing.adapters.BroadcastQuestionsAdapter;
 import com.note8.sanxing.listeners.OnItemClickListener;
@@ -142,7 +143,7 @@ public class BroadcastFragment extends Fragment {
         @Override
         public void onItemClick(int position) {
             if (mBroadcastQuestions.get(position).isAnswered() != true) {
-                Intent intent = new Intent(mContext, AnswerActivity.class);
+                Intent intent = new Intent(mContext, BroadcastQuestionDetailActivity.class);
                 intent.putExtra("question", mBroadcastQuestions.get(position));
                 startActivity(intent);
             } else {

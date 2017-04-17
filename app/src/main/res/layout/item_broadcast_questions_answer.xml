@@ -1,0 +1,97 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:card_view="http://schemas.android.com/tools"
+    android:id="@+id/item_broadcast_questions_answer"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:layout_marginBottom="8dp"
+    android:layout_weight="1"
+    android:background="@color/cardview_light_background"
+    android:orientation="horizontal"
+    android:padding="24dp">
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_gravity="center"
+        android:gravity="center"
+        android:orientation="vertical">
+
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_weight="0"
+            android:orientation="horizontal">
+
+            <de.hdodenhof.circleimageview.CircleImageView
+                android:id="@+id/avatar_image_view"
+                android:layout_width="36dp"
+                android:layout_height="36dp"
+                android:layout_column="1"
+                android:layout_marginRight="8dp"
+                android:layout_row="0"
+                android:layout_weight="0"
+                app:civ_border_color="#ededed"
+                app:civ_border_width="1dp"
+                app:srcCompat="@mipmap/ic_launcher" />
+
+            <RelativeLayout
+                android:layout_width="wrap_content"
+                android:layout_height="match_parent"
+                android:layout_weight="1">
+
+                <TextView
+                    android:id="@+id/username_text_view"
+                    android:layout_width="wrap_content"
+                    android:layout_height="match_parent"
+                    android:layout_column="2"
+                    android:layout_row="1"
+                    android:layout_weight="0"
+                    android:gravity="center_vertical"
+                    android:text="Chirrut"
+                    android:textAppearance="@style/TextAppearance.AppCompat"
+                    android:textColor="@color/colorPrimary"
+                    android:textSize="18sp" />
+
+                <Button
+                    android:id="@+id/like_button"
+                    style="@style/Widget.AppCompat.Button.Borderless"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_alignBaseline="@+id/username_text_view"
+                    android:layout_alignBottom="@+id/username_text_view"
+                    android:layout_toStartOf="@+id/time_text_view"
+                    android:layout_marginRight="8dp"
+                    android:layout_weight="1"
+                    android:drawableLeft="@drawable/ic_notlike_gray"
+                    android:text="15"
+                    android:textAppearance="@android:style/TextAppearance.Material.Small" />
+
+                <TextView
+                    android:id="@+id/time_text_view"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_alignBaseline="@+id/username_text_view"
+                    android:layout_alignBottom="@+id/username_text_view"
+                    android:layout_alignParentEnd="true"
+                    android:layout_alignParentRight="true"
+                    android:layout_weight="0"
+                    android:text="1小时前" />
+
+            </RelativeLayout>
+
+        </LinearLayout>
+
+        <TextView
+            android:id="@+id/content_text_view"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_weight="0"
+            android:padding="16dp"
+            android:text="TextView" />
+
+    </LinearLayout>
+
+</LinearLayout>

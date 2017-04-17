@@ -24,6 +24,7 @@ public class Question implements Serializable {
     protected boolean isFavorite;
     @SerializedName("date_formatted")
     protected String date;
+    protected String picture;
 
     public String getQuestionId() {
         return questionId;
@@ -81,8 +82,16 @@ public class Question implements Serializable {
         isFavorite = favorite;
     }
 
+    public String getPicture() {
+        return picture;
+    }
+
+    public void setPicture(String picture) {
+        this.picture = picture;
+    }
+
     public String getDate() {
-        return DateTimeUtils.parseDateTime(this.date, "yyyy-MM-dd HH:mm", "yyyy-MM-dd");
+        return DateTimeUtils.parseDateTime(this.date, "yyyy-MM-dd HH:mm", "yyyy 年 MM 月 dd 日");
     }
 
     public void setDate(String date) {

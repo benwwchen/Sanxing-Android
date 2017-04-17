@@ -21,6 +21,8 @@ public class Answer{
     private Integer likeCount;
     @SerializedName("date_formatted")
     private String date;
+    @SerializedName("time_from_now")
+    private String timeFromNow;
     private Answerer answerer;
 
     private boolean isFirst;
@@ -127,6 +129,22 @@ public class Answer{
 
     public void setAnswerer(Answerer answerer) {
         this.answerer = answerer;
+    }
+
+    public String getQuestionId() {
+        return questionId;
+    }
+
+    public void setQuestionId(String questionId) {
+        this.questionId = questionId;
+    }
+
+    public String getTimeFromNow() {
+        return timeFromNow;
+    }
+
+    public void setTimeFromNow(String timeFromNow) {
+        this.timeFromNow = timeFromNow;
     }
 
     public static ArrayList<Answer> sampleAnswerData = initSampleData();
