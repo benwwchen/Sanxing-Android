@@ -17,6 +17,8 @@ import com.android.volley.toolbox.ImageLoader;
 import com.note8.sanxing.R;
 import com.note8.sanxing.listeners.OnItemClickListener;
 import com.note8.sanxing.models.BroadcastQuestion;
+import com.note8.sanxing.models.Question;
+import com.note8.sanxing.utils.network.SanxingApiClient;
 import com.note8.sanxing.utils.network.VolleyUtil;
 
 import java.util.ArrayList;
@@ -28,6 +30,7 @@ import java.util.ArrayList;
 public class BroadcastQuestionsAdapter extends RecyclerView.Adapter<BroadcastQuestionsAdapter.ViewHolder> {
 
     private ArrayList<BroadcastQuestion> mBroadcastQuestions;
+
     Context mContext;
     ImageLoader mImageLoader;
     private int picMaxWidth;
@@ -46,6 +49,8 @@ public class BroadcastQuestionsAdapter extends RecyclerView.Adapter<BroadcastQue
         public ImageView picImageView;
         public TextView questionTextView;
         public TextView timeTextView;
+        public TextView favoriteCountTextView;
+        public TextView answerCountTextView;
         public CardView cardView;
 
         OnItemClickListener mOnItemClickListener;
@@ -56,6 +61,8 @@ public class BroadcastQuestionsAdapter extends RecyclerView.Adapter<BroadcastQue
             cardView.setOnClickListener(this);
             picImageView = (ImageView) itemView.findViewById(R.id.image_view_pic);
             questionTextView = (TextView) itemView.findViewById(R.id.text_view_broadcast_question);
+            favoriteCountTextView = (TextView) itemView.findViewById(R.id.text_view_favorite_count);
+            answerCountTextView = (TextView) itemView.findViewById(R.id.text_view_answer_count);
             timeTextView = (TextView) itemView.findViewById(R.id.text_view_time);
         }
 
@@ -98,9 +105,11 @@ public class BroadcastQuestionsAdapter extends RecyclerView.Adapter<BroadcastQue
 
         final BroadcastQuestion curQuestion = mBroadcastQuestions.get(position);
 
-        // quetion, answer count, favorite count
+        // question, answer count, favorite count
         holder.questionTextView.setText(curQuestion.getContent());
         holder.timeTextView.setText(curQuestion.getReleaseTime());
+        holder.favoriteCountTextView.setText(String.valueOf(curQuestion.getLikeCount()));
+        holder.answerCountTextView.setText(String.valueOf(curQuestion.getAnswerCount()));
 
         // picture
         if (!curQuestion.getPicture().isEmpty()) {

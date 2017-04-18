@@ -33,6 +33,7 @@ import java.net.CookieHandler;
 import java.net.CookieManager;
 import java.net.CookiePolicy;
 import java.net.CookieStore;
+import java.util.ArrayList;
 import java.util.Collection;
 import java.util.HashMap;
 import java.util.List;
@@ -51,6 +52,8 @@ public class SanxingApiClient {
     CookieManager cookieManager;
 
     private User user = null;
+    private ArrayList<Question> favoriteQuestions;
+    private ArrayList<Answer> favoriteAnswers;
     private String mMessage;
     private boolean isLogin = false;
 
@@ -72,6 +75,7 @@ public class SanxingApiClient {
     private static final String ANSWER_HISTORY_PATH = "answers/history";
     private static final String BROADCAST_QUESTIONS_ANSWERS_PATH = ANSWER_PATH + "/broadcast";
     private static final String BROADCAST_QUESTIONS_IS_ANSWER_PATH = ANSWER_PATH + "/broadcast/isAnswer";
+    private static final String BROADCAST_QUESTIONS_IS_FAVORITE_PATH = QUESTIONS_PATH + "/broadcast/isFavorite";
     private static final String TAG_PATH = "tags";
     private static final String ARTICLE_PATH = "articles";
     private static final String WEEKLY_PATH = "weeklies";
@@ -88,6 +92,8 @@ public class SanxingApiClient {
         CookieHandler.setDefault(cookieManager);
         // check if login still valid
         user = getUserInfo();
+        favoriteQuestions = syncGetFavoriteQuestions();
+        favoriteAnswers = syncGetFavoriteAnswers();
         if (!isLogin) {
             cookieManager.getCookieStore().removeAll();
         }
@@ -215,6 +221,8 @@ public class SanxingApiClient {
 
                 // retrive user info
                 this.user = getUserInfo();
+                this.favoriteQuestions = syncGetFavoriteQuestions();
+                this.favoriteAnswers = syncGetFavoriteAnswers();
                 return user != null;
             } else {
                 mMessage = responseBody.getString("cnmsg");
@@ -235,6 +243,30 @@ public class SanxingApiClient {
         // send request
         JSONObject responseBody = syncJsonRequest(Request.Method.GET,
                 getAbsoluteUrl(BROADCAST_QUESTIONS_IS_ANSWER_PATH + "/" + questionId),
+                null, null, null);
+
+        try {
+            if (isSuccess(responseBody)) {
+                return responseBody.getBoolean("data");
+            } else {
+                mMessage = responseBody.getString("cnmsg");
+            }
+        } catch (Exception e) {
+            Log.d("ERROR", "error => " + e.toString());
+        }
+        return false;
+    }
+
+    /**
+     * Check if the user has liked the question before
+     * @param questionId
+     * @return
+     */
+    public boolean isFavorite(final String questionId) {
+
+        // send request
+        JSONObject responseBody = syncJsonRequest(Request.Method.GET,
+                getAbsoluteUrl(BROADCAST_QUESTIONS_IS_FAVORITE_PATH + "/" + questionId),
                 null, null, null);
 
         try {
@@ -375,8 +407,6 @@ public class SanxingApiClient {
                 });
     }
 
-
-
     /**
      * Get Answers History from server, message sent back by the handler as a List
      * @param handler
@@ -416,6 +446,144 @@ public class SanxingApiClient {
                         handler.sendMessage(message);
                     }
                 });
+    }
+
+    /**
+     * Add/Remove a favorite question
+     * @param questionId
+     * @param favorite
+     * @param handler
+     */
+    public void addOrRemoveAFavoriteQuestion(String questionId, boolean favorite, final Handler handler) {
+        int method = favorite? Request.Method.POST : Request.Method.DELETE;
+        String path = FAVORITE_QUESTIONS_PATH;
+        if (!favorite) path += "/" + questionId;
+        Map<String, String> request = new HashMap<>();
+        request.put("questionId", questionId);
+
+        JSONObject requestBody = new JSONObject(request);
+
+        asyncJsonRequest(method, getAbsoluteUrl(path), requestBody,
+                new Response.Listener<JSONObject>() {
+                    @Override
+                    public void onResponse(JSONObject response) {
+                        Message message = new Message();
+
+                        try {
+                            if (isSuccess(response)) {
+                                message.what = SUCCESS_CODE;
+                                message.obj = true;
+                            } else {
+                                message.what = ERROR_CODE;
+                                message.obj = response.getString("cnmsg");
+                            }
+                        } catch (Exception e) {
+                            e.printStackTrace();
+                        }
+
+                        handler.sendMessage(message);
+                    }
+                }, new Response.ErrorListener() {
+                    @Override
+                    public void onErrorResponse(VolleyError error) {
+                        Message message = new Message();
+                        message.what = ERROR_CODE;
+                        message.obj = String.valueOf(error.networkResponse.statusCode);
+                        handler.sendMessage(message);
+                    }
+                });
+    }
+
+    /**
+     * Add/Remove a favorite answer
+     * @param answerId
+     * @param favorite
+     * @param handler
+     */
+    public void addOrRemoveAFavoriteAnswer(String answerId, boolean favorite, final Handler handler) {
+        int method = favorite? Request.Method.POST : Request.Method.DELETE;
+        String path = FAVORITE_ANSWERS_PATH;
+        if (!favorite) path += "/" + answerId;
+        Map<String, String> request = new HashMap<>();
+        request.put("answerId", answerId);
+
+        JSONObject requestBody = new JSONObject(request);
+
+        asyncJsonRequest(method, getAbsoluteUrl(path), requestBody,
+                new Response.Listener<JSONObject>() {
+                    @Override
+                    public void onResponse(JSONObject response) {
+                        Message message = new Message();
+
+                        try {
+                            if (isSuccess(response)) {
+                                message.what = SUCCESS_CODE;
+                                message.obj = true;
+                            } else {
+                                message.what = ERROR_CODE;
+                                message.obj = response.getString("cnmsg");
+                            }
+                        } catch (Exception e) {
+                            e.printStackTrace();
+                        }
+
+                        handler.sendMessage(message);
+                    }
+                }, new Response.ErrorListener() {
+                    @Override
+                    public void onErrorResponse(VolleyError error) {
+                        Message message = new Message();
+                        message.what = ERROR_CODE;
+                        message.obj = String.valueOf(error.networkResponse.statusCode);
+                        handler.sendMessage(message);
+                    }
+                });
+    }
+
+    /**
+     * Get Favorite Questions from server for the current user (sync)
+     * @return ArrayList<Question>
+     */
+    private ArrayList<Question> syncGetFavoriteQuestions() {
+        JSONObject responseBody = syncJsonRequest(Request.Method.GET,
+                getAbsoluteUrl(FAVORITE_QUESTIONS_PATH), null, null, null);
+        try {
+            if (isSuccess(responseBody)) {
+                Gson gson = new GsonBuilder().create();
+
+                return gson.fromJson(responseBody.getString("data"),
+                        new TypeToken<List<Question>>(){}.getType());
+            } else {
+                Log.d("get favorite", responseBody.toString());
+                mMessage = responseBody.getString("cnmsg");
+            }
+        } catch (Exception e) {
+            Log.d("ERROR", "error => " + e.toString());
+        }
+        return null;
+    }
+
+    /**
+     * Get Favorite Answers from server for the current user (sync)
+     * @return ArrayList<Question>
+     */
+    private ArrayList<Answer> syncGetFavoriteAnswers() {
+        JSONObject responseBody = syncJsonRequest(Request.Method.GET,
+                getAbsoluteUrl(FAVORITE_ANSWERS_PATH), null, null, null);
+        try {
+            if (isSuccess(responseBody)) {
+                Gson gson = new GsonBuilder().create();
+
+                return gson.fromJson(responseBody.getString("data"),
+                        new TypeToken<List<Answer>>(){}.getType());
+            } else {
+                Log.d("get favorite", responseBody.toString());
+                mMessage = responseBody.getString("cnmsg");
+            }
+        } catch (Exception e) {
+            Log.d("ERROR", "error => " + e.toString());
+        }
+        return null;
     }
 
     /**
@@ -560,6 +728,14 @@ public class SanxingApiClient {
 
     public String getMessage() {
         return mMessage;
+    }
+
+    public ArrayList<Question> getFavoriteQuestions() {
+        return favoriteQuestions;
+    }
+
+    public ArrayList<Answer> getFavoriteAnswers() {
+        return favoriteAnswers;
     }
 
     private static String getAbsoluteUrl(String relativeUrl) {

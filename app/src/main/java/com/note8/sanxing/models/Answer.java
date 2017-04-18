@@ -24,6 +24,7 @@ public class Answer{
     @SerializedName("time_from_now")
     private String timeFromNow;
     private Answerer answerer;
+    private Boolean isFavorite;
 
     private boolean isFirst;
 
@@ -137,6 +138,14 @@ public class Answer{
 
     public void setQuestionId(String questionId) {
         this.questionId = questionId;
+    }
+
+    public Boolean getFavorite() {
+        return isFavorite;
+    }
+
+    public void setFavorite(Boolean favorite) {
+        isFavorite = favorite;
     }
 
     public String getTimeFromNow() {

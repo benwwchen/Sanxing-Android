@@ -18,6 +18,7 @@ import com.note8.sanxing.R;
 import com.note8.sanxing.listeners.OnItemClickListener;
 import com.note8.sanxing.models.Answer;
 import com.note8.sanxing.models.BroadcastQuestion;
+import com.note8.sanxing.utils.network.SanxingApiClient;
 import com.note8.sanxing.utils.network.VolleyUtil;
 
 import java.util.ArrayList;
@@ -33,6 +34,7 @@ public class BroadcastQuestionsAnswersAdapter extends RecyclerView.Adapter<Broad
     ImageLoader mImageLoader;
 
     private OnItemClickListener mOnItemClickListener;
+    private BroadcastQustionsAnswersAdapterCallback mBroadcastQustionsAnswersAdapterCallback;
 
     public void setOnItemClickListener(OnItemClickListener onItemClickListener) {
         this.mOnItemClickListener = onItemClickListener;
@@ -68,9 +70,10 @@ public class BroadcastQuestionsAnswersAdapter extends RecyclerView.Adapter<Broad
     }
 
     // Provide a suitable constructor (depends on the kind of dataset)
-    public BroadcastQuestionsAnswersAdapter(ArrayList<Answer> answers, Context context) {
+    public BroadcastQuestionsAnswersAdapter(ArrayList<Answer> answers, Context context, BroadcastQustionsAnswersAdapterCallback broadcastQustionsAnswersAdapterCallback) {
         this.mContext = context;
         this.mAnswers = answers;
+        this.mBroadcastQustionsAnswersAdapterCallback = broadcastQustionsAnswersAdapterCallback;
         // Get the ImageLoader through your singleton class.
         mImageLoader = VolleyUtil.getInstance(context).getImageLoader();
     }
@@ -99,11 +102,35 @@ public class BroadcastQuestionsAnswersAdapter extends RecyclerView.Adapter<Broad
         holder.timeTextView.setText(curAnswer.getTimeFromNow());
         holder.answerContentTextView.setText(curAnswer.getContent());
 
+        // favorite button
+        if (curAnswer.getFavorite() == null || !curAnswer.getFavorite()) {
+            holder.likeButton.setCompoundDrawablesWithIntrinsicBounds(R.drawable.ic_notlike_gray, 0, 0, 0);
+        } else {
+            holder.likeButton.setCompoundDrawablesWithIntrinsicBounds(R.drawable.ic_like, 0, 0, 0);
+        }
+        holder.likeButton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                // change the icon first (if failed, the fragment will refresh the data back)
+                if (curAnswer.getFavorite()) {
+                    holder.likeButton.setCompoundDrawablesWithIntrinsicBounds(R.drawable.ic_notlike_gray, 0, 0, 0);
+                } else {
+                    holder.likeButton.setCompoundDrawablesWithIntrinsicBounds(R.drawable.ic_like, 0, 0, 0);
+                }
+                mBroadcastQustionsAnswersAdapterCallback.onFavoriteButtonClick(
+                        curAnswer.getAnswerId(), !curAnswer.getFavorite());
+            }
+        });
+
         // avatar (fake)
         // TODO: replace with real avatars
         int[] avatars = {R.drawable.sample_avatar_1, R.drawable.sample_avatar_2, R.drawable.sample_avatar_3};
         holder.avatarImageView.setImageDrawable(mContext.getResources().getDrawable(avatars[position % 3], null));
 
+    }
+
+    public interface BroadcastQustionsAnswersAdapterCallback {
+        void onFavoriteButtonClick(String answerId, Boolean favorite);
     }
 
     // Return the size of your dataset (invoked by the layout manager)

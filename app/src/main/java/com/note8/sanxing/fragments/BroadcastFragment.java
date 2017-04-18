@@ -22,6 +22,7 @@ import com.note8.sanxing.R;
 import com.note8.sanxing.adapters.BroadcastQuestionsAdapter;
 import com.note8.sanxing.listeners.OnItemClickListener;
 import com.note8.sanxing.models.BroadcastQuestion;
+import com.note8.sanxing.models.Question;
 import com.note8.sanxing.models.TodayQuestion;
 import com.note8.sanxing.utils.network.SanxingApiClient;
 
@@ -53,9 +54,14 @@ public class BroadcastFragment extends Fragment {
 
     // data
     private ArrayList<BroadcastQuestion> mBroadcastQuestions;
+    private ArrayList<Question> favoriteQuestions;
 
     // handler
     private Handler mBroadcastQuestionsHandler;
+
+    // request/response code
+    private static final int REQUEST_CODE_DETAIL = 0;
+    private static final int RESPONSE_CODE_SUCCESS = 1;
 
     public BroadcastFragment() {
         // Required empty public constructor
@@ -160,6 +166,14 @@ public class BroadcastFragment extends Fragment {
         SanxingApiClient.getInstance(mContext).getBroadcastQuestions(mBroadcastQuestionsHandler);
     }
 
+    @Override
+    public void onActivityResult(int requestCode, int resultCode, Intent data) {
+        if (requestCode == REQUEST_CODE_DETAIL && resultCode == RESPONSE_CODE_SUCCESS) {
+            refresh();
+        }
+        super.onActivityResult(requestCode, resultCode, data);
+    }
+
     /**
      * Item click listener, start AnswerActivity
      */
@@ -169,7 +183,7 @@ public class BroadcastFragment extends Fragment {
             if (mBroadcastQuestions.get(position).isAnswered() != true) {
                 Intent intent = new Intent(mContext, BroadcastQuestionDetailActivity.class);
                 intent.putExtra("question", mBroadcastQuestions.get(position));
-                startActivity(intent);
+                startActivityForResult(intent, REQUEST_CODE_DETAIL);
             } else {
                 Toast.makeText(mContext,"你已经回答过这个问题了", Toast.LENGTH_SHORT).show();
             }

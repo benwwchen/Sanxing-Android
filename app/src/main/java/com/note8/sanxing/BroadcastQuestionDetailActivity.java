@@ -36,16 +36,18 @@ import com.note8.sanxing.utils.network.VolleyUtil;
 import java.util.ArrayList;
 import java.util.List;
 
-public class BroadcastQuestionDetailActivity extends AppCompatActivity {
+public class BroadcastQuestionDetailActivity extends AppCompatActivity implements BroadcastQuestionsAnswersAdapter.BroadcastQustionsAnswersAdapterCallback {
 
     // data
     private BroadcastQuestion mQuestion;
     private ArrayList<Answer> mAnswers;
     private boolean isAnswer;
+    private ArrayList<Question> favoriteQuestions;
 
     // views
     private RecyclerView mAnswersRecyclerView;
     private SwipeRefreshLayout mSwipeRefreshLayout;
+    private Menu mMenu;
 
     // utils
     private Context mContext;
@@ -53,9 +55,14 @@ public class BroadcastQuestionDetailActivity extends AppCompatActivity {
     private int picMaxWidth;
     private int picMaxHeight;
 
-    // adapter, handler
+    // adapter, handlers
     private BroadcastQuestionsAnswersAdapter mBroadcastQuestionsAnswersAdapter;
     private Handler mDataHandler;
+    private Handler mFavoriteHandler;
+
+    // request/response code
+    private static final int REQUEST_CODE_ANSWER = 0;
+    private static final int RESPONSE_CODE_SUCCESS = 1;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -70,6 +77,8 @@ public class BroadcastQuestionDetailActivity extends AppCompatActivity {
         loadData(); // load data from args
 
         refresh(); // get data from server
+
+        setResult(RESPONSE_CODE_SUCCESS);
     }
 
     private void initView() {
@@ -117,7 +126,7 @@ public class BroadcastQuestionDetailActivity extends AppCompatActivity {
 
         // answers
         mAnswers = new ArrayList<>();
-        mBroadcastQuestionsAnswersAdapter = new BroadcastQuestionsAnswersAdapter(mAnswers, mContext);
+        mBroadcastQuestionsAnswersAdapter = new BroadcastQuestionsAnswersAdapter(mAnswers, mContext, this);
         mAnswersRecyclerView.setAdapter(mBroadcastQuestionsAnswersAdapter);
 
         mDataHandler = new Handler() {
@@ -141,6 +150,29 @@ public class BroadcastQuestionDetailActivity extends AppCompatActivity {
                 }
             }
         };
+
+        // add/remove favorite handler
+        mFavoriteHandler = new Handler() {
+            @Override
+            public void handleMessage(android.os.Message msg) {
+                boolean isSuccess;
+
+                if(msg.what == 1){
+                    isSuccess = (boolean) msg.obj;
+                } else {
+                    Log.d("error", (String) msg.obj);
+                    Toast.makeText(mContext, "错误:" + msg.obj, Toast.LENGTH_SHORT).show();
+                    isSuccess = false;
+                }
+
+                if (isSuccess) {
+                    String message = "已收藏";
+                    if (mQuestion.isFavorite()) message = "已取消收藏";
+                    Snackbar.make(mAnswersRecyclerView, message, Snackbar.LENGTH_SHORT).show();
+                    checkIfFavorited();
+                }
+            }
+        };
     }
 
     // trigger swipe to refresh
@@ -156,6 +188,16 @@ public class BroadcastQuestionDetailActivity extends AppCompatActivity {
     private void updateData() {
         SanxingApiClient.getInstance(mContext).getBroadcastQuestionsAnswers(mQuestion, mDataHandler);
         checkIfAnswered();
+        checkIfFavorited();
+        updateMenu();
+    }
+
+    private void updateMenu() {
+        if (mQuestion.isFavorite()) {
+            mMenu.getItem(0).setIcon(getResources().getDrawable(R.drawable.ic_like, null));
+        } else {
+            mMenu.getItem(0).setIcon(getResources().getDrawable(R.drawable.ic_notlike, null));
+        }
     }
 
     private void checkIfAnswered() {
@@ -165,6 +207,24 @@ public class BroadcastQuestionDetailActivity extends AppCompatActivity {
                 isAnswer = SanxingApiClient.getInstance(mContext).isAnswer(mQuestion.getQuestionId());
                 setFABStatus();
                 return null;
+            }
+        };
+        check.execute();
+    }
+
+    private void checkIfFavorited() {
+        AsyncTask check = new AsyncTask() {
+            @Override
+            protected Object doInBackground(Object[] params) {
+                boolean isFavorite = SanxingApiClient.getInstance(mContext).isFavorite(mQuestion.getQuestionId());
+                mQuestion.setFavorite(isFavorite);
+                return null;
+            }
+
+            @Override
+            protected void onPostExecute(Object o) {
+                updateMenu();
+                super.onPostExecute(o);
             }
         };
         check.execute();
@@ -196,10 +256,38 @@ public class BroadcastQuestionDetailActivity extends AppCompatActivity {
         startActivity(intent);
     }
 
+    private void favoritePressed() {
+        Log.d("favorite pressed", "curState:" + mQuestion.isFavorite());
+        SanxingApiClient.getInstance(mContext).addOrRemoveAFavoriteQuestion(mQuestion.getQuestionId(),
+                !mQuestion.isFavorite(), mFavoriteHandler);
+    }
+
+    @Override
+    public void onFavoriteButtonClick(String answerId, Boolean favorite) {
+        Handler favoriteAnswerHandler = new Handler() {
+            @Override
+            public void handleMessage(android.os.Message msg) {
+                boolean isSuccess;
+
+                if(msg.what == 1){
+                    isSuccess = (boolean) msg.obj;
+                } else {
+                    Log.d("error", (String) msg.obj);
+                    Toast.makeText(mContext, "错误:" + msg.obj, Toast.LENGTH_SHORT).show();
+                    isSuccess = false;
+                }
+
+                updateData();
+            }
+        };
+        SanxingApiClient.getInstance(mContext).addOrRemoveAFavoriteAnswer(answerId, favorite, favoriteAnswerHandler);
+    }
+
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
         super.onCreateOptionsMenu(menu);
         getMenuInflater().inflate(R.menu.menu_broadcast_question_detail, menu);
+        mMenu = menu;
         return true;
     }
 
@@ -208,9 +296,13 @@ public class BroadcastQuestionDetailActivity extends AppCompatActivity {
         switch (item.getItemId()) {
             case android.R.id.home:
                 finish();
-                return super.onOptionsItemSelected(item);
+                break;
+            case R.id.action_favorite:
+                favoritePressed();
+                break;
             default:
-                return super.onOptionsItemSelected(item);
+                break;
         }
+        return super.onOptionsItemSelected(item);
     }
 }
