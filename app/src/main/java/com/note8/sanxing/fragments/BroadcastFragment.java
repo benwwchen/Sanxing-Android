@@ -7,6 +7,7 @@ import android.os.Bundle;
 import android.os.Handler;
 import android.os.Message;
 import android.support.v4.app.Fragment;
+import android.support.v4.widget.SwipeRefreshLayout;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.util.Log;
@@ -45,6 +46,7 @@ public class BroadcastFragment extends Fragment {
     // views
     private View mBroadcastView;
     private RecyclerView mBroadcastRecyclerView;
+    private SwipeRefreshLayout mSwipeRefreshLayout;
 
     // adapter
     private BroadcastQuestionsAdapter mBroadcastQuestionsAdapter;
@@ -88,7 +90,7 @@ public class BroadcastFragment extends Fragment {
 
         initData();
 
-        updateData();
+        refresh();
 
         return mBroadcastView;
     }
@@ -99,6 +101,15 @@ public class BroadcastFragment extends Fragment {
 
         // set layout manager
         mBroadcastRecyclerView.setLayoutManager(new LinearLayoutManager(mContext));
+
+        // swipe refresh layout
+        mSwipeRefreshLayout = (SwipeRefreshLayout) mBroadcastView.findViewById(R.id.layout_swipe_refresh);
+        mSwipeRefreshLayout.setColorSchemeResources(R.color.colorPrimary, R.color.colorBrilliant);
+        mSwipeRefreshLayout.setOnRefreshListener(new SwipeRefreshLayout.OnRefreshListener(){
+            public void onRefresh() {
+                updateData();
+            }
+        });
     }
 
     private void initData() {
@@ -125,8 +136,21 @@ public class BroadcastFragment extends Fragment {
                 mBroadcastQuestions.clear();
                 mBroadcastQuestions.addAll(broadcastQuestions);
                 mBroadcastQuestionsAdapter.notifyDataSetChanged();
+                if (mSwipeRefreshLayout != null && mSwipeRefreshLayout.isRefreshing()) {
+                    mSwipeRefreshLayout.setRefreshing(false);
+                }
             }
         };
+    }
+
+    // trigger swipe to refresh
+    public void refresh() {
+        mSwipeRefreshLayout.post(new Runnable() {
+            @Override public void run() {
+                mSwipeRefreshLayout.setRefreshing(true);
+                updateData();
+            }
+        });
     }
 
     /**

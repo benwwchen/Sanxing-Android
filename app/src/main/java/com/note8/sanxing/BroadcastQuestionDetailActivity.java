@@ -10,6 +10,7 @@ import android.os.Message;
 import net.opacapp.multilinecollapsingtoolbar.CollapsingToolbarLayout;
 import android.support.design.widget.FloatingActionButton;
 import android.support.design.widget.Snackbar;
+import android.support.v4.widget.SwipeRefreshLayout;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.ContentFrameLayout;
 import android.support.v7.widget.LinearLayoutManager;
@@ -44,6 +45,7 @@ public class BroadcastQuestionDetailActivity extends AppCompatActivity {
 
     // views
     private RecyclerView mAnswersRecyclerView;
+    private SwipeRefreshLayout mSwipeRefreshLayout;
 
     // utils
     private Context mContext;
@@ -66,6 +68,8 @@ public class BroadcastQuestionDetailActivity extends AppCompatActivity {
         initView();
 
         loadData(); // load data from args
+
+        refresh(); // get data from server
     }
 
     private void initView() {
@@ -78,6 +82,15 @@ public class BroadcastQuestionDetailActivity extends AppCompatActivity {
         mAnswersRecyclerView = (RecyclerView) findViewById(R.id.recycler_view_broadcast_questions_answers);
         // set layout manager
         mAnswersRecyclerView.setLayoutManager(new LinearLayoutManager(mContext));
+
+        // swipe refresh layout
+        mSwipeRefreshLayout = (SwipeRefreshLayout) findViewById(R.id.layout_swipe_refresh);
+        mSwipeRefreshLayout.setColorSchemeResources(R.color.colorPrimary, R.color.colorBrilliant);
+        mSwipeRefreshLayout.setOnRefreshListener(new SwipeRefreshLayout.OnRefreshListener(){
+            public void onRefresh() {
+                updateData();
+            }
+        });
 
         // Get pic max width/height (display width/height)
         DisplayMetrics dm = mContext.getResources().getDisplayMetrics();
@@ -123,11 +136,21 @@ public class BroadcastQuestionDetailActivity extends AppCompatActivity {
                 mAnswers.clear();
                 mAnswers.addAll(answers);
                 mBroadcastQuestionsAnswersAdapter.notifyDataSetChanged();
+                if (mSwipeRefreshLayout != null && mSwipeRefreshLayout.isRefreshing()) {
+                    mSwipeRefreshLayout.setRefreshing(false);
+                }
             }
         };
+    }
 
-        // get data from server
-        updateData();
+    // trigger swipe to refresh
+    public void refresh() {
+        mSwipeRefreshLayout.post(new Runnable() {
+            @Override public void run() {
+                mSwipeRefreshLayout.setRefreshing(true);
+                updateData();
+            }
+        });
     }
 
     private void updateData() {

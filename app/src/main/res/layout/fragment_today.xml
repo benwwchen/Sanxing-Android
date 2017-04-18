@@ -10,6 +10,15 @@
         android:layout_marginLeft="34dp"
         android:background="@color/colorTimelineLine" />
 
-    <include layout="@layout/recycler_view_today_questions" />
+    <android.support.v4.widget.SwipeRefreshLayout
+        android:id="@+id/layout_swipe_refresh"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:layout_marginLeft="16dp"
+        android:layout_marginRight="16dp">
+
+        <include layout="@layout/recycler_view_today_questions" />
+
+    </android.support.v4.widget.SwipeRefreshLayout>
 
 </FrameLayout>

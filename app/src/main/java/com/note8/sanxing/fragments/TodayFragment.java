@@ -7,6 +7,7 @@ import android.os.Bundle;
 import android.os.Handler;
 import android.os.Message;
 import android.support.v4.app.Fragment;
+import android.support.v4.widget.SwipeRefreshLayout;
 import android.support.v7.widget.LinearLayoutManager;
 import android.util.Log;
 import android.view.LayoutInflater;
@@ -48,19 +49,20 @@ public class TodayFragment extends Fragment {
     private static final int RESPONSE_CODE_SUCCESS = 1;
 
     // views
-    View mTodayView; // rootView
+    private View mTodayView; // rootView
     private SwipeMenuRecyclerView mTodayQuestionsRecyclerView;
+    private SwipeRefreshLayout mSwipeRefreshLayout;
 
     // adapters
     private TodayQuestionsAdapter mTodayQuestionsAdapter;
 
     // data
-    ArrayList<TodayQuestion> mTodayQuestions;
-    List<Answer> mAnswers = Answer.sampleAnswerData;
+    private ArrayList<TodayQuestion> mTodayQuestions;
+    private List<Answer> mAnswers = Answer.sampleAnswerData;
 
     // handlers
-    Handler mTodayQuestionsHandler;
-    Handler mAnswersHandler;
+    private Handler mTodayQuestionsHandler;
+    private Handler mAnswersHandler;
 
     public TodayFragment() {
         // Required empty public constructor
@@ -96,7 +98,7 @@ public class TodayFragment extends Fragment {
 
         initData();
 
-        updateData();
+        refresh();
 
         return mTodayView;
     }
@@ -107,6 +109,15 @@ public class TodayFragment extends Fragment {
 
         // set layout managers
         mTodayQuestionsRecyclerView.setLayoutManager(new LinearLayoutManager(mContext));
+
+        // swipe refresh layout
+        mSwipeRefreshLayout = (SwipeRefreshLayout) mTodayView.findViewById(R.id.layout_swipe_refresh);
+        mSwipeRefreshLayout.setColorSchemeResources(R.color.colorPrimary, R.color.colorBrilliant);
+        mSwipeRefreshLayout.setOnRefreshListener(new SwipeRefreshLayout.OnRefreshListener(){
+            public void onRefresh() {
+                updateData();
+            }
+        });
     }
 
     private void initData() {
@@ -143,6 +154,9 @@ public class TodayFragment extends Fragment {
                 mTodayQuestions.clear();
                 mTodayQuestions.addAll(todayQuestions);
                 mTodayQuestionsAdapter.notifyDataSetChanged();
+                if (mSwipeRefreshLayout != null && mSwipeRefreshLayout.isRefreshing()) {
+                    mSwipeRefreshLayout.setRefreshing(false);
+                }
             }
         };
         mAnswersHandler = new Handler() {
@@ -169,8 +183,21 @@ public class TodayFragment extends Fragment {
                 mAnswers.clear();
                 mAnswers.addAll(answers);
                 mTodayQuestionsAdapter.notifyDataSetChanged();
+                if (mSwipeRefreshLayout != null && mSwipeRefreshLayout.isRefreshing()) {
+                    mSwipeRefreshLayout.setRefreshing(false);
+                }
             }
         };
+    }
+
+    // trigger swipe to refresh
+    public void refresh() {
+        mSwipeRefreshLayout.post(new Runnable() {
+            @Override public void run() {
+                mSwipeRefreshLayout.setRefreshing(true);
+                updateData();
+            }
+        });
     }
 
     /**
