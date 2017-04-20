@@ -1,6 +1,8 @@
 package com.note8.sanxing;
 
 import android.content.Intent;
+import android.os.Handler;
+import android.os.Message;
 import android.support.annotation.NonNull;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
@@ -8,14 +10,13 @@ import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.util.Log;
 import android.view.View;
-import android.widget.AbsListView;
-import android.widget.LinearLayout;
 import android.widget.TextView;
 import android.widget.Toast;
 
 import com.note8.sanxing.adapters.TimeLineAdapter;
 import com.note8.sanxing.listeners.OnItemClickListener;
 import com.note8.sanxing.models.Answer;
+import com.note8.sanxing.utils.network.SanxingApiClient;
 import com.note8.sanxing.utils.ui.CustomGradientDrawable;
 import com.note8.sanxing.utils.ui.StatusBarUtils;
 import com.prolificinteractive.materialcalendarview.CalendarDay;
@@ -27,12 +28,14 @@ import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.List;
 
-public class CalenderActivity extends AppCompatActivity
+public class CalendarActivity extends AppCompatActivity
     implements OnDateSelectedListener, OnMonthChangedListener {
     private RecyclerView mRecyclerView;
     private View mBackgroundView;
     private TimeLineAdapter mTimeLineAdapter;
     private LinearLayoutManager mLinearLayoutManager;
+    private Handler mDataHandler;
+
     private int mIndex;
     private boolean move = false;
     //  support for mcv
@@ -43,7 +46,7 @@ public class CalenderActivity extends AppCompatActivity
         "Jul", "Aug", "Sep", "Oct", "Nov", "Dec"
     };
     //  TODO: Get Real Data From the Server
-    private List<Answer> mDataList = Answer.sampleAnswerData;
+    private List<Answer> mDataList;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -74,14 +77,14 @@ public class CalenderActivity extends AppCompatActivity
         Calendar calendar = Calendar.getInstance();
         MaterialCalendarView mcv = (MaterialCalendarView) findViewById(R.id.cal_calendar_view);
         mcv.setTopbarVisible(false);  //  Hide top bar
-        mcv.setWeekDayLabels(new String[] { "S", "M", "T", "W", "T", "F", "S" });
+        mcv.setWeekDayLabels(new String[] { "日", "一", "二", "三", "四", "五", "六" });
         mcv.setOnDateChangedListener(this);
         mcv.setOnMonthChangedListener(this);
         mcv.setDateSelected(calendar, true);
 
-        String yearStr = calendar.get(Calendar.YEAR) + "";
+        String yearStr = calendar.get(Calendar.YEAR) + "年";
         this.topBarYear.setText(yearStr);
-        this.topBarMonth.setText(this.monthStr[calendar.get(Calendar.MONTH)]);
+        this.topBarMonth.setText(calendar.get(Calendar.MONTH) + "月");
     }
 
     private void initTimeline() {
@@ -89,6 +92,7 @@ public class CalenderActivity extends AppCompatActivity
         this.mRecyclerView.setHasFixedSize(true);
         initLayoutManager();
         initAdapter();
+        loadData();
     }
 
     private void initLayoutManager() {
@@ -98,6 +102,7 @@ public class CalenderActivity extends AppCompatActivity
     }
 
     private void initAdapter() {
+        mDataList = new ArrayList<>();
         this.mTimeLineAdapter = new TimeLineAdapter(this.mDataList);
         mTimeLineAdapter.setOnItemClickListener(onItemClickListener);
         this.mRecyclerView.setAdapter(this.mTimeLineAdapter);
@@ -134,6 +139,36 @@ public class CalenderActivity extends AppCompatActivity
                 }
             }
         });
+        mDataHandler = new Handler() {
+            @Override
+            public void handleMessage(Message msg) {
+                List<Answer> answers;
+
+                if (msg.what == SanxingApiClient.SUCCESS_CODE) {
+                    answers = (List<Answer>) msg.obj;
+                } else {
+                    Log.d("error", (String) msg.obj);
+                    answers = Answer.sampleAnswerData;
+                }
+
+                String prevDate = "";
+                for (int i = 0; i < answers.size(); i++) {
+                    if (!answers.get(i).getDate().equals(prevDate)) {
+                        prevDate = answers.get(i).getDate();
+                        answers.get(i).setFirst(true);
+                    }
+                }
+
+                // update data & notify the adapter
+                mDataList.clear();
+                mDataList.addAll(answers);
+                mTimeLineAdapter.notifyDataSetChanged();
+            }
+        };
+    }
+
+    private void loadData() {
+        SanxingApiClient.getInstance(CalendarActivity.this).getAnswerHistory(mDataHandler);
     }
 
     /**
@@ -144,10 +179,12 @@ public class CalenderActivity extends AppCompatActivity
         public void onItemClick(int position) {
             Answer answer = mDataList.get(position);
             Bundle bundle = new Bundle();
+            bundle.putString("questionId", answer.getQuestionId());
             bundle.putString("title", answer.getQuestionContent());
             bundle.putString("answerTxt", answer.getContent());
             bundle.putInt("mood", answer.getMood());
-            Intent intent = new Intent(CalenderActivity.this, QuestionDetailActivity.class);
+            bundle.putInt("publicStatus", answer.isPublic()? 1:0);
+            Intent intent = new Intent(CalendarActivity.this, QuestionDetailActivity.class);
             intent.putExtras(bundle);
             startActivity(intent);
         }

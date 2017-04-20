@@ -44,5 +44,7 @@ dependencies {
     compile 'com.yanzhenjie:recyclerview-swipe:1.0.4'
     compile 'com.google.code.gson:gson:2.8.0'
     compile 'com.android.volley:volley:1.0.0'
+    compile 'com.android.support.constraint:constraint-layout:1.0.2'
+    compile 'com.zhy:flowlayout-lib:1.0.3'
     testCompile 'junit:junit:4.12'
 }

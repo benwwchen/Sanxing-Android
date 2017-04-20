@@ -5,6 +5,7 @@ import android.graphics.drawable.Drawable;
 import android.support.v7.widget.CardView;
 import android.support.v7.widget.RecyclerView;
 import android.util.DisplayMetrics;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -27,7 +28,7 @@ import java.util.ArrayList;
  * Created by BenWwChen on 2017/4/18.
  */
 
-public class BroadcastQuestionsAnswersAdapter extends RecyclerView.Adapter<BroadcastQuestionsAnswersAdapter.ViewHolder>{
+public class BroadcastQuestionsAnswersAdapter extends RecyclerView.Adapter<BroadcastQuestionsAnswersAdapter.ViewHolder> {
 
     private ArrayList<Answer> mAnswers;
     Context mContext;
@@ -81,7 +82,7 @@ public class BroadcastQuestionsAnswersAdapter extends RecyclerView.Adapter<Broad
     // Create new views (invoked by the layout manager)
     @Override
     public BroadcastQuestionsAnswersAdapter.ViewHolder onCreateViewHolder(ViewGroup parent,
-                                                                   int viewType) {
+                                                                          int viewType) {
         // create a new view
         View v = LayoutInflater.from(parent.getContext())
                 .inflate(R.layout.item_broadcast_questions_answer, parent, false);

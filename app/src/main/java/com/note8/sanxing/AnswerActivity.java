@@ -83,13 +83,13 @@ public class AnswerActivity extends AppCompatActivity {
     private Question mQuestion;
     private String mAnswerContent;
     private Integer mMood;
-    private Integer mPublicStatus;
+    private boolean mPublicStatus;
 
     private static final int RESULT_CODE_SUCCESS_RECIEVED = 1;
     private static final int RESULT_CODE_FAILED_RECIEVED = -1;
 
     private Bitmap mBitmap;
-    private int[] publicStatue = {0};
+    private boolean publicStatue = false;
     private double intervalOfProgress = 20;
 
     private static final int REQUEST_CODE_TAKE_PHOTO = 0;// 拍照请求码
@@ -179,11 +179,11 @@ public class AnswerActivity extends AppCompatActivity {
         publicStatueBtn.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                if(publicStatue[0] == 0)
+                publicStatue = !publicStatue;
+                if(publicStatue)
                     publicStatueBtn.setImageDrawable(getResources().getDrawable(R.drawable.scroll_visible));
                 else
                     publicStatueBtn.setImageDrawable(getResources().getDrawable(R.drawable.scroll_invisible));
-                publicStatue[0] = 1 - publicStatue[0];
             }
         });
 
@@ -253,7 +253,7 @@ public class AnswerActivity extends AppCompatActivity {
     private void sendAnswer() {
         mAnswerContent = answerTxt.getText().toString();
         mMood = answerSeekBar.getProgress();
-        mPublicStatus = publicStatue[0];
+        mPublicStatus = publicStatue;
         attemptUpload();
     }
 

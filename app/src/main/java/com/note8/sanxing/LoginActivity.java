@@ -10,6 +10,7 @@ import android.os.Build;
 import android.os.Bundle;
 import android.support.v7.app.AppCompatActivity;
 import android.text.TextUtils;
+import android.util.Log;
 import android.view.KeyEvent;
 import android.view.View;
 import android.view.View.OnClickListener;
@@ -34,6 +35,7 @@ public class LoginActivity extends AppCompatActivity {
     private AutoLoginTask mAutoLoginTask = null;
 
     private static final int REQUEST_CODE_SIGN_UP = 0;
+    private static final int REQUEST_CODE_CHOOSE_TAGS = 3;
     private static final int RESULT_CODE_SUCCESS = 1;
     private static final int RESULT_CODE_CANCELLED = 2;
 
@@ -91,12 +93,23 @@ public class LoginActivity extends AppCompatActivity {
     protected void onActivityResult(int requestCode, int resultCode, Intent data) {
         super.onActivityResult(requestCode, resultCode, data);
         if (requestCode == REQUEST_CODE_SIGN_UP) {
-            onSingUpReturn(resultCode, data);
+            onSignUpReturn(resultCode, data);
+        } else if (requestCode == REQUEST_CODE_CHOOSE_TAGS) {
+            onChooseTagsReturn(resultCode, data);
         }
     }
 
-    private void onSingUpReturn(int resultCode, Intent data) {
+    private void onSignUpReturn(int resultCode, Intent data) {
         if (resultCode == RESULT_CODE_SUCCESS) {
+            Intent intent = new Intent(LoginActivity.this, ChooseTagsActivity.class);
+            startActivityForResult(intent, REQUEST_CODE_CHOOSE_TAGS);
+        }
+    }
+
+    private void onChooseTagsReturn(int resultCode, Intent data) {
+        Log.d("return from choose tags", "returning");
+        if (resultCode == RESULT_CODE_SUCCESS) {
+            Log.d("return from choose tags", "sucess");
             Intent intent = new Intent(LoginActivity.this, MainActivity.class);
             startActivity(intent);
             finish();

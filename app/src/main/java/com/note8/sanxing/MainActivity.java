@@ -84,7 +84,7 @@ public class MainActivity extends AppCompatActivity
         // Modify "AnswerActivity.class" back to "WeeklyActivity.class" for Bogo's testing.
         // hahahahaha
         Class[] activities = new Class[]
-                {WeeklyActivity.class, MeActivity.class, CalenderActivity.class};
+                {WeeklyActivity.class, MeActivity.class, CalendarActivity.class};
 
         for (int i = 0; i < buttons.length; ++i) {
             setListener(buttons[i], activities[i]);

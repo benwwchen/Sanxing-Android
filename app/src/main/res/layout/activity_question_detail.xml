@@ -1,5 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
@@ -15,7 +16,7 @@
             android:fitsSystemWindows="true"
             android:orientation="vertical"
             android:background="@color/colorWhite"
-            android:weightSum="10"
+            android:weightSum="13"
             tools:ignore="UselessParent">
             <RelativeLayout
                 android:id="@+id/question_detail_topPanel"
@@ -87,50 +88,98 @@
                 android:layout_marginLeft="@dimen/answer_horizontal_margin"
                 android:layout_marginRight="@dimen/answer_horizontal_margin"
                 android:background="@color/answer_line"/>
-            <ScrollView
+
+            <android.support.v4.widget.SwipeRefreshLayout
+                android:id="@+id/layout_swipe_refresh"
                 android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:scrollbarStyle="outsideOverlay"
-                android:scrollbars="none"
-                android:overScrollMode="never"
-                android:layout_weight="9.6">
+                android:layout_height="match_parent">
+
+            <android.support.v4.widget.NestedScrollView
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:fillViewport="true">
+
                 <LinearLayout
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:orientation="vertical">
-                    <TextView
-                        android:id="@+id/answerTxt_detail"
+
+                    <android.support.v4.widget.NestedScrollView
+                        android:id="@+id/nested_scroll_view_answer"
                         android:layout_width="match_parent"
+                        android:layout_height="match_parent"
+                        android:layout_weight="1"
+                        android:minHeight="300dp"
+                        android:overScrollMode="never"
+                        android:scrollbarStyle="outsideOverlay"
+                        android:scrollbars="none">
+
+                        <LinearLayout
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content"
+                            android:orientation="vertical">
+
+                            <TextView
+                                android:id="@+id/answerTxt_detail"
+                                android:layout_width="match_parent"
+                                android:layout_height="wrap_content"
+                                android:layout_marginLeft="@dimen/answer_horizontal_margin"
+                                android:layout_marginRight="@dimen/answer_horizontal_margin"
+                                android:paddingTop="@dimen/answer_horizontal_margin"
+                                android:text="作业就差你没交了"
+                                android:textSize="@dimen/answer_answerTxt_size" />
+
+                            <ImageView
+                                android:id="@+id/answerImg_detail"
+                                android:layout_width="match_parent"
+                                android:layout_height="300dp"
+                                android:layout_marginLeft="@dimen/answer_horizontal_margin"
+                                android:layout_marginRight="@dimen/answer_horizontal_margin"
+                                android:layout_marginTop="6dp"
+                                android:scaleType="centerCrop"
+                                android:visibility="gone" />
+                        </LinearLayout>
+                    </android.support.v4.widget.NestedScrollView>
+
+
+
+                    <Button
+                        android:id="@+id/answer_times_count"
+                        android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
-                        android:paddingTop="@dimen/answer_horizontal_margin"
+                        android:layout_gravity="right"
                         android:layout_marginLeft="@dimen/answer_horizontal_margin"
                         android:layout_marginRight="@dimen/answer_horizontal_margin"
-                        android:textSize="@dimen/answer_answerTxt_size"
-                        android:text="作业就差你没交了"/>
+                        android:layout_marginTop="2dp"
+                        android:background="@null"
+                        android:text="你答过该问题共5次"
+                        android:textColor="@color/answer_question"
+                        android:textSize="@dimen/answer_moodTxt_size" />
+
                     <ImageView
-                        android:visibility="gone"
-                        android:id="@+id/answerImg_detail"
+                        android:id="@+id/image_view_arrow"
                         android:layout_width="match_parent"
-                        android:layout_height="300dp"
+                        android:layout_height="20dp"
+                        app:srcCompat="@drawable/arrow" />
+
+                    <View
+                        android:layout_width="match_parent"
+                        android:layout_height="0.5dp"
                         android:layout_marginLeft="@dimen/answer_horizontal_margin"
                         android:layout_marginRight="@dimen/answer_horizontal_margin"
-                        android:layout_marginTop="6dp"
-                        android:scaleType="centerCrop"/>
+                        android:background="@color/answer_line" />
+
+                    <include
+                        layout="@layout/recycler_view_broadcast_questions_answers"
+                        android:layout_width="match_parent"
+                        android:layout_height="match_parent"
+                        android:layout_weight="17"/>
+
                 </LinearLayout>
-            </ScrollView>
-            <Button
-                android:id="@+id/answer_times_count"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_marginLeft="@dimen/answer_horizontal_margin"
-                android:layout_marginRight="@dimen/answer_horizontal_margin"
-                android:layout_marginTop="2dp"
-                android:layout_marginBottom="@dimen/answer_question_margin"
-                android:background="@null"
-                android:textSize="@dimen/answer_moodTxt_size"
-                android:textColor="@color/answer_question"
-                android:text="你答过该问题共5次"
-                android:layout_gravity="right" />
+
+            </android.support.v4.widget.NestedScrollView>
+            </android.support.v4.widget.SwipeRefreshLayout>
+
         </LinearLayout>
     </FrameLayout>
 </FrameLayout>

@@ -6,7 +6,7 @@
     android:background="#F4F5F9"
     android:orientation="vertical"
     android:id="@+id/activity_calendar"
-    tools:context="com.note8.sanxing.CalenderActivity">
+    tools:context="com.note8.sanxing.CalendarActivity">
 
     <FrameLayout
         android:layout_width="match_parent"
@@ -26,7 +26,7 @@
             android:orientation="vertical">
 
             <LinearLayout
-                android:layout_width="@dimen/cal_width"
+                android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:layout_marginTop="10dp"
                 android:orientation="horizontal"

@@ -25,10 +25,16 @@ public class Answer{
     private String timeFromNow;
     private Answerer answerer;
     private Boolean isFavorite;
+    @SerializedName("public")
+    private boolean isPublic;
 
     private boolean isFirst;
 
     public static class Answerer {
+        public Answerer(String username) {
+            this.username = username;
+        }
+
         public String username;
         public String avatar;
     }
@@ -156,21 +162,34 @@ public class Answer{
         this.timeFromNow = timeFromNow;
     }
 
+    public boolean isPublic() {
+        return isPublic;
+    }
+
+    public void setPublic(boolean aPublic) {
+        isPublic = aPublic;
+    }
+
+    public Answer(String content, String questionContent, Integer mood, Integer publicStatus, Integer likeCount, String date, String timeFromNow, Answerer answerer, Boolean isFavorite) {
+        this.content = content;
+        this.questionContent = questionContent;
+        this.mood = mood;
+        this.publicStatus = publicStatus;
+        this.likeCount = likeCount;
+        this.date = date;
+        this.timeFromNow = timeFromNow;
+        this.answerer = answerer;
+        this.isFavorite = isFavorite;
+    }
+
     public static ArrayList<Answer> sampleAnswerData = initSampleData();
 
     private static ArrayList<Answer> initSampleData() {
         ArrayList<Answer> answerList = new ArrayList<>();
-        //  Answer(content, date, time, mood)
-        //  manage data in groups here, 3 items per day; only the first item need "date"
-//        answerList.add(new Answer("Item successfully delivered", "2017-04-07 08:00", 80, true));
-//        answerList.add(new Answer("Courier is out to delivery your order", "2017-04-07 09:00", 40, false));
-//        answerList.add(new Answer("Item has reached courier facility at New Delhi", "2017-04-07 21:00", 80, false));
-//        answerList.add(new Answer("Item has been given to the courier", "2017-04-06 18:00", 30, true));
-//        answerList.add(new Answer("Item is packed and will dispatch soon", "2017-04-06 09:30", 80, false));
-//        answerList.add(new Answer("Order is being readied for dispatch", "2017-04-06 08:00", 80, false));
-//        answerList.add(new Answer("Order processing initiated", "2017-04-05 15:00", 30, true));
-//        answerList.add(new Answer("Order confirmed by seller", "2017-04-05 14:30", 80, false));
-//        answerList.add(new Answer("Order placed successfully", "2017-04-05 14:00", 20, false));
+        answerList.add(new Answer("答案", "问题", 80, 0, 2, "2017", "1 minute ago", new Answerer("name"), false));
+        answerList.add(new Answer("答案2", "问题", 80, 0, 2, "2017", "1 minute ago", new Answerer("name"), false));
+        answerList.add(new Answer("答案3", "问题", 80, 0, 2, "2017", "1 minute ago", new Answerer("name"), false));
+        answerList.add(new Answer("答案4", "问题", 80, 0, 2, "2017", "1 minute ago", new Answerer("name"), false));
 
         return answerList;
     }

@@ -58,7 +58,7 @@ public class TodayFragment extends Fragment {
 
     // data
     private ArrayList<TodayQuestion> mTodayQuestions;
-    private List<Answer> mAnswers = Answer.sampleAnswerData;
+    private List<Answer> mAnswers;
 
     // handlers
     private Handler mTodayQuestionsHandler;
@@ -122,6 +122,7 @@ public class TodayFragment extends Fragment {
 
     private void initData() {
         mTodayQuestions = new ArrayList<>();
+        mAnswers = new ArrayList<>();
         mTodayQuestionsAdapter = new TodayQuestionsAdapter(mTodayQuestions, mAnswers, mContext);
         mTodayQuestionsAdapter.setOnItemClickListener(onItemClickListener);
         mTodayQuestionsRecyclerView.setAdapter(mTodayQuestionsAdapter);
@@ -147,7 +148,6 @@ public class TodayFragment extends Fragment {
                 if (todayQuestions.isEmpty()) {
                     // add placeholder
                     todayQuestions.add(new TodayQuestion(true));
-                    Log.d("place", String.valueOf(todayQuestions.get(0).isPlaceholder()));
                 }
 
                 // update data & notify the adapter
@@ -222,9 +222,11 @@ public class TodayFragment extends Fragment {
                 // timeline click
                 int index = position - mTodayQuestions.size();
                 Bundle bundle = new Bundle();
+                bundle.putString("questionId", mAnswers.get(index).getQuestionId());
                 bundle.putString("title", mAnswers.get(index).getQuestionContent());
                 bundle.putString("answerTxt", mAnswers.get(index).getContent());
                 bundle.putInt("mood", mAnswers.get(index).getMood());
+                bundle.putInt("publicStatus", mAnswers.get(index).isPublic()? 1:0);
                 Intent intent = new Intent(mContext, QuestionDetailActivity.class);
                 intent.putExtras(bundle);
                 startActivity(intent);

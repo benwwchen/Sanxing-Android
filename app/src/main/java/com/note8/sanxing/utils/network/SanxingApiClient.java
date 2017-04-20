@@ -26,6 +26,7 @@ import com.note8.sanxing.models.TodayQuestion;
 import com.note8.sanxing.models.User;
 
 
+import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
 
@@ -67,15 +68,20 @@ public class SanxingApiClient {
     private static final String FAVORITE_QUESTIONS_PATH = USER_PATH + "/favorite/questions";
     private static final String FAVORITE_ANSWERS_PATH = USER_PATH + "/favorite/answers";
 
-    // other paths
+    // questions paths
     private static final String QUESTIONS_PATH = "questions";
     private static final String TODAY_QUESTIONS_PATH = QUESTIONS_PATH + "/today";
     private static final String BROADCAST_QUESTIONS_PATH = QUESTIONS_PATH + "/broadcast/public";
+    private static final String BROADCAST_QUESTIONS_IS_FAVORITE_PATH = QUESTIONS_PATH + "/broadcast/isFavorite";
+
+    // answers paths
     private static final String ANSWER_PATH = "answers";
     private static final String ANSWER_HISTORY_PATH = "answers/history";
     private static final String BROADCAST_QUESTIONS_ANSWERS_PATH = ANSWER_PATH + "/broadcast";
     private static final String BROADCAST_QUESTIONS_IS_ANSWER_PATH = ANSWER_PATH + "/broadcast/isAnswer";
-    private static final String BROADCAST_QUESTIONS_IS_FAVORITE_PATH = QUESTIONS_PATH + "/broadcast/isFavorite";
+    private static final String DAILY_QUESTIONS_ANSWERS_PATH = ANSWER_PATH + "/daily";
+
+    // other paths
     private static final String TAG_PATH = "tags";
     private static final String ARTICLE_PATH = "articles";
     private static final String WEEKLY_PATH = "weeklies";
@@ -408,6 +414,50 @@ public class SanxingApiClient {
     }
 
     /**
+     * Get Answers For the Broadcast Question from server, message sent back by the handler as a List
+     * @param questionId
+     * @param handler
+     */
+    public void getPublicDailyQuestionsAnswers(String questionId, final Handler handler) {
+        asyncJsonRequest(Request.Method.GET,
+                getAbsoluteUrl(DAILY_QUESTIONS_ANSWERS_PATH + "/" + questionId),
+                null,
+                new Response.Listener<JSONObject>() {
+                    @Override
+                    public void onResponse(JSONObject response) {
+                        Message message = new Message();
+
+                        try {
+                            if (isSuccess(response)) {
+                                Gson gson = new GsonBuilder().create();
+
+                                List<Answer> answers =
+                                        gson.fromJson(response.getString("data"),
+                                                new TypeToken<List<Answer>>(){}.getType());
+                                message.what = SUCCESS_CODE;
+                                message.obj = answers;
+                            } else {
+                                message.what = ERROR_CODE;
+                                message.obj = response.getString("cnmsg");
+                            }
+                        } catch (Exception e) {
+                            e.printStackTrace();
+                        }
+
+                        handler.sendMessage(message);
+                    }
+                }, new Response.ErrorListener() {
+                    @Override
+                    public void onErrorResponse(VolleyError error) {
+                        Message message = new Message();
+                        message.what = ERROR_CODE;
+                        message.obj = String.valueOf(error.networkResponse.statusCode);
+                        handler.sendMessage(message);
+                    }
+                });
+    }
+
+    /**
      * Get Answers History from server, message sent back by the handler as a List
      * @param handler
      */
@@ -674,13 +724,13 @@ public class SanxingApiClient {
      * @param answerContent
      * @return isSuccess
      */
-    public boolean createAnswer(Question question, String answerContent, Integer mood, Integer publicStatus) {
+    public boolean createAnswer(Question question, String answerContent, Integer mood, Boolean publicStatus) {
         Map<String, String> request = new HashMap<>();
         request.put("questionId", question.getQuestionId());
         request.put("content", answerContent);
         request.put("questionContent", question.getContent());
         request.put("mood", mood.toString());
-        request.put("publicStatus",publicStatus.toString());
+        request.put("public", publicStatus.toString());
 
         JSONObject requestBody = new JSONObject(request);
 
@@ -690,6 +740,58 @@ public class SanxingApiClient {
 
         try {
             if (isSuccess(responseBody)) {
+                return true;
+            } else {
+                mMessage = responseBody.getString("cnmsg");
+            }
+        } catch (Exception e) {
+            Log.d("ERROR", "error => " + e.toString());
+        }
+        return false;
+    }
+
+    /**
+     * Get available tags, return as a list of strings
+     * @return tags
+     */
+    public ArrayList<String> getTags() {
+        JSONObject responseBody = syncJsonRequest(Request.Method.GET, getAbsoluteUrl(TAG_PATH),
+                null, null,
+                new DefaultRetryPolicy(30*1000, 1, 1.0f));
+
+        try {
+            if (isSuccess(responseBody)) {
+                Gson gson = new GsonBuilder().create();
+
+                return gson.fromJson(responseBody.getString("data"),
+                                new TypeToken<List<String>>(){}.getType());
+            } else {
+                mMessage = responseBody.getString("cnmsg");
+            }
+        } catch (Exception e) {
+            Log.d("ERROR", "error => " + e.toString());
+        }
+        return null;
+    }
+
+    /**
+     * Save selected tags
+     * @return success
+     */
+    public boolean saveTags(ArrayList<String> tags) {
+        HashMap<String, JSONArray> tagsMap = new HashMap<>();
+        tagsMap.put("tags", new JSONArray(tags));
+        JSONObject requestBody = new JSONObject(tagsMap);
+
+        JSONObject responseBody = syncJsonRequest(Request.Method.PUT,
+                getAbsoluteUrl(USER_PATH + "/" + TAG_PATH),
+                requestBody, null,
+                new DefaultRetryPolicy(30*1000, 1, 1.0f));
+
+        try {
+            if (isSuccess(responseBody)) {
+                // update user
+                user = getUserInfo();
                 return true;
             } else {
                 mMessage = responseBody.getString("cnmsg");
