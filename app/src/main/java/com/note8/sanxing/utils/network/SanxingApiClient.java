@@ -843,4 +843,45 @@ public class SanxingApiClient {
     private static String getAbsoluteUrl(String relativeUrl) {
         return BASE_URL + relativeUrl;
     }
+
+    /**
+     * Manual Update Today Questions (not official function), message sent back by the handler as a List
+     * @param handler
+     */
+    public void manualUpdateTodayQuestions(final Handler handler) {
+        asyncJsonRequest(Request.Method.GET, getAbsoluteUrl("questions/manual/today"), null,
+                new Response.Listener<JSONObject>() {
+                    @Override
+                    public void onResponse(JSONObject response) {
+                        Message message = new Message();
+
+                        try {
+                            if (isSuccess(response)) {
+                                Gson gson = new GsonBuilder().create();
+
+                                List<TodayQuestion> todayQuestions =
+                                        gson.fromJson(response.getString("data"),
+                                                new TypeToken<List<TodayQuestion>>(){}.getType());
+                                message.what = SUCCESS_CODE;
+                                message.obj = todayQuestions;
+                            } else {
+                                message.what = ERROR_CODE;
+                                message.obj = response.getString("cnmsg");
+                            }
+                        } catch (Exception e) {
+                            e.printStackTrace();
+                        }
+
+                        handler.sendMessage(message);
+                    }
+                }, new Response.ErrorListener() {
+                    @Override
+                    public void onErrorResponse(VolleyError error) {
+                        Message message = new Message();
+                        message.what = ERROR_CODE;
+                        message.obj = String.valueOf(error.networkResponse.statusCode);
+                        handler.sendMessage(message);
+                    }
+                });
+    }
 }

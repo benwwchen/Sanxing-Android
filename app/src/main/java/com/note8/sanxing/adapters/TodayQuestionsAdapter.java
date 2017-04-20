@@ -158,6 +158,14 @@ public class TodayQuestionsAdapter extends RecyclerView.Adapter<RecyclerView.Vie
             holder.swipeMenuLayout.setSwipeEnable(false);
             holder.contentView.setOnClickListener(null);
             return;
+        } else {
+            holder.clockImageView.setVisibility(View.VISIBLE);
+            holder.answerButton.setVisibility(View.VISIBLE);
+            holder.favoriteButton.setVisibility(View.VISIBLE);
+            holder.questionTextView.setTextAlignment(View.TEXT_ALIGNMENT_INHERIT);
+            //holder.questionTextView.setPadding(4,0,16,0);
+            holder.swipeMenuLayout.setSwipeEnable(true);
+            holder.contentView.setOnClickListener(holder);
         }
 
         // clock image
