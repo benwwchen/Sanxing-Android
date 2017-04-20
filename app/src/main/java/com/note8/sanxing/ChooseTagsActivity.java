@@ -174,8 +174,10 @@ public class ChooseTagsActivity extends AppCompatActivity {
                 String curTag = mTags.get(position);
                 if (mSelectedTags.indexOf(curTag) != -1) {
                     mSelectedTags.remove(curTag);
+                    view.setTranslationZ(1);
                 } else {
                     mSelectedTags.add(curTag);
+                    view.setTranslationZ(-2);
                 }
                 return true;
             }
