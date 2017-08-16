@@ -2,9 +2,8 @@ package com.note8.sanxing;
 
 import android.content.Intent;
 import android.net.Uri;
+import android.support.design.widget.AppBarLayout;
 import android.support.design.widget.TabLayout;
-import android.support.design.widget.FloatingActionButton;
-import android.support.design.widget.Snackbar;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
 
@@ -13,16 +12,15 @@ import android.support.v4.app.FragmentManager;
 import android.support.v4.app.FragmentPagerAdapter;
 import android.support.v4.view.ViewPager;
 import android.os.Bundle;
-import android.view.LayoutInflater;
-import android.view.Menu;
-import android.view.MenuItem;
 import android.view.View;
-import android.view.ViewGroup;
 
-import android.widget.TextView;
+import android.widget.ImageButton;
 
 import com.note8.sanxing.fragments.BroadcastFragment;
 import com.note8.sanxing.fragments.TodayFragment;
+import com.note8.sanxing.utils.ui.CustomGradientDrawable;
+import com.note8.sanxing.viewpager.CustomViewPager;
+import com.note8.sanxing.utils.ui.StatusBarUtils;
 
 public class MainActivity extends AppCompatActivity
         implements BroadcastFragment.OnFragmentInteractionListener, TodayFragment.OnFragmentInteractionListener {
@@ -38,9 +36,9 @@ public class MainActivity extends AppCompatActivity
     private SectionsPagerAdapter mSectionsPagerAdapter;
 
     /**
-     * The {@link ViewPager} that will host the section contents.
+     * The {@link CustomViewPager} that will host the section contents.
      */
-    private ViewPager mViewPager;
+    private CustomViewPager mViewPager;
 
     /**
      * TodayFragment and BroadcastFragment
@@ -53,54 +51,75 @@ public class MainActivity extends AppCompatActivity
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
 
+        StatusBarUtils.setContentToTop(this);
+
+        initToolbar();
+        initViewPager();
+
+    }
+
+    private void initToolbar() {
         Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
-        // Create the adapter that will return a fragment for each of the three
-        // primary sections of the activity.
+
+        // set status bar and toolbar color
+        CustomGradientDrawable gradientDrawable = new CustomGradientDrawable(
+                new int[] {0xfff78ca0, 0xfff9748f, 0xfffd868c, 0xfffe9a8b},
+                new float[] {0, 0.19f, 0.60f, 1});
+
+        getSupportActionBar().setBackgroundDrawable(gradientDrawable);
+
+        AppBarLayout appBarLayout = (AppBarLayout) findViewById(R.id.appbar);
+        appBarLayout.setBackground(gradientDrawable);
+
+        // buttons
+        ImageButton weeklyImageButton = (ImageButton) findViewById(R.id.image_button_weekly);
+        ImageButton personalImageButton = (ImageButton) findViewById(R.id.image_button_personal);
+        ImageButton calendarImageButton = (ImageButton) findViewById(R.id.image_button_calender);
+
+        ImageButton[] buttons = new ImageButton[]
+                {weeklyImageButton, personalImageButton, calendarImageButton};
+
+        // Modify "WeeklyActivity.class" to "AnswerActivity.class" for testing.
+        // Modify "AnswerActivity.class" back to "WeeklyActivity.class" for Bogo's testing.
+        // hahahahaha
+        Class[] activities = new Class[]
+                {WeeklyActivity.class, MeActivity.class, CalendarActivity.class};
+
+        for (int i = 0; i < buttons.length; ++i) {
+            setListener(buttons[i], activities[i]);
+        }
+    }
+
+    private void initViewPager() {
         mSectionsPagerAdapter = new SectionsPagerAdapter(getSupportFragmentManager());
 
         // Set up the ViewPager with the sections adapter.
-        mViewPager = (ViewPager) findViewById(R.id.container);
+        mViewPager = (CustomViewPager) findViewById(R.id.container);
+        mViewPager.setChildIdAndPageIndex(R.id.recycler_view_today_questions, 0);
         mViewPager.setAdapter(mSectionsPagerAdapter);
+        mViewPager.addOnPageChangeListener(simpleOnPageChangeListener);
+        mViewPager.setOffscreenPageLimit(2);
 
         TabLayout tabLayout = (TabLayout) findViewById(R.id.tabs);
         tabLayout.setupWithViewPager(mViewPager);
-
     }
 
-
-    @Override
-    public boolean onCreateOptionsMenu(Menu menu) {
-        // Inflate the menu; this adds items to the action bar if it is present.
-        getMenuInflater().inflate(R.menu.menu_main, menu);
-        return true;
-    }
-
-    @Override
-    public boolean onOptionsItemSelected(MenuItem item) {
-        // Handle action bar item clicks here. The action bar will
-        // automatically handle clicks on the Home/Up button, so long
-        // as you specify a parent activity in AndroidManifest.xml.
-        int id = item.getItemId();
-
-        Intent intent;
-
-        switch (id) {
-            case R.id.action_weekly:
-                intent = new Intent(MainActivity.this, WeeklyActivity.class);
-                startActivity(intent);
-                break;
-            case R.id.action_me:
-                intent = new Intent(MainActivity.this, MeActivity.class);
-                startActivity(intent);
-                break;
-            case R.id.action_calender:
-                intent = new Intent(MainActivity.this, CalenderActivity.class);
-                startActivity(intent);
-                break;
+    private ViewPager.SimpleOnPageChangeListener simpleOnPageChangeListener = new ViewPager.SimpleOnPageChangeListener() {
+        @Override
+        public void onPageSelected(int position) {
+            //getSupportActionBar().setSubtitle("第" + position + "个");
         }
+    };
 
-        return super.onOptionsItemSelected(item);
+    private void setListener(ImageButton button, final Class activity) {
+        button.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                Intent intent = new Intent(MainActivity.this, activity);
+                startActivity(intent);
+            }
+        });
     }
 
     /**
@@ -117,10 +136,10 @@ public class MainActivity extends AppCompatActivity
         public Fragment getItem(int position) {
             switch (position) {
                 case 0:
-                    todayFragment = new TodayFragment();
+                    todayFragment = TodayFragment.newInstance();
                     return todayFragment;
                 case 1:
-                    broadcastFragment = new BroadcastFragment();
+                    broadcastFragment = BroadcastFragment.newInstance();
                     return broadcastFragment;
             }
             return null;

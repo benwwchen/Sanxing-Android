@@ -1,9 +1,90 @@
 <?xml version="1.0" encoding="utf-8"?>
-<android.support.constraint.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
-    xmlns:app="http://schemas.android.com/apk/res-auto"
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:tools="http://schemas.android.com/tools"
-    android:layout_width="match_parent"
-    android:layout_height="match_parent"
+    android:layout_width="fill_parent"
+    android:layout_height="fill_parent"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:background="@color/me_background"
+    android:orientation="vertical"
     tools:context="com.note8.sanxing.MeActivity">
 
-</android.support.constraint.ConstraintLayout>
+    <android.support.design.widget.AppBarLayout
+        android:id="@+id/me_appbar"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:theme="@style/AppTheme.AppBarOverlay">
+        <include layout="@layout/toolbar_me" />
+    </android.support.design.widget.AppBarLayout>
+    <RelativeLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:background="@color/me_background"
+        android:orientation="vertical"
+        android:gravity="center_horizontal">
+        <ImageButton
+            android:id="@+id/portrait"
+            android:layout_width="@dimen/me_portrait_length"
+            android:layout_height="@dimen/me_portrait_length"
+            android:scaleType="fitCenter"
+            android:src="@drawable/portrait_me"
+            android:background="@null"
+            android:layout_marginTop="@dimen/me_bar_icon_dis"
+            android:layout_centerHorizontal="true" />
+        <TextView
+            android:id="@+id/nickName"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginStart="20dp"
+            android:layout_marginEnd="20dp"
+            android:layout_marginTop="@dimen/me_nickname_margin"
+            android:text="吞吞吐吐拖拖拖拖拖拖拖拖拖拖拖拖拖拖拖拖拖拖拖拖拖拖"
+            android:textColor="@color/tabSelectedText"
+            android:textSize="@dimen/me_nickname_size"
+            android:maxLines="1"
+            android:ellipsize = "end"
+            android:layout_gravity="center_horizontal"
+            android:layout_below="@+id/portrait"
+            android:layout_centerHorizontal="true" />
+
+        <TextView
+            android:id="@+id/base"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="@dimen/me_base_margin"
+            android:layout_marginBottom="10dp"
+            android:text="广东 , 广州"
+            android:textColor="#cdcdcd"
+            android:textSize="@dimen/me_base_size"
+            android:layout_marginStart="@dimen/me_nickname_margin"
+            android:layout_below="@+id/nickName"
+            android:layout_centerHorizontal="true" />
+        <ImageView
+            android:id="@+id/baseIcon"
+            android:layout_width="@dimen/me_base_icon_width"
+            android:layout_height="wrap_content"
+            android:src="@drawable/base"
+            android:scaleType="fitCenter"
+            android:layout_alignBottom="@+id/base"
+            android:layout_toStartOf="@+id/base" />
+    </RelativeLayout>
+    <android.support.design.widget.AppBarLayout
+        android:id="@+id/appbar_tabs_me"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:theme="@style/AppTheme.AppBarOverlay">
+        <android.support.design.widget.TabLayout
+            android:id="@+id/tabs_me"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:background="@color/colorWhite"
+            app:tabIndicatorHeight="@dimen/me_base_margin"
+            app:tabSelectedTextColor="@color/colorPrimary"
+            app:tabTextColor="@color/tabText" />
+    </android.support.design.widget.AppBarLayout>
+        <com.note8.sanxing.viewpager.CustomViewPager
+            android:id="@+id/container_me"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            app:layout_behavior="@string/appbar_scrolling_view_behavior" />
+
+</LinearLayout>
